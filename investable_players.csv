@@ -1,0 +1,367 @@
+player_key,pred_target,Player Name,Club,Position,Minutes,Goals,Assists,Minutes_24,Goals_24,Assists_24,investable
+mohamed salah,0.53804583606734,Mohamed Salah,Liverpool,FW,2534,18,10,3377,29,18,True
+darwin nunez,0.53804583606734,Darwin Núñez,Liverpool,FW,2047,11,8,1118,5,0,True
+jarrod bowen,0.53804583606734,Jarrod Bowen,West Ham,FW,3019,16,6,2979,0,8,True
+erling haaland,0.5305549178543817,Erling Haaland,Manchester City,FW,2552,27,5,2741,22,3,True
+richarlison,0.5305549178543817,Richarlison,Tottenham,FW,1491,11,4,500,4,1,True
+ollie watkins,0.5305549178543817,Ollie Watkins,Aston Villa,FW,3217,19,13,2610,16,8,True
+phil foden,0.5302875327922411,Phil Foden,Manchester City,"FW,MF",2857,19,8,1779,7,2,True
+son heung-min,0.5302875327922411,Son Heung-min,Tottenham,FW,2934,17,10,2116,7,9,True
+harvey barnes,0.5273650086990951,Harvey Barnes,Newcastle Utd,"FW,MF",802,5,3,1755,9,4,True
+diogo jota,0.5273650086990951,Diogo Jota,Liverpool,FW,1145,10,3,1194,6,3,True
+adama traore,0.5273650086990951,Adama Traoré,Fulham,"FW,MF",377,2,3,1769,2,7,True
+bryan mbeumo,0.5244720958711003,Bryan Mbeumo,Brentford,FW,1960,9,6,3415,20,7,True
+enes unal,0.5242780694764307,Enes Ünal,Bournemouth,"FW,MF",328,2,2,331,2,0,True
+cody gakpo,0.5240106844142901,Cody Gakpo,Liverpool,"FW,MF",1649,8,5,1938,10,4,True
+kai havertz,0.5227966145792827,Kai Havertz,Arsenal,"MF,FW",2634,13,7,1874,9,3,True
+bukayo saka,0.5210881603211441,Bukayo Saka,Arsenal,FW,2919,16,9,1735,6,10,True
+matheus cunha,0.5196067054239961,Matheus Cunha,Wolves,"FW,MF",2440,12,7,2600,15,6,True
+leon bailey,0.5137912685028554,Leon Bailey,Aston Villa,"MF,FW",2068,10,9,1143,1,2,True
+cole palmer,0.5133298570460452,Cole Palmer,Chelsea,"FW,MF",2607,22,11,3195,15,8,True
+cole palmer,0.5133298570460452,Cole Palmer,Manchester City,MF,11,0,0,3195,15,8,True
+kevin de bruyne,0.5108554993110499,Kevin De Bruyne,Manchester City,MF,1221,4,10,1704,4,7,True
+bruno fernandes,0.5108554993110499,Bruno Fernandes,Manchester Utd,"MF,FW",3118,10,8,3024,8,10,True
+david brooks,0.5035631503338311,David Brooks,Bournemouth,"FW,MF",282,1,1,949,2,0,True
+james maddison,0.5030971960359509,James Maddison,Tottenham,MF,2135,4,9,1816,9,7,True
+harvey elliott,0.496820347658,Harvey Elliott,Liverpool,"MF,FW",1352,3,6,360,1,2,True
+jacob murphy,0.48998941013759145,Jacob Murphy,Newcastle Utd,"FW,DF",1189,3,7,2379,8,12,True
+eberechi eze,0.4879153125284247,Eberechi Eze,Crystal Palace,"MF,FW",2055,11,4,2600,8,8,True
+amad diallo,0.4823812833975045,Amad Diallo,Manchester Utd,"FW,MF",390,1,1,1901,8,6,True
+pablo sarabia,0.4770072291756527,Pablo Sarabia,Wolves,"MF,FW",1745,4,7,805,3,0,True
+luis sinisterra,0.47691406602859,Luis Sinisterra,Bournemouth,"FW,MF",699,2,2,230,1,0,True
+jeremy doku,0.47691406602859,Jeremy Doku,Manchester City,"FW,MF",1595,3,8,1513,3,6,True
+timo werner,0.46961717421030125,Timo Werner,Tottenham,FW,809,2,3,508,0,3,True
+raheem sterling,0.46726765410738247,Raheem Sterling,Chelsea,"FW,MF",1978,8,4,496,0,2,True
+gabriel jesus,0.4601566031218037,Gabriel Jesus,Arsenal,FW,1478,4,5,603,3,0,True
+kevin schade,0.4588876858572388,Kevin Schade,Brentford,"FW,MF",333,2,1,2301,0,2,True
+anthony gordon,0.4536939139111428,Anthony Gordon,Newcastle Utd,FW,2890,11,10,2444,6,5,True
+martin odegaard,0.4508411740168279,Martin Ødegaard,Arsenal,MF,3091,8,10,2328,3,8,True
+solly march,0.4506389330477189,Solly March,Brighton,"FW,DF",554,3,1,162,0,0,True
+nicolas jackson,0.4506389330477189,Nicolas Jackson,Chelsea,FW,2799,14,5,2238,10,5,True
+jean-philippe mateta,0.44897646743159175,Jean-Philippe Mateta,Crystal Palace,FW,2282,16,5,2654,14,2,True
+taiwo awoniyi,0.44897646743159175,Taiwo Awoniyi,Nott'ham Forest,FW,1042,6,3,400,1,0,True
+gabriel martinelli,0.44890126157185484,Gabriel Martinelli,Arsenal,FW,2019,6,4,2300,8,4,True
+noni madueke,0.44744902389243235,Noni Madueke,Chelsea,FW,1053,5,2,2046,7,3,True
+yoane wissa,0.4448234961265783,Yoane Wissa,Brentford,FW,2493,12,3,2927,19,0,True
+joao pedro,0.44455611106443754,João Pedro,Brighton,"FW,MF",2045,9,3,1953,10,0,True
+eddie nketiah,0.44436208466976795,Eddie Nketiah,Arsenal,FW,1082,5,2,1026,3,0,True
+harry wilson,0.42193573275573065,Harry Wilson,Fulham,FW,1620,4,6,1157,6,0,True
+anthony elanga,0.4158887455798719,Anthony Elanga,Nott'ham Forest,"FW,MF",2433,5,9,2507,6,11,True
+morgan rogers,0.4143002987335645,Morgan Rogers,Aston Villa,"MF,FW",638,3,1,3129,8,10,True
+alexander isak,0.40392250937150653,Alexander Isak,Newcastle Utd,FW,2255,21,2,2769,23,0,True
+maxwel cornet,0.40392250937150653,Maxwel Cornet,West Ham,"MF,FW",112,1,0,71,0,0,True
+leandro trossard,0.40392250937150653,Leandro Trossard,Arsenal,"FW,MF",1649,12,1,2550,8,7,True
+rodrigo muniz,0.3964315911585482,Rodrigo Muniz,Fulham,FW,1593,9,1,951,8,1,True
+ben brereton,0.3964315911585482,Ben Brereton,Sheffield Utd,"FW,MF",1105,6,1,448,0,0,True
+dominic solanke,0.3964315911585482,Dominic Solanke,Bournemouth,FW,3325,19,3,2206,9,3,True
+callum wilson,0.3964315911585482,Callum Wilson,Newcastle Utd,FW,991,9,1,357,0,0,True
+chris wood,0.3964315911585482,Chris Wood,Nott'ham Forest,FW,1812,14,1,2976,20,3,True
+carlos vinicius,0.3964315911585482,Carlos Vinícius,Fulham,FW,315,2,0,13,0,0,True
+christopher nkunku,0.3964315911585482,Christopher Nkunku,Chelsea,"FW,MF",443,3,0,911,3,0,True
+hwang hee-chan,0.3952389905153206,Hwang Hee-chan,Wolves,"FW,MF",2119,12,3,650,2,0,True
+julio enciso,0.39418295188050845,Julio Enciso,Brighton,"MF,FW",475,0,2,1164,2,3,True
+mohammed kudus,0.38653741617471393,Mohammed Kudus,West Ham,"FW,MF",2484,8,6,2601,5,3,True
+raul jimenez,0.3757156785201018,Raúl Jiménez,Fulham,FW,1395,7,0,2505,0,3,True
+ross barkley,0.37503789945821814,Ross Barkley,Luton Town,MF,2618,5,4,569,3,1,True
+luis diaz,0.37172075216810263,Luis Díaz,Liverpool,FW,2629,8,5,2410,0,5,True
+kaoru mitoma,0.37163802451018263,Kaoru Mitoma,Brighton,FW,1486,3,4,2608,10,4,True
+bobby de cordova-reid,0.3714482846076126,Bobby De Cordova-Reid,Fulham,FW,1423,6,2,742,1,2,True
+odsonne edouard,0.36339595882962467,Odsonne Édouard,Crystal Palace,"FW,MF",1555,7,0,142,0,0,True
+evan ferguson,0.36339595882962467,Evan Ferguson,Brighton,FW,1367,6,0,387,1,0,True
+brennan johnson,0.36185792723973126,Brennan Johnson,Nott'ham Forest,"FW,MF",237,0,0,2179,0,3,True
+brennan johnson,0.36185792723973126,Brennan Johnson,Tottenham,FW,2085,5,10,2179,0,3,True
+matheus franca,0.3610056894988947,Matheus França,Crystal Palace,"MF,FW",232,0,1,52,1,0,True
+alejandro garnacho,0.35579749186894416,Alejandro Garnacho,Manchester Utd,FW,2565,7,4,2195,6,2,True
+rodri,0.34908536671940354,Rodri,Manchester City,MF,2931,8,9,73,0,0,True
+justin kluivert,0.3419524123482329,Justin Kluivert,Bournemouth,"MF,FW",1916,7,1,2356,0,0,True
+james mcatee,0.3368705121027484,James Mcatee,Sheffield Utd,"MF,FW",1822,3,3,342,3,0,True
+james mcatee,0.3368705121027484,James Mcatee,Manchester City,MF,1,0,0,342,3,0,True
+marcus tavernier,0.3347159854745128,Marcus Tavernier,Bournemouth,FW,2118,3,4,1938,3,5,True
+beto,0.32897023138629417,Beto,Everton,FW,951,3,0,1528,8,0,True
+dominic calvert-lewin,0.32897023138629417,Dominic Calvert-Lewin,Everton,FW,2171,7,2,1613,3,1,True
+danny welbeck,0.32897023138629417,Danny Welbeck,Brighton,"FW,MF",1693,5,1,2122,10,0,True
+michail antonio,0.32687741272979715,Michail Antonio,West Ham,FW,1695,6,2,844,1,1,True
+morgan gibbs-white,0.3267720574564111,Morgan Gibbs-White,Nott'ham Forest,"MF,FW",3156,5,10,2822,7,8,True
+rasmus hojlund,0.32392268936505914,Rasmus Højlund,Manchester Utd,FW,2158,10,2,2013,4,0,True
+antoine semenyo,0.32204613071882293,Antoine Semenyo,Bournemouth,FW,2105,8,2,3209,0,5,True
+marcus rashford,0.32204613071882293,Marcus Rashford,Manchester Utd,FW,2271,7,2,1426,6,3,True
+jean-ricner bellegarde,0.31653219951768014,Jean-Ricner Bellegarde,Wolves,"MF,FW",958,2,1,1681,2,7,True
+jordan ayew,0.30964140508933724,Jordan Ayew,Crystal Palace,"FW,MF",2543,4,7,1664,5,0,True
+callum hudson-odoi,0.30438178926895365,Callum Hudson-Odoi,Nott'ham Forest,"FW,MF",1854,8,1,2201,5,2,True
+emile smith rowe,0.30015872603638744,Emile Smith Rowe,Arsenal,MF,353,0,1,2061,6,3,True
+bernardo silva,0.29540675294319074,Bernardo Silva,Manchester City,"MF,FW",2578,6,9,2667,4,0,True
+pedro neto,0.29540182417493027,Pedro Neto,Wolves,"FW,MF",1516,2,9,2268,4,0,True
+declan rice,0.29355816572652627,Declan Rice,Arsenal,MF,3225,7,8,2833,4,7,True
+oscar bobb,0.2891299045652398,Oscar Bobb,Manchester City,"FW,MF",302,1,1,14,0,0,True
+mykhailo mudryk,0.2835159044763959,Mykhailo Mudryk,Chelsea,FW,1576,5,2,145,0,0,True
+pervis estupinan,0.2822774022436772,Pervis Estupiñán,Brighton,DF,1243,2,3,2403,1,1,True
+dejan kulusevski,0.28041416568394606,Dejan Kulusevski,Tottenham,"FW,MF",2762,8,3,2391,7,4,True
+bruno guimaraes,0.2803245406503778,Bruno Guimarães,Newcastle Utd,MF,3263,7,8,3282,5,0,True
+alexis mac allister,0.2803245406503778,Alexis Mac Allister,Liverpool,MF,2599,5,5,2607,5,5,True
+alex iwobi,0.2684343537456671,Alex Iwobi,Everton,MF,140,0,0,2994,9,0,True
+alex iwobi,0.2684343537456671,Alex Iwobi,Fulham,"FW,MF",2192,5,2,2994,9,0,True
+jack grealish,0.2683510921887578,Jack Grealish,Manchester City,"FW,MF",1009,3,1,715,1,0,True
+trent alexander-arnold,0.26616997700873346,Trent Alexander-Arnold,Liverpool,DF,2155,3,4,2377,3,6,True
+james ward-prowse,0.25712047467303245,James Ward-Prowse,West Ham,MF,3001,7,7,1440,1,2,True
+armando broja,0.2560406946384226,Armando Broja,Chelsea,FW,454,1,0,331,0,0,True
+armando broja,0.2560406946384226,Armando Broja,Fulham,FW,88,0,1,331,0,0,True
+dwight mcneil,0.25016801210810613,Dwight McNeil,Everton,"MF,FW",2892,3,6,1371,4,0,True
+marcos senesi,0.24884353374365353,Marcos Senesi,Bournemouth,DF,2242,4,5,1108,0,0,True
+conor bradley,0.24791403655021943,Conor Bradley,Liverpool,DF,753,1,3,748,0,2,True
+john mcginn,0.24789080058458232,John McGinn,Aston Villa,"MF,FW",2999,6,4,2230,1,4,True
+scott mctominay,0.24565051071212277,Scott McTominay,Manchester Utd,"MF,FW",1901,7,1,17,0,0,True
+jack hinshelwood,0.24028833018818296,Jack Hinshelwood,Brighton,DF,869,3,0,1846,5,2,True
+simon adingra,0.23872641004465153,Simon Adingra,Brighton,FW,2222,6,1,1091,2,2,True
+reece james,0.23829471849304498,Reece James,Chelsea,DF,419,0,2,1064,1,0,True
+dominik szoboszlai,0.23390062482283291,Dominik Szoboszlai,Liverpool,MF,2104,3,2,2496,6,6,True
+andreas pereira,0.22769075610489783,Andreas Pereira,Fulham,MF,2613,3,7,2022,2,4,True
+keane lewis-potter,0.22667776043212778,Keane Lewis-Potter,Brentford,"FW,DF",1441,3,1,3101,1,3,True
+alex iwobi,0.2165244034180992,Alex Iwobi,Everton,MF,140,0,0,2994,9,0,True
+alex iwobi,0.2165244034180992,Alex Iwobi,Fulham,"FW,MF",2192,5,2,2994,9,0,True
+kostas tsimikas,0.21649974748124207,Kostas Tsimikas,Liverpool,DF,679,0,3,833,0,0,True
+william osula,0.2163311789689419,William Osula,Sheffield Utd,FW,786,0,0,124,1,0,True
+pedro porro,0.21592717671558292,Pedro Porro,Tottenham,DF,3089,3,7,2608,2,0,True
+dango ouattara,0.2154525156044742,Dango Ouattara,Bournemouth,"FW,DF",1229,1,2,2006,7,0,True
+sergio reguilon,0.2144239327874814,Sergio Reguilón,Brentford,DF,1118,0,4,195,0,0,True
+sergio reguilon,0.2144239327874814,Sergio Reguilón,Manchester Utd,DF,412,0,0,195,0,0,True
+danny ings,0.21278198873348775,Danny Ings,West Ham,FW,404,1,0,270,1,2,True
+tom cairney,0.2126827111653986,Tom Cairney,Fulham,MF,1488,1,4,615,2,0,True
+antony,0.21213073555900705,Antony,Manchester Utd,FW,1324,1,1,135,0,0,True
+cameron archer,0.210329351925925,Cameron Archer,Aston Villa,MF,6,0,0,1432,2,0,True
+cameron archer,0.210329351925925,Cameron Archer,Sheffield Utd,"FW,MF",1832,4,1,1432,2,0,True
+armando broja,0.20762044809419689,Armando Broja,Fulham,FW,88,0,1,331,0,0,True
+armando broja,0.20762044809419689,Armando Broja,Chelsea,FW,454,1,0,331,0,0,True
+tariq lamptey,0.2069618693598269,Tariq Lamptey,Brighton,"DF,FW",914,0,3,860,2,2,True
+jack harrison,0.20375477526712196,Jack Harrison,Everton,"MF,FW",2214,3,3,2083,1,0,True
+youssef chermiti,0.20214935972036896,Youssef Chermiti,Everton,FW,208,0,0,42,0,0,True
+joelinton,0.20158202591795746,Joelinton,Newcastle Utd,"MF,FW",1279,2,1,2404,4,3,True
+reiss nelson,0.20113440513656913,Reiss Nelson,Arsenal,FW,268,0,0,488,1,1,True
+tomas soucek,0.19790396744337643,Tomáš Souček,West Ham,MF,2870,7,2,2570,9,0,True
+wilson odobert,0.1964665833284378,Wilson Odobert,Burnley,"MF,FW",2098,3,2,849,1,0,True
+ryan gravenberch,0.19569688277669808,Ryan Gravenberch,Liverpool,MF,1121,1,0,3168,0,4,True
+willian,0.19546728150225656,Willian,Fulham,FW,2053,4,2,253,0,0,True
+ben chilwell,0.19495538149595118,Ben Chilwell,Chelsea,DF,756,0,1,254,1,0,True
+joe willock,0.19375864251124386,Joe Willock,Newcastle Utd,MF,419,1,0,1074,0,2,True
+kieran trippier,0.19351162442513944,Kieran Trippier,Newcastle Utd,DF,2236,1,10,1308,0,3,True
+malo gusto,0.1932321833621277,Malo Gusto,Chelsea,DF,1751,0,6,1858,0,0,True
+youri tielemans,0.1920289450081514,Youri Tielemans,Aston Villa,"MF,FW",1622,2,6,3032,3,7,True
+enzo fernandez,0.19101837733316465,Enzo Fernández,Chelsea,MF,2209,3,2,2946,6,7,True
+mateo kovacic,0.19101837733316465,Mateo Kovačić,Manchester City,MF,1551,1,0,2202,6,2,True
+matty cash,0.18972033294871843,Matty Cash,Aston Villa,DF,2142,2,2,2077,1,1,True
+elliot anderson,0.18903259190165483,Elliot Anderson,Newcastle Utd,"MF,FW",1027,0,2,2742,2,6,True
+lucas paqueta,0.18646282800383532,Lucas Paquetá,West Ham,"FW,MF",2622,4,6,2384,4,0,True
+chiedozie ogbene,0.18453318825007875,Chiedozie Ogbene,Luton Town,"MF,DF",1995,4,1,240,0,0,True
+curtis jones,0.18382387716226758,Curtis Jones,Liverpool,MF,1167,1,1,1710,3,3,True
+ian maatsen,0.18191529579692786,Ian Maatsen,Chelsea,"FW,MF",209,0,0,1128,1,2,True
+jacob ramsey,0.17952439994043287,Jacob Ramsey,Aston Villa,"FW,MF",853,1,1,1628,1,3,True
+josko gvardiol,0.178298164892466,Joško Gvardiol,Manchester City,DF,2328,4,1,3279,5,0,True
+abdoulaye doucoure,0.17792843726345814,Abdoulaye Doucouré,Everton,"FW,MF",2629,7,1,2577,3,2,True
+facundo buonanotte,0.17792843726345814,Facundo Buonanotte,Brighton,"FW,MF",1364,3,1,1513,5,2,True
+kalvin phillips,0.1758785667951109,Kalvin Phillips,West Ham,MF,309,0,0,1239,0,0,True
+kalvin phillips,0.1758785667951109,Kalvin Phillips,Manchester City,MF,93,0,0,1239,0,0,True
+jakub kiwior,0.17549631376795782,Jakub Kiwior,Arsenal,DF,946,1,3,1117,1,0,True
+michael keane,0.1725447107061445,Michael Keane,Everton,DF,439,1,0,1046,3,0,True
+lewis hall,0.16982164809249126,Lewis Hall,Newcastle Utd,DF,781,1,0,2192,0,4,True
+lewis miley,0.16923845416887853,Lewis Miley,Newcastle Utd,MF,1202,1,3,304,1,0,True
+yehor yarmoliuk,0.16883771561857616,Yehor Yarmoliuk,Brentford,MF,688,0,0,1442,0,0,True
+alex moreno,0.16329803879442914,Álex Moreno,Aston Villa,DF,1031,2,0,959,0,1,True
+miguel almiron,0.16294896730762934,Miguel Almirón,Newcastle Utd,FW,1937,3,1,151,0,0,True
+alex scott,0.1627914100818656,Alex Scott,Bournemouth,MF,1014,1,1,751,0,0,True
+ben johnson,0.15524823880147998,Ben Johnson,West Ham,"DF,FW",544,0,0,1348,1,2,True
+ryan christie,0.15455647502393144,Ryan Christie,Bournemouth,MF,2907,0,5,2131,2,3,True
+ethan nwaneri,0.1532338925910471,Ethan Nwaneri,Arsenal,FW,14,0,0,889,4,0,True
+mikey moore,0.1532338925910471,Mikey Moore,Tottenham,MF,4,0,0,361,0,1,True
+cameron archer,0.1502021938739517,Cameron Archer,Aston Villa,MF,6,0,0,1432,2,0,True
+cameron archer,0.1502021938739517,Cameron Archer,Sheffield Utd,"FW,MF",1832,4,1,1432,2,0,True
+sean longstaff,0.14513450292790592,Sean Longstaff,Newcastle Utd,MF,2747,6,2,786,0,0,True
+sandro tonali,0.1425496078129675,Sandro Tonali,Newcastle Utd,MF,438,1,0,2631,4,2,True
+rico lewis,0.1425496078129675,Rico Lewis,Manchester City,"DF,MF",809,2,0,1891,1,2,True
+jadon sancho,0.14116161394227336,Jadon Sancho,Manchester Utd,"FW,MF",79,0,0,1764,3,0,True
+mario lemina,0.14068640689251366,Mario Lemina,Wolves,MF,2968,4,1,1363,1,3,True
+takehiro tomiyasu,0.13713095734590222,Takehiro Tomiyasu,Arsenal,DF,1149,2,1,6,0,0,True
+rayan ait-nouri,0.13682450870199447,Rayan Aït-Nouri,Wolves,"DF,MF",2329,2,1,3127,4,7,True
+matheus nunes,0.13624905391990982,Matheus Nunes,Wolves,MF,179,0,0,1673,1,0,True
+matheus nunes,0.13624905391990982,Matheus Nunes,Manchester City,MF,661,0,2,1673,1,0,True
+rodrigo bentancur,0.13589905671517014,Rodrigo Bentancur,Tottenham,MF,1005,1,1,1653,2,0,True
+brennan johnson,0.13280212803996555,Brennan Johnson,Tottenham,FW,2085,5,10,2179,0,3,True
+brennan johnson,0.13280212803996555,Brennan Johnson,Nott'ham Forest,"FW,MF",237,0,0,2179,0,3,True
+antonee robinson,0.1328006505135138,Antonee Robinson,Fulham,DF,3265,0,6,3167,0,10,True
+mikkel damsgaard,0.13083199761459008,Mikkel Damsgaard,Brentford,MF,842,0,2,2926,2,10,True
+matheus nunes,0.130004878083605,Matheus Nunes,Wolves,MF,179,0,0,1673,1,0,True
+matheus nunes,0.130004878083605,Matheus Nunes,Manchester City,MF,661,0,2,1673,1,0,True
+mason mount,0.1290256317809934,Mason Mount,Manchester Utd,"MF,FW",516,1,0,621,1,0,True
+casemiro,0.12776687349782687,Casemiro,Manchester Utd,"MF,DF",1982,1,2,1497,1,0,True
+cole palmer,0.12695033328378388,Cole Palmer,Manchester City,MF,11,0,0,3195,15,8,True
+cole palmer,0.12695033328378388,Cole Palmer,Chelsea,"FW,MF",2607,22,11,3195,15,8,True
+jarell quansah,0.12574287009268964,Jarell Quansah,Liverpool,DF,1190,2,0,488,0,0,True
+cristian romero,0.12574287009268964,Cristian Romero,Tottenham,DF,2790,5,0,1420,1,0,True
+nelson semedo,0.12434891766307056,Nélson Semedo,Wolves,"DF,MF",3084,0,1,2891,0,4,True
+tyler adams,0.12313758255798608,Tyler Adams,Bournemouth,MF,121,0,0,1965,0,3,True
+jeffrey schlupp,0.12212472038391564,Jeffrey Schlupp,Crystal Palace,"FW,MF",1352,2,2,95,0,0,True
+joe gomez,0.12111722784605702,Joe Gomez,Liverpool,DF,1786,0,1,519,0,0,True
+rico henry,0.12104453213207374,Rico Henry,Brentford,DF,401,0,1,94,0,0,True
+kenny tete,0.12094150957305341,Kenny Tete,Fulham,DF,867,1,0,1779,0,2,True
+tyrone mings,0.12091891035591353,Tyrone Mings,Aston Villa,DF,30,0,0,1121,0,0,True
+ola aina,0.1197054011195448,Ola Aina,Nott'ham Forest,DF,1692,1,1,3003,2,1,True
+tommy doyle,0.11956144163722286,Tommy Doyle,Wolves,MF,1222,0,0,475,0,1,True
+milos kerkez,0.11878139504495454,Milos Kerkez,Bournemouth,DF,1970,0,1,3342,2,5,True
+neco williams,0.11874728961297291,Neco Williams,Nott'ham Forest,DF,1637,0,1,2590,1,3,True
+nicolas dominguez,0.11850301477685467,Nicolás Domínguez,Nott'ham Forest,"MF,FW",1495,2,2,1970,0,1,True
+carlos baleba,0.1174962635986056,Carlos Baleba,Brighton,MF,1325,0,0,2670,3,1,True
+christian eriksen,0.11721571544934925,Christian Eriksen,Manchester Utd,MF,1141,1,2,1059,1,2,True
+sergio reguilon,0.11479307859559237,Sergio Reguilón,Brentford,DF,1118,0,4,195,0,0,True
+sergio reguilon,0.11479307859559237,Sergio Reguilón,Manchester Utd,DF,412,0,0,195,0,0,True
+virgil van dijk,0.11364491363309268,Virgil van Dijk,Liverpool,DF,3177,2,2,3330,3,0,True
+mathias jensen,0.11319479084461607,Mathias Jensen,Brentford,MF,2204,3,3,852,0,2,True
+romeo lavia,0.11303946301923051,Roméo Lavia,Chelsea,MF,33,0,0,801,0,1,True
+kalvin phillips,0.11286051966537018,Kalvin Phillips,West Ham,MF,309,0,0,1239,0,0,True
+kalvin phillips,0.11286051966537018,Kalvin Phillips,Manchester City,MF,93,0,0,1239,0,0,True
+ryan yates,0.11063522606339518,Ryan Yates,Nott'ham Forest,MF,1992,1,1,1904,2,0,True
+lewis dunk,0.10898837950873363,Lewis Dunk,Brighton,DF,2869,3,1,2083,0,0,True
+dane scarlett,0.10890657590709599,Dane Scarlett,Tottenham,FW,22,0,0,31,0,0,True
+ben white,0.1070096957458115,Ben White,Arsenal,DF,2988,4,4,1198,0,2,True
+joel veltman,0.10619588567219378,Joël Veltman,Brighton,DF,1588,1,1,1699,0,0,True
+frank onyeka,0.10589861895968578,Frank Onyeka,Brentford,MF,1161,1,2,23,0,0,True
+jakub moder,0.10540928702467195,Jakub Moder,Brighton,"MF,DF",618,0,0,9,0,0,True
+lucas digne,0.10341154233324357,Lucas Digne,Aston Villa,DF,2410,1,3,2358,0,4,True
+gabriel magalhaes,0.10222463776280866,Gabriel Magalhães,Arsenal,DF,3044,4,0,2365,3,1,True
+oleksandr zinchenko,0.10220246045216178,Oleksandr Zinchenko,Arsenal,DF,1722,1,2,522,0,0,True
+micky van de ven,0.10206639092044151,Micky van de Ven,Tottenham,DF,2339,3,0,1018,0,2,True
+ben mee,0.10185099092767655,Ben Mee,Brentford,DF,1272,2,0,181,0,0,True
+destiny udogie,0.10018010206120966,Destiny Udogie,Tottenham,DF,2391,2,3,1931,0,0,True
+kobbie mainoo,0.10014748292821456,Kobbie Mainoo,Manchester Utd,MF,1924,3,1,1656,0,0,True
+aaron wan-bissaka,0.09934502790672724,Aaron Wan-Bissaka,Manchester Utd,DF,1780,0,2,3154,2,5,True
+fabian schar,0.09848643017540279,Fabian Schär,Newcastle Utd,DF,3054,4,1,2937,4,0,True
+max aarons,0.09797153061322303,Max Aarons,Bournemouth,DF,1237,0,1,85,0,0,True
+lloyd kelly,0.09702005026426351,Lloyd Kelly,Bournemouth,DF,1559,0,1,301,0,1,True
+daniel munoz,0.09670586382953188,Daniel Muñoz,Crystal Palace,"DF,MF",1439,0,4,3233,4,5,True
+timothy castagne,0.09631484369567168,Timothy Castagne,Fulham,DF,2634,1,3,1643,0,1,True
+tyrick mitchell,0.09582507565901595,Tyrick Mitchell,Crystal Palace,"DF,MF",3204,2,3,3102,0,5,True
+philip billing,0.09511832850827943,Philip Billing,Bournemouth,MF,1398,2,2,176,0,0,True
+will hughes,0.09470105200637437,Will Hughes,Crystal Palace,MF,1891,0,1,2118,0,3,True
+matz sels,0.09457353308574198,Matz Sels,Nott'ham Forest,GK,1440,0,0,3420,0,0,True
+alphonse areola,0.09457353308574198,Alphonse Areola,West Ham,GK,2699,0,0,2259,0,0,True
+dean henderson,0.09457353308574198,Dean Henderson,Crystal Palace,GK,1620,0,0,3420,0,0,True
+daniel jebbison,0.09457353308574198,Daniel Jebbison,Sheffield Utd,FW,21,0,0,105,1,0,True
+mark travers,0.09457353308574198,Mark Travers,Bournemouth,GK,360,0,0,450,0,0,True
+vladimir coufal,0.09450588589249999,Vladimír Coufal,West Ham,DF,3132,0,7,1061,0,0,True
+jurrien timber,0.09446421388606388,Jurriën Timber,Arsenal,DF,71,0,0,2422,1,3,True
+emerson,0.09413207534964857,Emerson,Tottenham,DF,1161,1,0,2126,2,0,True
+kyle walker,0.09407027723481852,Kyle Walker,Manchester City,DF,2767,0,4,967,0,0,True
+ruben dias,0.09375243005081285,Rúben Dias,Manchester City,DF,2559,0,0,2269,0,0,True
+arijanet muric,0.09350464945102793,Arijanet Muric,Burnley,GK,900,0,0,1620,0,0,True
+ashley young,0.09331653706317322,Ashley Young,Everton,"DF,MF",2280,0,0,1869,1,3,True
+toti gomes,0.09314724401006934,Toti Gomes,Wolves,DF,2772,1,3,2615,0,0,True
+thomas partey,0.09274602674314449,Thomas Partey,Arsenal,"MF,DF",788,0,0,2799,4,0,True
+tosin adarabioyo,0.09237756713943482,Tosin Adarabioyo,Fulham,DF,1617,2,0,1404,1,1,True
+yves bissouma,0.09180834369669831,Yves Bissouma,Tottenham,MF,2068,0,0,1405,2,0,True
+jefferson lerma,0.09160906067454702,Jefferson Lerma,Crystal Palace,"MF,DF",2400,1,1,2277,0,1,True
+lewis cook,0.08965573313587151,Lewis Cook,Bournemouth,MF,2786,0,3,2978,1,3,True
+manuel akanji,0.0896144136781663,Manuel Akanji,Manchester City,"DF,MF",2511,2,0,2014,0,0,True
+mason holgate,0.08939292203649583,Mason Holgate,Sheffield Utd,DF,710,0,0,5,0,0,True
+john stones,0.08935421418735479,John Stones,Manchester City,"DF,MF",1064,1,0,545,2,0,True
+diogo dalot,0.08885677434316788,Diogo Dalot,Manchester Utd,DF,3174,2,3,2813,0,3,True
+william saliba,0.08781935920141251,William Saliba,Arsenal,DF,3420,2,1,3041,2,0,True
+trevoh chalobah,0.08585215826280762,Trevoh Chalobah,Chelsea,DF,952,1,0,1974,3,1,True
+billy gilmour,0.08560420019858454,Billy Gilmour,Brighton,MF,2120,0,1,97,0,0,True
+pau torres,0.08547307894450704,Pau Torres,Aston Villa,DF,2464,2,0,2020,0,0,True
+joachim andersen,0.08532489811397431,Joachim Andersen,Crystal Palace,DF,3415,2,3,2663,0,0,True
+nick pope,0.08515490164436104,Nick Pope,Newcastle Utd,GK,1345,0,0,2520,0,0,True
+jan paul van hecke,0.08510284839062826,Jan Paul van Hecke,Brighton,DF,2369,0,0,2959,1,0,True
+murillo,0.08509456611416129,Murillo,Nott'ham Forest,DF,2789,0,2,3191,2,0,True
+lesley ugochukwu,0.0846374664855715,Lesley Ugochukwu,Chelsea,MF,301,0,0,1664,1,0,True
+danilo,0.08454210337800115,Danilo,Nott'ham Forest,MF,1792,2,2,275,0,0,True
+levi colwill,0.08439213903535824,Levi Colwill,Chelsea,DF,1797,1,1,3149,2,1,True
+charlie taylor,0.08436686573572075,Charlie Taylor,Burnley,DF,2331,1,1,353,0,0,True
+nathan collins,0.08410455623168892,Nathan Collins,Brentford,DF,2652,1,1,3420,2,3,True
+illia zabarnyi,0.08248535099795505,Illia Zabarnyi,Bournemouth,DF,3330,1,0,3113,0,0,True
+adam smith,0.08180737679516788,Adam Smith,Bournemouth,DF,2150,0,2,1596,0,0,True
+matt doherty,0.08177525874676751,Matt Doherty,Wolves,"DF,MF",1150,1,0,2113,2,1,True
+aaron cresswell,0.08120812999595814,Aaron Cresswell,West Ham,"DF,FW",436,0,0,823,0,0,True
+kaelan casey,0.08092896754861231,Kaelan Casey,West Ham,DF,1,0,0,1,0,0,True
+james mcatee,0.08092896754861231,James Mcatee,Sheffield Utd,"MF,FW",1822,3,3,342,3,0,True
+james mcatee,0.08092896754861231,James Mcatee,Manchester City,MF,1,0,0,342,3,0,True
+nathan patterson,0.08066627843811233,Nathan Patterson,Everton,DF,1005,0,2,345,0,0,True
+issa diop,0.08035958273389683,Issa Diop,Fulham,DF,1424,0,0,1335,0,0,True
+harry toffolo,0.08002282184446645,Harry Toffolo,Nott'ham Forest,DF,1459,1,3,135,0,0,True
+seamus coleman,0.07990437124230415,Séamus Coleman,Everton,DF,665,0,0,215,0,0,True
+marc cucurella,0.07838367373604808,Marc Cucurella,Chelsea,DF,1782,0,2,2989,5,1,True
+ethan pinnock,0.07833454000992539,Ethan Pinnock,Brentford,DF,2521,2,0,1913,2,0,True
+axel disasi,0.07766624703484763,Axel Disasi,Chelsea,DF,2579,2,0,853,1,0,True
+christian norgaard,0.07732652389329081,Christian Nørgaard,Brentford,MF,2505,2,1,2829,5,0,True
+luke shaw,0.07729318573040314,Luke Shaw,Manchester Utd,DF,959,0,0,348,0,0,True
+kristoffer ajer,0.07691165128035896,Kristoffer Ajer,Brentford,DF,1832,2,1,1441,0,0,True
+wataru endo,0.07652229961322711,Wataru Endo,Liverpool,MF,1722,1,0,261,0,0,True
+dara o'shea,0.07597814790375171,Dara O'Shea,Burnley,DF,2892,3,4,3123,0,0,True
+jorginho,0.07577149608224538,Jorginho,Arsenal,MF,921,0,2,702,0,0,True
+harry maguire,0.07562595086176199,Harry Maguire,Manchester Utd,DF,1653,2,2,1757,1,0,True
+divin mubama,0.07520175707346188,Divin Mubama,West Ham,FW,80,0,0,27,0,0,True
+nathan ake,0.07516807974987826,Nathan Aké,Manchester City,DF,2042,2,2,682,0,0,True
+moises caicedo,0.07444507123866624,Moisés Caicedo,Chelsea,MF,2866,1,3,3356,1,2,True
+jayden danns,0.07404719140292991,Jayden Danns,Liverpool,FW,9,0,0,10,0,0,True
+diego carlos,0.0735856466994659,Diego Carlos,Aston Villa,DF,1816,0,0,828,0,0,True
+lisandro martinez,0.0730138220427157,Lisandro Martínez,Manchester Utd,DF,646,0,1,1754,2,1,True
+sven botman,0.07214501088489861,Sven Botman,Newcastle Utd,DF,1377,2,2,414,0,0,True
+calvin bassey,0.07198422590246747,Calvin Bassey,Fulham,DF,2303,1,0,3074,1,0,True
+james hill,0.07184384157279258,James Hill,Bournemouth,DF,76,0,0,448,0,0,True
+joao gomes,0.07086191000506412,João Gomes,Wolves,MF,2649,2,1,2987,3,0,True
+sander berge,0.07086041925835508,Sander Berge,Burnley,MF,3005,1,2,2227,0,0,True
+vitaly janelt,0.07064755526670308,Vitaly Janelt,Brentford,"MF,DF",3054,1,3,2266,1,3,True
+harrison reed,0.07059531783544065,Harrison Reed,Fulham,MF,1325,0,2,92,0,0,True
+benoit badiashile,0.06961626493592431,Benoît Badiashile,Chelsea,DF,1338,0,1,333,0,0,True
+craig dawson,0.06912411477721478,Craig Dawson,Wolves,DF,2209,1,1,969,0,0,True
+ibrahima konate,0.06846868069266836,Ibrahima Konaté,Liverpool,DF,1574,0,0,2565,1,2,True
+dan burn,0.06809715055047127,Dan Burn,Newcastle Utd,DF,2726,2,2,3330,1,1,True
+radu dragusin,0.06722277604799946,Radu Drăgușin,Tottenham,DF,429,0,0,1251,0,0,True
+marc guehi,0.06718885825630168,Marc Guéhi,Crystal Palace,DF,2021,0,1,3059,3,2,True
+boubacar kamara,0.06648771166113138,Boubacar Kamara,Aston Villa,MF,1652,0,1,1725,1,0,True
+chris richards,0.06547114586911405,Chris Richards,Crystal Palace,"DF,MF",2094,1,1,1924,1,0,True
+sam johnstone,0.06534374847232552,Sam Johnstone,Crystal Palace,GK,1796,0,0,630,0,0,True
+lukasz fabianski,0.06534374847232552,Łukasz Fabiański,West Ham,GK,721,0,0,1161,0,0,True
+martin dubravka,0.06467291528277343,Martin Dúbravka,Newcastle Utd,GK,1985,0,0,900,0,0,True
+jarrad branthwaite,0.06427615421031257,Jarrad Branthwaite,Everton,DF,3116,3,0,2510,0,1,True
+edson alvarez,0.06408495899648975,Edson Álvarez,West Ham,MF,2377,1,1,1781,0,1,True
+jonny evans,0.06405531755514422,Jonny Evans,Manchester Utd,DF,1392,0,1,314,0,0,True
+amadou onana,0.06323767341976905,Amadou Onana,Everton,MF,2091,2,0,1624,3,0,True
+james garner,0.06276406603711238,James Garner,Everton,MF,3004,1,2,1594,0,1,True
+ezri konsa,0.06264603551876688,Ezri Konsa,Aston Villa,DF,3069,1,0,2937,2,0,True
+santiago bueno,0.06264443508109727,Santiago Bueno,Wolves,DF,822,0,0,1682,0,0,True
+adam webster,0.06200522794812456,Adam Webster,Brighton,DF,1144,0,0,888,0,0,True
+cheick doucoure,0.061969322115886474,Cheick Doucouré,Crystal Palace,MF,919,0,0,445,0,0,True
+victor lindelof,0.061743409789228,Victor Lindelöf,Manchester Utd,DF,1328,1,1,697,0,0,True
+adam wharton,0.06152416621312651,Adam Wharton,Crystal Palace,MF,1297,0,3,1326,0,2,True
+joel ward,0.0603612099447576,Joel Ward,Crystal Palace,DF,1980,0,1,72,0,0,True
+james tarkowski,0.0603612099447576,James Tarkowski,Everton,DF,3419,1,1,2924,1,0,True
+konstantinos mavropanos,0.0603612099447576,Konstantinos Mavropanos,West Ham,DF,1500,1,0,2037,0,0,True
+matt targett,0.06026844664053028,Matt Targett,Newcastle Utd,DF,78,0,0,20,0,0,True
+caoimhin kelleher,0.0595484680763872,Caoimhín Kelleher,Liverpool,GK,900,0,0,900,0,0,True
+james milner,0.05889930271968581,James Milner,Brighton,"DF,MF",773,0,2,173,0,0,True
+adam lallana,0.058751274760124234,Adam Lallana,Brighton,"MF,FW",850,0,1,356,0,2,True
+tim iroegbunam,0.058720301401901716,Tim Iroegbunam,Aston Villa,MF,164,0,0,564,0,0,True
+ben godfrey,0.057692147322788885,Ben Godfrey,Everton,DF,1120,0,0,159,0,0,True
+aaron ramsdale,0.057500390491797226,Aaron Ramsdale,Arsenal,GK,540,0,0,2700,0,0,True
+neto,0.057500390491797226,Neto,Bournemouth,GK,2880,0,0,180,0,0,True
+jose sa,0.057500390491797226,José Sá,Wolves,GK,3037,0,1,2609,0,0,True
+sasa lukic,0.05701577437670994,Saša Lukić,Fulham,MF,1122,1,0,2355,0,2,True
+david raya,0.056829557302245134,David Raya,Arsenal,GK,2880,0,0,3420,0,0,True
+robin olsen,0.05663562473721876,Robin Olsen,Aston Villa,GK,405,0,0,225,0,0,True
+andre onana,0.05661733617174925,André Onana,Manchester Utd,GK,3420,0,0,3060,0,0,True
+oliver skipp,0.05557973457991898,Oliver Skipp,Tottenham,"MF,DF",707,0,0,1120,0,0,True
+mark flekken,0.05445995510658517,Mark Flekken,Brentford,GK,3285,0,1,3276,0,2,True
+bernd leno,0.05378912191703308,Bernd Leno,Fulham,GK,3420,0,0,3420,0,1,True
+stefan ortega,0.053584014503423365,Stefan Ortega,Manchester City,GK,635,0,0,1099,0,0,True
+robert sanchez,0.053584014503423365,Robert Sánchez,Chelsea,GK,1433,0,0,2880,0,0,True
+mads roerslev,0.053320371463018594,Mads Roerslev,Brentford,DF,1985,1,2,1096,0,0,True
+ben davies,0.0532502435387043,Ben Davies,Tottenham,DF,1090,1,0,1330,0,0,True
+jordan pickford,0.05305014896916655,Jordan Pickford,Everton,GK,3420,0,0,3420,0,0,True
+nathaniel clyne,0.0514550136879726,Nathaniel Clyne,Crystal Palace,DF,1338,0,0,481,0,0,True
+emiliano martinez,0.05054357911821131,Emiliano Martínez,Aston Villa,GK,3015,0,0,3195,0,0,True
+boubacar traore,0.04913345674698167,Boubacar Traoré,Wolves,MF,819,0,0,1,0,0,True
+emil krafth,0.04463523894417646,Emil Krafth,Newcastle Utd,DF,913,0,0,334,0,0,True
+jason steele,0.044013654328432676,Jason Steele,Brighton,GK,1530,0,0,180,0,0,True
+ederson,0.044013654328432676,Ederson,Manchester City,GK,2785,0,0,2321,0,0,True
+bart verbruggen,0.044013654328432676,Bart Verbruggen,Brighton,GK,1890,0,0,3240,0,0,True
+luke thomas,0.04169580168209981,Luke Thomas,Sheffield Utd,DF,917,0,0,1112,0,0,True
+guglielmo vicario,0.04097321894322062,Guglielmo Vicario,Tottenham,GK,3420,0,0,2160,0,0,True
+ibrahim sangare,0.03662069573489029,Ibrahim Sangaré,Nott'ham Forest,MF,1035,0,0,590,0,0,True
+orel mangala,0.03404327704927538,Orel Mangala,Nott'ham Forest,MF,1563,1,0,1255,1,0,True
