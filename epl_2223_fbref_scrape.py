@@ -1,26 +1,21 @@
-# epl_2223_fbref_scrape.py
-# pip install pandas requests lxml numpy beautifulsoup4
-
 import time, re, numpy as np, pandas as pd, requests
 from bs4 import BeautifulSoup, Comment
 from io import StringIO
 
 BASE = "https://fbref.com/en/comps/9/2022-2023/"
 TABLE_PATHS = {
-    "standard":   "stats/2022-2023-Premier-League-Stats",
-    "shooting":   "shooting/2022-2023-Premier-League-Stats",
-    "passing":    "passing/2022-2023-Premier-League-Stats",
+    "standard": "stats/2022-2023-Premier-League-Stats",
+    "shooting": "shooting/2022-2023-Premier-League-Stats",
+    "passing": "passing/2022-2023-Premier-League-Stats",
     "pass_types": "passing_types/2022-2023-Premier-League-Stats",
     "possession": "possession/2022-2023-Premier-League-Stats",
-    "defense":    "defense/2022-2023-Premier-League-Stats",
-    "misc":       "misc/2022-2023-Premier-League-Stats",
+    "defense": "defense/2022-2023-Premier-League-Stats",
+    "misc": "misc/2022-2023-Premier-League-Stats",
 }
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; StatsBot/1.0)"}
 
-# ---------- helpers
 
 def flatten_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """Turn multi-index headers into single strings and strip 'Unnamed' noise."""
     if isinstance(df.columns, pd.MultiIndex):
         new_cols = []
         for tpl in df.columns:
@@ -31,16 +26,19 @@ def flatten_columns(df: pd.DataFrame) -> pd.DataFrame:
         df.columns = [str(c).strip() for c in df.columns]
     return df
 
+
 def has_player_col(df: pd.DataFrame) -> bool:
     cols = [c.lower() for c in df.columns]
-    return any(c == "player" or c.endswith("_player") or c.startswith("player_") for c in cols)
+    return any(
+        c == "player" or c.endswith("_player") or c.startswith("player_") for c in cols
+    )
+
 
 def parse_all_tables(html: str) -> list[pd.DataFrame]:
-    """Parse visible + commented tables; return list of DataFrames."""
     out = []
-    # visible
+
     out += pd.read_html(StringIO(html), header=1)
-    # commented
+
     soup = BeautifulSoup(html, "lxml")
     for com in soup.find_all(string=lambda txt: isinstance(txt, Comment)):
         chunk = str(com)
@@ -50,46 +48,53 @@ def parse_all_tables(html: str) -> list[pd.DataFrame]:
             pass
     return out
 
-# ---------- robust fetch
 
 def fetch_table(url: str) -> pd.DataFrame:
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
 
     dfs = parse_all_tables(r.text)
-    # keep only dataframes that look like player tables
+
     candidates = []
     for df in dfs:
         df = flatten_columns(df)
         if "Player" in df.columns or has_player_col(df):
             candidates.append(df)
     if not candidates:
-        # fall back to the widest table if detection fails
-        candidates = [max(dfs, key=lambda d: d.shape[0]*d.shape[1])]
 
-    df = max(candidates, key=lambda d: d.shape[0])  # pick the largest player-like table
-    # normalize to have a "Player" column name
+        candidates = [max(dfs, key=lambda d: d.shape[0] * d.shape[1])]
+
+    df = max(candidates, key=lambda d: d.shape[0])
+
     if "Player" not in df.columns:
-        # find the column that contains the word 'Player'
+
         for c in df.columns:
             if "player" in c.lower():
                 df.rename(columns={c: "Player"}, inplace=True)
                 break
 
-    # drop header repeats and totals
     if "Player" in df.columns:
         df = df[df["Player"].notna()]
         df = df[df["Player"] != "Player"]
     return df
 
+
 def clean_common(df: pd.DataFrame) -> pd.DataFrame:
-    rename = {"Squad": "Club", "Nation": "Nationality", "Pos": "Position",
-              "MP": "Appearances", "Min": "Minutes", "Gls": "Goals", "Ast": "Assists"}
+    rename = {
+        "Squad": "Club",
+        "Nation": "Nationality",
+        "Pos": "Position",
+        "MP": "Appearances",
+        "Min": "Minutes",
+        "Gls": "Goals",
+        "Ast": "Assists",
+    }
     df = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
     for c in ["Player", "Club", "Nationality", "Position"]:
         if c in df.columns:
             df[c] = df[c].astype(str).str.strip()
     return df
+
 
 def to_numeric(df: pd.DataFrame, cols):
     for c in cols:
@@ -97,19 +102,18 @@ def to_numeric(df: pd.DataFrame, cols):
             df[c] = pd.to_numeric(df[c], errors="coerce")
     return df
 
-def safe_merge(left, right, on=["Player","Club","Position"], how="left"):
-    # only keep non-key columns from right that are NOT already in left
+
+def safe_merge(left, right, on=["Player", "Club", "Position"], how="left"):
+
     right_cols = [c for c in right.columns if c not in on]
     dedup_cols = [c for c in right_cols if c not in left.columns]
     pruned_right = right[on + dedup_cols].copy()
 
     m = left.merge(pruned_right, on=on, how=how)
-    # if any sneaky dups slipped through (rare), de-duplicate by position
+
     m = m.loc[:, ~m.columns.duplicated()]
     return m
 
-
-# ---------- build
 
 def get_tables():
     dfs = {}
@@ -122,19 +126,52 @@ def get_tables():
         time.sleep(1.0)
     return dfs
 
+
 def build_master(dfs):
     std = dfs["standard"].copy()
-    base_cols = ["Player","Club","Position","Nationality","Age","Born",
-                 "Appearances","Starts","Minutes","Goals","Assists","CrdY","CrdR"]
+    base_cols = [
+        "Player",
+        "Club",
+        "Position",
+        "Nationality",
+        "Age",
+        "Born",
+        "Appearances",
+        "Starts",
+        "Minutes",
+        "Goals",
+        "Assists",
+        "CrdY",
+        "CrdR",
+    ]
     for c in base_cols:
         if c not in std.columns:
             std[c] = np.nan
     master = std[base_cols].copy()
-    for k in ("shooting","passing","pass_types","possession","defense","misc"):
+    for k in ("shooting", "passing", "pass_types", "possession", "defense", "misc"):
         master = safe_merge(master, dfs[k])
 
-    numeric_hint = ["Minutes","Goals","Assists","Sh","SoT","SoT%","Off","Touches",
-                    "Cmp","Att","Cmp%","Crs","TB","Carries","PrgC","1/3","PPA","CrsPA","CPA"]
+    numeric_hint = [
+        "Minutes",
+        "Goals",
+        "Assists",
+        "Sh",
+        "SoT",
+        "SoT%",
+        "Off",
+        "Touches",
+        "Cmp",
+        "Att",
+        "Cmp%",
+        "Crs",
+        "TB",
+        "Carries",
+        "PrgC",
+        "1/3",
+        "PPA",
+        "CrsPA",
+        "CPA",
+    ]
     master = to_numeric(master, [c for c in numeric_hint if c in master.columns])
 
     out = pd.DataFrame()
@@ -151,7 +188,9 @@ def build_master(dfs):
     out["SOT%"] = master.get("SoT%")
 
     with np.errstate(divide="ignore", invalid="ignore"):
-        out["Conversion %"] = (out["Goals"] / out["Shots"] * 100).replace([np.inf], np.nan).round(2)
+        out["Conversion %"] = (
+            (out["Goals"] / out["Shots"] * 100).replace([np.inf], np.nan).round(2)
+        )
 
     out["Big Chances Missed"] = np.nan
     out["Hit Woodwork"] = np.nan
@@ -169,19 +208,29 @@ def build_master(dfs):
     out["Through Balls"] = master.get("TB")
     out["Carries"] = master.get("Carries")
     out["Progressive Carries"] = master.get("PrgC")
-    out["Carries Final Third"] = master.get("Carries into Final Third") if "Carries into Final Third" in master.columns else master.get("C1/3")
+    out["Carries Final Third"] = (
+        master.get("Carries into Final Third")
+        if "Carries into Final Third" in master.columns
+        else master.get("C1/3")
+    )
     out["Carries Pen Area"] = master.get("CPA")
     out["Passes to Pen Area"] = master.get("PPA")
     out["Crosses to Pen Area"] = master.get("CrsPA")
 
-    out = out.sort_values(["Club","Minutes"], ascending=[True, False]).reset_index(drop=True)
+    out = out.sort_values(["Club", "Minutes"], ascending=[True, False]).reset_index(
+        drop=True
+    )
     return out
+
 
 def main():
     dfs = get_tables()
     out = build_master(dfs)
     out.to_csv("epl_players_2022_23_fbref_like.csv", index=False)
-    print(f"Saved: epl_players_2022_23_fbref_like.csv  rows={len(out)}  cols={out.shape[1]}")
+    print(
+        f"Saved: epl_players_2022_23_fbref_like.csv  rows={len(out)}  cols={out.shape[1]}"
+    )
+
 
 if __name__ == "__main__":
     main()
