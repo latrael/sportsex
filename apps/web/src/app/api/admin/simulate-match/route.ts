@@ -4,8 +4,9 @@ import { prisma } from '@/lib/db';
 import { applyMatchToPrice, teamPrice as computeTeamPrice } from '@/lib/pricing';
 
 const schema = z.object({
-  homeTeamId: z.number().int().positive(),
-  awayTeamId: z.number().int().positive(),
+  matchId: z.number().int().positive().optional(),
+  homeTeamId: z.number().int().positive().optional(),
+  awayTeamId: z.number().int().positive().optional(),
   homeScore: z.number().int().min(0).max(20),
   awayScore: z.number().int().min(0).max(20),
 });
@@ -64,23 +65,44 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: 'bad_request', details: parsed.error.flatten() }, { status: 400 });
-  const { homeTeamId, awayTeamId, homeScore, awayScore } = parsed.data;
-  if (homeTeamId === awayTeamId) return NextResponse.json({ error: 'same_team' }, { status: 400 });
+  const { matchId: existingMatchId, homeScore, awayScore } = parsed.data;
+  let homeTeamId = parsed.data.homeTeamId;
+  let awayTeamId = parsed.data.awayTeamId;
+
+  let match: { id: number; homeTeamId: number; awayTeamId: number };
+
+  if (existingMatchId) {
+    const existing = await prisma.match.findUnique({ where: { id: existingMatchId } });
+    if (!existing) return NextResponse.json({ error: 'match_not_found' }, { status: 404 });
+    if (existing.status === 'settled') return NextResponse.json({ error: 'already_settled' }, { status: 400 });
+    homeTeamId = existing.homeTeamId;
+    awayTeamId = existing.awayTeamId;
+    await prisma.match.update({
+      where: { id: existingMatchId },
+      data: { status: 'finished', homeScore, awayScore },
+    });
+    match = { id: existing.id, homeTeamId, awayTeamId };
+  } else {
+    if (!homeTeamId || !awayTeamId) {
+      return NextResponse.json({ error: 'provide_matchId_or_teams' }, { status: 400 });
+    }
+    if (homeTeamId === awayTeamId) return NextResponse.json({ error: 'same_team' }, { status: 400 });
+    const created = await prisma.match.create({
+      data: {
+        homeTeamId, awayTeamId,
+        kickoffAt: new Date(),
+        status: 'finished',
+        homeScore, awayScore,
+      },
+    });
+    match = created;
+  }
 
   const [home, away] = await Promise.all([
     prisma.team.findUnique({ where: { id: homeTeamId }, include: { players: true } }),
     prisma.team.findUnique({ where: { id: awayTeamId }, include: { players: true } }),
   ]);
   if (!home || !away) return NextResponse.json({ error: 'team_not_found' }, { status: 404 });
-
-  const match = await prisma.match.create({
-    data: {
-      homeTeamId, awayTeamId,
-      kickoffAt: new Date(),
-      status: 'finished',
-      homeScore, awayScore,
-    },
-  });
 
   // Pick rough lineups: top-15 by minutes for each team
   const homeRoster = [...home.players].sort((a, b) => b.minutes - a.minutes).slice(0, 15);

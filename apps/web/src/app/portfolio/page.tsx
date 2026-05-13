@@ -11,13 +11,20 @@ export default async function Portfolio() {
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) redirect('/login');
 
-  const [me, holdings, txs] = await Promise.all([
+  const [me, holdings, txs, pendingPredictions] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId } }),
     prisma.holding.findMany({ where: { userId } }),
     prisma.transaction.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
       take: 30,
+    }),
+    prisma.prediction.findMany({
+      where: { userId, resolved: false },
+      include: {
+        match: { include: { home: { select: { name: true } }, away: { select: { name: true } } } },
+      },
+      orderBy: { createdAt: 'desc' },
     }),
   ]);
 
@@ -89,6 +96,29 @@ export default async function Portfolio() {
           </div>
         )}
       </section>
+
+      {pendingPredictions.length > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">Pending predictions</h2>
+          <div className="card overflow-x-auto">
+            <table className="t">
+              <thead>
+                <tr><th>Match</th><th>Pick</th><th className="text-right">Staked</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                {pendingPredictions.map((p) => (
+                  <tr key={p.id}>
+                    <td className="text-sm">{p.match.home.name} vs {p.match.away.name}</td>
+                    <td><span className="chip">{p.pick === 'H' ? `${p.match.home.name} win` : p.pick === 'A' ? `${p.match.away.name} win` : 'Draw'}</span></td>
+                    <td className="text-right font-mono">{p.coinsStaked}</td>
+                    <td><span className="text-mute text-xs">Pending</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section>
         <h2 className="text-lg font-semibold mb-3">Recent activity</h2>

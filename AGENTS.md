@@ -314,9 +314,9 @@ Append one line per completed task. Newest at top. Keep concise.
 - [x] T6.2 — global leaderboard (`/leaderboard`)
 - [x] T6.3 — private leaderboards with join codes
 - [x] T6.4 — comments + word-list moderation flag
-- [ ] T7.1 — onboarding flow (post-v1)
-- [ ] T7.2 — daily quests (schema seeded, UI deferred)
-- [ ] T7.3 — predictions UI (settlement payouts already wired)
+- [x] T7.1 — `/onboarding` flow: pick 3 players → +500 coin bonus via `onboarding_picks` quest; signup now redirects here; already-completed users bypass to home
+- [x] T7.2 — `/quests` page + `GET /api/quests` + `POST /api/quests/claim`; daily eligibility verified server-side (login_today, place_one_trade, comment_on_player)
+- [x] T7.3 — `/predictions` page + `POST /api/predictions` + `GET /api/predictions`; 6 scheduled matches seeded (1–6 days out); simulate-match now accepts optional `matchId` to settle an existing scheduled match and resolve predictions; pending predictions shown on /portfolio
 - [ ] T5.1 — fixtures ingestion (real Football-Data.org pull)
 - [ ] T5.2 — match-status poller
 - [ ] T5.3 — fbref match-detail scraper
@@ -327,8 +327,9 @@ Append one line per completed task. Newest at top. Keep concise.
 - [ ] T8.4 — Sentry + logs
 
 ### Next-session priorities
-1. **Onboarding + quest UI** — `/onboarding` flow that grants the 500-coin bonus, then a `/quests` page reading `quests` + `userQuests` tables (already seeded).
-2. **Predictions UI** — list scheduled `Match`es, allow staking coins on H/D/A, render outstanding stake on `/portfolio`.
-3. **Real fixture ingestion** — Football-Data.org free tier polled every 6h into the `Match` table; replace the admin simulate-match with real settlement after FT.
-4. **Postgres migration** — flip Prisma provider, run on Neon, redeploy on Vercel.
-5. **Top-5 European leagues** — extend seed + ingestion beyond EPL.
+1. **Real fixture ingestion (T5.1–T5.4)** — Football-Data.org free tier polled every 6h into the `Match` table. Match-status poller flips `scheduled→live→finished`. fbref match-detail scraper runs on `finished`. Settle hook triggers `simulate-match --match-id`. This replaces the manually seeded scheduled matches.
+2. **Postgres migration (T8.1)** — flip Prisma provider to `postgresql`, provision Neon, run `prisma migrate deploy`, reseed.
+3. **Vercel deploy (T8.2)** — deploy `apps/web` to Vercel, wire `DATABASE_URL` to Neon, set `NEXTAUTH_SECRET` + `ADMIN_TOKEN`.
+4. **Modal job host (T8.3)** — deploy Python-side jobs once real ingestion lands.
+5. **Sentry (T8.4)** — add error tracking to both apps.
+6. **Top-5 European leagues** — extend seed + ingestion beyond EPL.

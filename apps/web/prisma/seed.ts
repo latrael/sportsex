@@ -159,6 +159,34 @@ async function main() {
       });
     }
 
+    // Seed a handful of upcoming scheduled matches for predictions
+    const allTeams = await tx.team.findMany({ select: { id: true, name: true } });
+    if (allTeams.length >= 2) {
+      const shuffled = [...allTeams].sort(() => Math.random() - 0.5);
+      const fixtures = [
+        [shuffled[0], shuffled[1]],
+        [shuffled[2], shuffled[3]],
+        [shuffled[4], shuffled[5]],
+        [shuffled[6], shuffled[7]],
+        [shuffled[8], shuffled[9]],
+        [shuffled[10], shuffled[11]],
+      ].filter((pair) => pair[0] && pair[1]);
+      for (let i = 0; i < fixtures.length; i++) {
+        const [home, away] = fixtures[i];
+        const kickoffAt = new Date();
+        kickoffAt.setDate(kickoffAt.getDate() + i + 1); // 1..6 days out
+        kickoffAt.setHours(15, 0, 0, 0);
+        await tx.match.create({
+          data: {
+            homeTeamId: home.id,
+            awayTeamId: away.id,
+            kickoffAt,
+            status: 'scheduled',
+          },
+        });
+      }
+    }
+
     // Seed quests
     await tx.quest.createMany({
       data: [

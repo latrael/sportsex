@@ -30,7 +30,7 @@ export default function SignupPage({ searchParams }: { searchParams?: { error?: 
         reason: 'starting_balance',
       },
     });
-    await signIn('credentials', { email, password, redirectTo: '/' });
+    await signIn('credentials', { email, password, redirectTo: '/onboarding' });
   }
 
   const msg: Record<string, string> = {
