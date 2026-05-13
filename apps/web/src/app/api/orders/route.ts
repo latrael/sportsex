@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { auth } from '@/lib/auth';
 import { latestPrice, netBuys24hForPlayer } from '@/lib/queries';
 import { livePrice, demandMultiplier } from '@/lib/pricing';
+import { lastOrderAt } from '@/lib/cooldown';
 
 const schema = z.object({
   assetKind: z.enum(['player', 'team']),
@@ -12,8 +13,7 @@ const schema = z.object({
   shares: z.number().int().min(1).max(1000),
 });
 
-// Per-user cooldown
-const lastOrderAt = new Map<string, number>();
+// Per-user cooldown (see @/lib/cooldown for the shared map)
 const COOLDOWN_MS = 1000;
 const MAX_FLOAT_PCT = 0.05;
 const MAX_POSITION_PER_ASSET = 2000;

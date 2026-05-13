@@ -317,6 +317,8 @@ Append one line per completed task. Newest at top. Keep concise.
 - [x] T7.1 — `/onboarding` flow: pick 3 players → +500 coin bonus via `onboarding_picks` quest; signup now redirects here; already-completed users bypass to home
 - [x] T7.2 — `/quests` page + `GET /api/quests` + `POST /api/quests/claim`; daily eligibility verified server-side (login_today, place_one_trade, comment_on_player)
 - [x] T7.3 — `/predictions` page + `POST /api/predictions` + `GET /api/predictions`; 6 scheduled matches seeded (1–6 days out); simulate-match now accepts optional `matchId` to settle an existing scheduled match and resolve predictions; pending predictions shown on /portfolio
+- [x] T6.4 (completed) — comment report button (`POST /api/comments/[id]/report`) + `/admin/moderate` queue (approve/hide/delete); `ReportButton` client component shown on other users' comments
+- [x] T0.2 (completed) — ESLint (`.eslintrc.json`), Prettier (`.prettierrc`), Vitest test suite (81 tests across 8 files: unit tests for `pricing.ts` + `canon.ts`; integration tests for orders, predictions, quests, onboarding, simulate-match, comments); `.github/workflows/ci.yml` runs typecheck + lint + test on every push/PR
 - [ ] T5.1 — fixtures ingestion (real Football-Data.org pull)
 - [ ] T5.2 — match-status poller
 - [ ] T5.3 — fbref match-detail scraper
@@ -325,6 +327,9 @@ Append one line per completed task. Newest at top. Keep concise.
 - [ ] T8.2 — Vercel deploy
 - [ ] T8.3 — Modal job host (only needed once real ingestion lands)
 - [ ] T8.4 — Sentry + logs
+
+### v1 feature status: COMPLETE (excluding deployment)
+All user-facing features, tests, CI, linting, and tooling are done. Auth is credentials+OAuth-stubbed (no magic link). The only remaining work is deployment (T8.1–T8.4) and post-v1 features.
 
 ### Next-session priorities
 1. **Real fixture ingestion (T5.1–T5.4)** — Football-Data.org free tier polled every 6h into the `Match` table. Match-status poller flips `scheduled→live→finished`. fbref match-detail scraper runs on `finished`. Settle hook triggers `simulate-match --match-id`. This replaces the manually seeded scheduled matches.

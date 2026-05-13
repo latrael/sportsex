@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { auth } from '@/lib/auth';
 import PriceChart from '@/components/PriceChart';
 import TradeWidget from '@/components/TradeWidget';
+import ReportButton from '@/components/ReportButton';
 import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
 
@@ -117,8 +118,11 @@ export default async function PlayerDetail({ params }: { params: { id: string } 
           {comments.length === 0 && <p className="text-mute text-sm">No takes yet.</p>}
           {comments.map((c) => (
             <div key={c.id} className="card">
-              <div className="text-xs text-mute">
-                @{c.user.handle} · {new Date(c.createdAt).toLocaleString()}
+              <div className="flex items-center justify-between gap-2">
+                <div className="text-xs text-mute">
+                  @{c.user.handle} · {new Date(c.createdAt).toLocaleString()}
+                </div>
+                {userId && userId !== c.userId && <ReportButton commentId={c.id} />}
               </div>
               <p className="mt-1 text-sm">{c.body}</p>
             </div>
