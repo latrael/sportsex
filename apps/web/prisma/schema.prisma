@@ -1,0 +1,256 @@
+// sportsex v1 schema. See AGENTS.md §5.
+// Dev: SQLite. Prod: switch provider to postgresql.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  handle        String   @unique
+  passwordHash  String?
+  coinBalance   Int      @default(10000)
+  createdAt     DateTime @default(now())
+  lastLoginAt   DateTime?
+
+  holdings      Holding[]
+  transactions  Transaction[]
+  orders        Order[]
+  comments      Comment[]
+  predictions   Prediction[]
+  questCompletions UserQuest[]
+  friendshipsOut Friendship[] @relation("friendshipsOut")
+  friendshipsIn  Friendship[] @relation("friendshipsIn")
+  privateLeaderboards PrivateLeaderboard[]
+  privateLbMemberships PrivateLeaderboardMember[]
+}
+
+model Team {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  shortName  String?
+  league     String   @default("EPL")
+  crestUrl   String?
+
+  players    Player[]
+  valuations Valuation[]
+  homeMatches Match[] @relation("home")
+  awayMatches Match[] @relation("away")
+}
+
+model Player {
+  id           Int      @id @default(autoincrement())
+  playerKey    String   @unique
+  fullName     String
+  teamId       Int?
+  team         Team?    @relation(fields: [teamId], references: [id])
+  position     String?
+  posBucket    String?
+  nationality  String?
+  // Season-to-date stats used by pricing.ts
+  appearances  Int      @default(0)
+  minutes      Int      @default(0)
+  goals        Int      @default(0)
+  assists      Int      @default(0)
+  predGA90Next Float?
+  totalShares  Int      @default(10000)
+  sharesHeld   Int      @default(0)
+
+  valuations   Valuation[]
+  matchStats   PlayerMatchStat[]
+  comments     Comment[]
+
+  @@index([teamId])
+  @@index([fullName])
+}
+
+model Match {
+  id            Int      @id @default(autoincrement())
+  externalId    String?  @unique
+  homeTeamId    Int
+  awayTeamId    Int
+  home          Team     @relation("home", fields: [homeTeamId], references: [id])
+  away          Team     @relation("away", fields: [awayTeamId], references: [id])
+  kickoffAt     DateTime
+  status        String   @default("scheduled") // scheduled|live|finished|settled
+  homeScore     Int?
+  awayScore     Int?
+  settledAt     DateTime?
+
+  playerStats   PlayerMatchStat[]
+  valuations    Valuation[]
+  predictions   Prediction[]
+
+  @@index([status])
+  @@index([kickoffAt])
+}
+
+model PlayerMatchStat {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  matchId   Int
+  player    Player   @relation(fields: [playerId], references: [id])
+  match     Match    @relation(fields: [matchId], references: [id])
+  minutes   Int      @default(0)
+  goals     Int      @default(0)
+  assists   Int      @default(0)
+  // 'win' | 'draw' | 'loss' for the player's team in this match
+  result    String?
+
+  @@unique([playerId, matchId])
+}
+
+model Valuation {
+  id              Int      @id @default(autoincrement())
+  playerId        Int?
+  teamId          Int?
+  player          Player?  @relation(fields: [playerId], references: [id])
+  team            Team?    @relation(fields: [teamId], references: [id])
+  computedAt      DateTime @default(now())
+  price           Float
+  basePrice       Float?
+  demandMult      Float?
+  matchId         Int?
+  match           Match?   @relation(fields: [matchId], references: [id])
+
+  @@index([playerId, computedAt])
+  @@index([teamId, computedAt])
+}
+
+model Holding {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  assetKind String   // 'player' | 'team'
+  assetId   Int
+  shares    Int
+  avgCost   Float
+
+  @@unique([userId, assetKind, assetId])
+  @@index([assetKind, assetId])
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  assetKind   String   // 'player' | 'team' | 'coin_grant' | 'quest_reward' | 'prediction_payout'
+  assetId     Int?
+  side        String   // 'buy' | 'sell' | 'credit' | 'debit'
+  shares      Int      @default(0)
+  price       Float    @default(0)
+  coinsDelta  Int
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([assetKind, assetId, createdAt])
+}
+
+model Order {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  assetKind    String
+  assetId      Int
+  side         String   // 'buy' | 'sell'
+  shares       Int
+  status       String   // 'pending' | 'filled' | 'cancelled'
+  filledPrice  Float?
+  createdAt    DateTime @default(now())
+  filledAt     DateTime?
+
+  @@index([userId, createdAt])
+}
+
+model Friendship {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  friendId    String
+  status      String   // 'pending' | 'accepted'
+  createdAt   DateTime @default(now())
+  user        User     @relation("friendshipsOut", fields: [userId], references: [id])
+  friend      User     @relation("friendshipsIn", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId])
+}
+
+model PrivateLeaderboard {
+  id        Int      @id @default(autoincrement())
+  name      String
+  joinCode  String   @unique
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+  createdAt DateTime @default(now())
+  members   PrivateLeaderboardMember[]
+}
+
+model PrivateLeaderboardMember {
+  id             Int      @id @default(autoincrement())
+  leaderboardId  Int
+  userId         String
+  joinedAt       DateTime @default(now())
+  leaderboard    PrivateLeaderboard @relation(fields: [leaderboardId], references: [id])
+  user           User     @relation(fields: [userId], references: [id])
+
+  @@unique([leaderboardId, userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  playerId  Int?
+  teamId    Int?
+  player    Player?  @relation(fields: [playerId], references: [id])
+  body      String
+  status    String   @default("visible") // visible|hidden|flagged
+  createdAt DateTime @default(now())
+
+  @@index([playerId, createdAt])
+  @@index([teamId, createdAt])
+}
+
+model Quest {
+  id           Int      @id @default(autoincrement())
+  code         String   @unique
+  title        String
+  body         String
+  rewardCoins  Int
+  repeatKind   String   // 'daily' | 'weekly' | 'one_shot'
+
+  completions  UserQuest[]
+}
+
+model UserQuest {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  questId     Int
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  quest       Quest    @relation(fields: [questId], references: [id])
+
+  @@index([userId, completedAt])
+}
+
+model Prediction {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  matchId      Int
+  user         User     @relation(fields: [userId], references: [id])
+  match        Match    @relation(fields: [matchId], references: [id])
+  pick         String   // 'H' | 'D' | 'A'
+  coinsStaked  Int
+  resolved     Boolean  @default(false)
+  payout       Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([matchId, resolved])
+}

@@ -1,0 +1,10 @@
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+apps/web/node_modules/
+apps/web/.next/
+apps/web/prisma/dev.db
+apps/web/prisma/dev.db-journal
+apps/web/.env
+*.pyc
+__pycache__/
+.DS_Store

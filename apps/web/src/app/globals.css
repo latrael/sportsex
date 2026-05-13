@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { background: #0a0e1a; color: #e6ebf5; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+a { color: inherit; }
+
+.card { @apply bg-panel border border-edge rounded-lg p-4; }
+.btn { @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-edge bg-panel2 hover:bg-edge text-sm transition-colors; }
+.btn-primary { @apply bg-accent hover:bg-emerald-500 border-emerald-600 text-black font-medium; }
+.btn-danger { @apply bg-danger hover:bg-red-500 border-red-700 text-white font-medium; }
+.input { @apply bg-panel2 border border-edge rounded-md px-3 py-1.5 text-sm w-full text-ink placeholder:text-mute focus:outline-none focus:border-accent; }
+.chip { @apply inline-block px-2 py-0.5 rounded text-xs bg-panel2 border border-edge text-mute; }
+.pos-GK { @apply bg-amber-900/40 border-amber-700 text-amber-200; }
+.pos-DEF { @apply bg-sky-900/40 border-sky-700 text-sky-200; }
+.pos-MID { @apply bg-emerald-900/40 border-emerald-700 text-emerald-200; }
+.pos-FWD { @apply bg-fuchsia-900/40 border-fuchsia-700 text-fuchsia-200; }
+table.t { @apply w-full text-sm; }
+table.t th { @apply text-left text-xs font-semibold text-mute uppercase tracking-wider py-2 border-b border-edge; }
+table.t td { @apply py-2 border-b border-edge/60; }
+.up { color: #10b981; }
+.down { color: #ef4444; }
