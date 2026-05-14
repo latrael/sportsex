@@ -32,7 +32,7 @@ function posBucket(position: string): string {
 
 async function main() {
   console.log('Reading CSVs…');
-  const statsPath = join(repoRoot, 'epl_player_stats_24_25.csv');
+  const statsPath = join(repoRoot, 'epl_player_stats_25_26.csv');
   const stats = readCsv(statsPath);
 
   console.log(`Seeding ${stats.length} players.`);
