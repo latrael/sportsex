@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from './db';
 
 export type AssetKind = 'player' | 'team';
@@ -14,12 +15,12 @@ export async function latestPrice(kind: AssetKind, id: number): Promise<number> 
 // Latest prices for many assets in one query.
 export async function latestPricesByPlayerIds(ids: number[]): Promise<Map<number, number>> {
   if (ids.length === 0) return new Map();
-  const rows = await prisma.valuation.findMany({
-    where: { playerId: { in: ids } },
-    orderBy: { id: 'desc' },
-    distinct: ['playerId'],
-    select: { playerId: true, price: true },
-  });
+  const rows = await prisma.$queryRaw<{ playerId: number; price: number }[]>`
+    SELECT DISTINCT ON ("playerId") "playerId", price
+    FROM "Valuation"
+    WHERE "playerId" = ANY(${ids}::integer[])
+    ORDER BY "playerId", id DESC
+  `;
   const map = new Map<number, number>();
   for (const r of rows) if (r.playerId != null) map.set(r.playerId, r.price);
   return map;
@@ -27,12 +28,12 @@ export async function latestPricesByPlayerIds(ids: number[]): Promise<Map<number
 
 export async function latestPricesByTeamIds(ids: number[]): Promise<Map<number, number>> {
   if (ids.length === 0) return new Map();
-  const rows = await prisma.valuation.findMany({
-    where: { teamId: { in: ids } },
-    orderBy: { id: 'desc' },
-    distinct: ['teamId'],
-    select: { teamId: true, price: true },
-  });
+  const rows = await prisma.$queryRaw<{ teamId: number; price: number }[]>`
+    SELECT DISTINCT ON ("teamId") "teamId", price
+    FROM "Valuation"
+    WHERE "teamId" = ANY(${ids}::integer[])
+    ORDER BY "teamId", id DESC
+  `;
   const map = new Map<number, number>();
   for (const r of rows) if (r.teamId != null) map.set(r.teamId, r.price);
   return map;

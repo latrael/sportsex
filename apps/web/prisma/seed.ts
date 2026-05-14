@@ -22,11 +22,11 @@ function toInt(v: unknown, d = 0): number {
 }
 
 function posBucket(position: string): string {
-  const p = (position || '').toUpperCase();
-  if (p.startsWith('G')) return 'GK';
-  if (p.startsWith('D')) return 'DEF';
-  if (p.startsWith('M')) return 'MID';
-  if (p.startsWith('F') || p === 'ATT') return 'FWD';
+  const p = (position || '').toUpperCase().trim();
+  if (p.includes('KEEPER') || p === 'GK') return 'GK';
+  if (p.includes('BACK') || p.includes('DEFENDER') || p === 'DEF') return 'DEF';
+  if (p.includes('WINGER') || p.includes('FORWARD') || p.includes('OFFENCE') || p === 'ATT' || p === 'FWD') return 'FWD';
+  if (p.includes('MIDFIELD') || p.startsWith('M') || p === 'MID') return 'MID';
   return 'OTHER';
 }
 

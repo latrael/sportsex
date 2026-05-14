@@ -28,11 +28,11 @@ function toInt(v: unknown, d = 0): number {
 }
 
 function posBucket(position: string): string {
-  const p = (position || '').toUpperCase();
-  if (p.startsWith('G')) return 'GK';
-  if (p.startsWith('D')) return 'DEF';
-  if (p.startsWith('M') || p === 'MIDFIELDER') return 'MID';
-  if (p.startsWith('F') || p === 'ATT' || p === 'OFFENCE' || p === 'CENTRE-FORWARD') return 'FWD';
+  const p = (position || '').toUpperCase().trim();
+  if (p.includes('KEEPER') || p === 'GK') return 'GK';
+  if (p.includes('BACK') || p.includes('DEFENDER') || p === 'DEF') return 'DEF';
+  if (p.includes('WINGER') || p.includes('FORWARD') || p.includes('OFFENCE') || p === 'ATT' || p === 'FWD') return 'FWD';
+  if (p.includes('MIDFIELD') || p.startsWith('M') || p === 'MID') return 'MID';
   return 'OTHER';
 }
 
@@ -93,9 +93,15 @@ async function main() {
     }
 
     if (playerId) {
+      const pos = row['Position'] ?? null;
       await prisma.player.update({
         where: { id: playerId },
-        data: { goals, assists, minutes, appearances },
+        data: {
+          goals, assists, appearances,
+          // Only overwrite minutes if the CSV has real data; 0 means the CSV source didn't track it
+          ...(minutes > 0 ? { minutes } : {}),
+          ...(pos ? { position: pos, posBucket: posBucket(pos) } : {}),
+        },
       });
       updated++;
       continue;
