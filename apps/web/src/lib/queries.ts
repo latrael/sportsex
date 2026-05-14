@@ -14,14 +14,12 @@ export async function latestPrice(kind: AssetKind, id: number): Promise<number> 
 // Latest prices for many assets in one query.
 export async function latestPricesByPlayerIds(ids: number[]): Promise<Map<number, number>> {
   if (ids.length === 0) return new Map();
-  const rows: { playerId: number | null; price: number }[] = await prisma.$queryRawUnsafe(
-    `SELECT playerId, price FROM Valuation
-     WHERE playerId IN (${ids.map(() => '?').join(',')})
-       AND id IN (
-         SELECT MAX(id) FROM Valuation WHERE playerId IS NOT NULL GROUP BY playerId
-       )`,
-    ...ids,
-  );
+  const rows = await prisma.valuation.findMany({
+    where: { playerId: { in: ids } },
+    orderBy: { id: 'desc' },
+    distinct: ['playerId'],
+    select: { playerId: true, price: true },
+  });
   const map = new Map<number, number>();
   for (const r of rows) if (r.playerId != null) map.set(r.playerId, r.price);
   return map;
@@ -29,14 +27,12 @@ export async function latestPricesByPlayerIds(ids: number[]): Promise<Map<number
 
 export async function latestPricesByTeamIds(ids: number[]): Promise<Map<number, number>> {
   if (ids.length === 0) return new Map();
-  const rows: { teamId: number | null; price: number }[] = await prisma.$queryRawUnsafe(
-    `SELECT teamId, price FROM Valuation
-     WHERE teamId IN (${ids.map(() => '?').join(',')})
-       AND id IN (
-         SELECT MAX(id) FROM Valuation WHERE teamId IS NOT NULL GROUP BY teamId
-       )`,
-    ...ids,
-  );
+  const rows = await prisma.valuation.findMany({
+    where: { teamId: { in: ids } },
+    orderBy: { id: 'desc' },
+    distinct: ['teamId'],
+    select: { teamId: true, price: true },
+  });
   const map = new Map<number, number>();
   for (const r of rows) if (r.teamId != null) map.set(r.teamId, r.price);
   return map;
