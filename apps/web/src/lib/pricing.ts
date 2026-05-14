@@ -13,14 +13,12 @@ export type SeedInput = {
   goals: number;
   assists: number;
   minutes: number;
-  predGA90Next?: number | null;
 };
 
 export function seedPrice(p: SeedInput): number {
   const productivity = p.goals * 5 + p.assists * 3;
   const minutesFactor = Math.min(p.minutes / 1000, 3) * 10;
-  const projectionBump = (p.predGA90Next ?? 0) * 20;
-  return clamp(50 + productivity + minutesFactor + projectionBump, PRICE_FLOOR, PRICE_CAP);
+  return clamp(50 + productivity + minutesFactor, PRICE_FLOOR, PRICE_CAP);
 }
 
 export function demandMultiplier(netBuys24h: number): number {

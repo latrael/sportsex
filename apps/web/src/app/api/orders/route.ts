@@ -37,6 +37,10 @@ export async function POST(req: Request) {
   const price = await latestPrice(assetKind, assetId);
   if (!Number.isFinite(price) || price <= 0) return NextResponse.json({ error: 'no_price' }, { status: 500 });
 
+  // Snapshot demand BEFORE the trade so the price tick doesn't include
+  // this user's own buy/sell — prevents the instant round-trip profit glitch.
+  const preTradeDemand = assetKind === 'player' ? await netBuys24hForPlayer(assetId) : 0;
+
   try {
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
@@ -117,14 +121,13 @@ export async function POST(req: Request) {
 
     // Tick price refresh (player only — team prices update post-match)
     if (assetKind === 'player') {
-      const net = await netBuys24hForPlayer(assetId);
       const last = await prisma.valuation.findFirst({
         where: { playerId: assetId },
         orderBy: { computedAt: 'desc' },
       });
       const base = last?.basePrice ?? price;
-      const mult = demandMultiplier(net);
-      const newPrice = livePrice(base, net);
+      const mult = demandMultiplier(preTradeDemand);
+      const newPrice = livePrice(base, preTradeDemand);
       await prisma.valuation.create({
         data: {
           playerId: assetId,

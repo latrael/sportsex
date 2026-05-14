@@ -87,8 +87,8 @@ export default async function PlayerDetail({ params }: { params: { id: string } 
         <div className="lg:col-span-2 card">
           <PriceChart data={chartData} />
           <div className="grid grid-cols-4 gap-4 mt-4 text-center">
-            <div><div className="text-xs text-mute">Apps</div><div className="font-mono">{player.appearances}</div></div>
-            <div><div className="text-xs text-mute">Minutes</div><div className="font-mono">{player.minutes}</div></div>
+            <div><div className="text-xs text-mute">Apps</div><div className="font-mono">{player.appearances || '—'}</div></div>
+            <div><div className="text-xs text-mute">Minutes</div><div className="font-mono">{player.minutes || '—'}</div></div>
             <div><div className="text-xs text-mute">Goals</div><div className="font-mono">{player.goals}</div></div>
             <div><div className="text-xs text-mute">Assists</div><div className="font-mono">{player.assists}</div></div>
           </div>
@@ -101,6 +101,12 @@ export default async function PlayerDetail({ params }: { params: { id: string } 
           signedIn={!!userId}
           ownedShares={holding?.shares ?? 0}
           balance={me?.coinBalance ?? 0}
+          stats={[
+            { label: 'Apps', value: player.appearances || '—' },
+            { label: 'Minutes', value: player.minutes || '—' },
+            { label: 'Goals', value: player.goals },
+            { label: 'Assists', value: player.assists },
+          ]}
         />
       </div>
 

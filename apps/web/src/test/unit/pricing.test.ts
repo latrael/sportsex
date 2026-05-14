@@ -9,36 +9,21 @@ import {
 
 describe('seedPrice', () => {
   it('returns 50 for a player with no stats', () => {
-    const p = seedPrice({ goals: 0, assists: 0, minutes: 0, predGA90Next: null });
-    expect(p).toBe(50);
+    expect(seedPrice({ goals: 0, assists: 0, minutes: 0 })).toBe(50);
   });
 
   it('adds productivity component correctly', () => {
     // goals*5 + assists*3 = 10*5 + 5*3 = 65. minutesFactor = min(500/1000,3)*10 = 5. Total = 50+65+5 = 120
-    const p = seedPrice({ goals: 10, assists: 5, minutes: 500, predGA90Next: null });
-    expect(p).toBe(120);
+    expect(seedPrice({ goals: 10, assists: 5, minutes: 500 })).toBe(120);
   });
 
   it('caps minutesFactor at 30 (3000+ minutes)', () => {
-    const p = seedPrice({ goals: 0, assists: 0, minutes: 9999, predGA90Next: null });
-    expect(p).toBe(80); // 50 + 0 + 30
-  });
-
-  it('adds projection bump when predGA90Next is given', () => {
-    // 50 + 0 + 0 + 2.0*20 = 90
-    const p = seedPrice({ goals: 0, assists: 0, minutes: 0, predGA90Next: 2.0 });
-    expect(p).toBe(90);
-  });
-
-  it('clamps minimum to 5', () => {
-    const p = seedPrice({ goals: 0, assists: 0, minutes: 0, predGA90Next: -100 });
-    expect(p).toBe(5);
+    expect(seedPrice({ goals: 0, assists: 0, minutes: 9999 })).toBe(80); // 50 + 0 + 30
   });
 
   it('clamps maximum to PRICE_CAP (2000)', () => {
-    // goals*5 + assists*3 + minutesFactor(30) + predGA90Next*20 would far exceed 2000
-    const p = seedPrice({ goals: 200, assists: 200, minutes: 9999, predGA90Next: 100 });
-    expect(p).toBe(2000);
+    // 50 + 400*5 + 30 = 2080 → clamped
+    expect(seedPrice({ goals: 400, assists: 0, minutes: 9999 })).toBe(2000);
   });
 });
 

@@ -58,7 +58,6 @@ model Player {
   minutes      Int      @default(0)
   goals        Int      @default(0)
   assists      Int      @default(0)
-  predGA90Next Float?
   totalShares  Int      @default(10000)
   sharesHeld   Int      @default(0)
 

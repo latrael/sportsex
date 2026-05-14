@@ -21,12 +21,6 @@ function toInt(v: unknown, d = 0): number {
   return Number.isFinite(n) ? n : d;
 }
 
-function toFloat(v: unknown): number | null {
-  if (v === undefined || v === null || v === '') return null;
-  const n = parseFloat(String(v));
-  return Number.isFinite(n) ? n : null;
-}
-
 function posBucket(position: string): string {
   const p = (position || '').toUpperCase();
   if (p.startsWith('G')) return 'GK';
@@ -39,18 +33,9 @@ function posBucket(position: string): string {
 async function main() {
   console.log('Reading CSVs…');
   const statsPath = join(repoRoot, 'epl_player_stats_24_25.csv');
-  const predsPath = join(repoRoot, 'investable_players_pred_202426-26.csv');
   const stats = readCsv(statsPath);
-  const preds = readCsv(predsPath);
 
-  const predByKey = new Map<string, number>();
-  for (const r of preds) {
-    const key = canonName(r['Player Name'] ?? r['player_key'] ?? '');
-    const v = toFloat(r['pred_GA90_next']);
-    if (key && v !== null) predByKey.set(key, v);
-  }
-
-  console.log(`Seeding ${stats.length} players, ${predByKey.size} predictions found.`);
+  console.log(`Seeding ${stats.length} players.`);
 
   // Distinct clubs → teams
   const clubs = Array.from(new Set(stats.map((r) => r['Club']).filter(Boolean)));
@@ -90,7 +75,6 @@ async function main() {
       minutes: number;
       goals: number;
       assists: number;
-      predGA90Next: number | null;
     }[] = [];
     const seenKeys = new Set<string>();
 
@@ -116,7 +100,6 @@ async function main() {
         minutes: toInt(r['Minutes']),
         goals: toInt(r['Goals']),
         assists: toInt(r['Assists']),
-        predGA90Next: predByKey.get(canonName(fullName)) ?? null,
       });
     }
 
@@ -127,22 +110,10 @@ async function main() {
     const allPlayers = await tx.player.findMany();
 
     // Initial valuations
-    const valuationData = allPlayers.map((p) => ({
-      playerId: p.id,
-      price: seedPrice({
-        goals: p.goals,
-        assists: p.assists,
-        minutes: p.minutes,
-        predGA90Next: p.predGA90Next,
-      }),
-      basePrice: seedPrice({
-        goals: p.goals,
-        assists: p.assists,
-        minutes: p.minutes,
-        predGA90Next: p.predGA90Next,
-      }),
-      demandMult: 1.0,
-    }));
+    const valuationData = allPlayers.map((p) => {
+      const price = seedPrice({ goals: p.goals, assists: p.assists, minutes: p.minutes });
+      return { playerId: p.id, price, basePrice: price, demandMult: 1.0 };
+    });
     await tx.valuation.createMany({ data: valuationData });
 
     // Team valuations

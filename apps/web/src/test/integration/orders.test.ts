@@ -167,6 +167,36 @@ describe('POST /api/orders — sell player', () => {
   });
 });
 
+describe('POST /api/orders — demand pricing glitch', () => {
+  it('buy then immediate sell yields no profit from own demand', async () => {
+    const user = await createUser({ coinBalance: 10000 });
+    const player = await createPlayer();
+    await createValuation(player.id, 100);
+
+    // Buy
+    mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
+    const buyReq = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'player', assetId: player.id, side: 'buy', shares: 10 } });
+    await POST(buyReq);
+
+    const afterBuy = await db.user.findUnique({ where: { id: user.id } });
+
+    // Bypass cooldown
+    lastOrderAt.delete(user.id);
+
+    // Sell the same shares immediately
+    mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
+    const sellReq = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'player', assetId: player.id, side: 'sell', shares: 10 } });
+    await POST(sellReq);
+
+    const afterSell = await db.user.findUnique({ where: { id: user.id } });
+
+    // Must not end up with more coins than started
+    expect(afterSell!.coinBalance).toBeLessThanOrEqual(10000);
+    // And should have roughly the same as they started (within 1 coin rounding tolerance)
+    expect(afterSell!.coinBalance).toBe(afterBuy!.coinBalance + 10 * 100);
+  });
+});
+
 describe('POST /api/orders — buy team', () => {
   it('buys team shares', async () => {
     const user = await createUser({ coinBalance: 10000 });

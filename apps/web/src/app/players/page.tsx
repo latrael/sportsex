@@ -17,7 +17,7 @@ export default async function PlayersPage({
   if (q) where.fullName = { contains: q };
   if (pos && pos !== 'ALL') where.posBucket = pos;
 
-  const players = await prisma.player.findMany({
+  const playersRaw = await prisma.player.findMany({
     where,
     include: { team: true },
     orderBy:
@@ -27,10 +27,16 @@ export default async function PlayersPage({
         ? { minutes: 'desc' }
         : sort === 'assists'
         ? { assists: 'desc' }
+        : sort === 'price'
+        ? { fullName: 'asc' }
         : { goals: 'desc' },
     take: 200,
   });
-  const priceMap = await latestPricesByPlayerIds(players.map((p) => p.id));
+  const priceMap = await latestPricesByPlayerIds(playersRaw.map((p) => p.id));
+  const players =
+    sort === 'price'
+      ? [...playersRaw].sort((a, b) => (priceMap.get(b.id) ?? 0) - (priceMap.get(a.id) ?? 0))
+      : playersRaw;
 
   return (
     <div className="space-y-4">
@@ -49,6 +55,7 @@ export default async function PlayersPage({
           <option value="assists">Sort: Assists</option>
           <option value="minutes">Sort: Minutes</option>
           <option value="name">Sort: Name</option>
+          <option value="price">Sort: Price</option>
         </select>
         <button className="btn" type="submit">Apply</button>
       </form>
@@ -74,7 +81,7 @@ export default async function PlayersPage({
                 <td className="text-mute">{p.team?.name}</td>
                 <td className="text-right font-mono">{p.goals}</td>
                 <td className="text-right font-mono">{p.assists}</td>
-                <td className="text-right font-mono">{p.minutes}</td>
+                <td className="text-right font-mono">{p.minutes || '—'}</td>
                 <td className="text-right font-mono">{(priceMap.get(p.id) ?? 0).toFixed(2)}</td>
               </tr>
             ))}

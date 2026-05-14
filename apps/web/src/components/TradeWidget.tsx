@@ -2,6 +2,8 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+type StatItem = { label: string; value: string | number };
+
 type Props = {
   assetKind: 'player' | 'team';
   assetId: number;
@@ -9,9 +11,10 @@ type Props = {
   signedIn: boolean;
   ownedShares: number;
   balance: number;
+  stats?: StatItem[];
 };
 
-export default function TradeWidget({ assetKind, assetId, price, signedIn, ownedShares, balance }: Props) {
+export default function TradeWidget({ assetKind, assetId, price, signedIn, ownedShares, balance, stats }: Props) {
   const [shares, setShares] = useState(1);
   const [side, setSide] = useState<'buy' | 'sell'>('buy');
   const [msg, setMsg] = useState<string | null>(null);
@@ -50,6 +53,20 @@ export default function TradeWidget({ assetKind, assetId, price, signedIn, owned
 
   return (
     <form className="card space-y-3" onSubmit={submit}>
+      {stats && stats.length > 0 && (
+        <div>
+          <div className="text-xs text-mute uppercase mb-2">Season Stats</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+            {stats.map((s) => (
+              <div key={s.label} className="flex justify-between">
+                <span className="text-mute">{s.label}</span>
+                <span className="font-mono">{s.value}</span>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-panel2 mt-3" />
+        </div>
+      )}
       <div className="flex gap-2">
         <button
           type="button"
