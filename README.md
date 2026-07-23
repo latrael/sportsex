@@ -29,7 +29,7 @@ pnpm dev               # http://localhost:3000
 - **Quests**: daily login, place a trade, comment on a player — each grants coins.
 - **Predictions**: stake coins on match results; payouts resolve automatically when the match settles.
 - **Friends** and **private leaderboards** with join codes.
-- **CI**: GitHub Actions runs typecheck, ESLint, and 80 Vitest tests against a Postgres service container on every push/PR.
+- **CI**: GitHub Actions runs typecheck, ESLint, and 119 Vitest tests against a Postgres service container on every push/PR.
 
 ## Pricing algorithm
 
@@ -154,7 +154,7 @@ The suite needs a real Postgres, since the Prisma schema targets `postgresql`. A
 
 ```bash
 docker compose up -d          # postgres on localhost:5433, db `sportsex_test`
-pnpm --dir apps/web test      # 80 tests
+pnpm --dir apps/web test      # 119 tests
 docker compose down -v        # throw it away
 ```
 
