@@ -61,7 +61,7 @@ describe('endpoints', () => {
     const { data } = await fpl.bootstrapStatic();
 
     expect(calls[0].url).toBe(`${FPL_BASE_URL}/bootstrap-static/`);
-    expect(data.teams).toHaveLength(4);
+    expect(data.teams).toHaveLength(9);
     expect(data.elements.find((e) => e.id === 381)?.web_name).toBe('M.Salah');
   });
 
