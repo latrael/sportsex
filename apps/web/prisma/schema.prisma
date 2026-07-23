@@ -400,6 +400,9 @@ model PlayerSeason {
   player     FplPlayer  @relation(fields: [playerId], references: [id])
   clubSeason ClubSeason @relation(fields: [clubSeasonId], references: [id])
 
+  fixtureStats  PlayerFixtureStat[]
+  gameweekStats PlayerGameweekStat[]
+
   @@unique([seasonId, playerId])
   @@unique([seasonId, fplId])
   @@index([clubSeasonId])
@@ -425,8 +428,10 @@ model Gameweek {
   averageEntryScore Int?
   highestScore      Int?
 
-  season   Season    @relation(fields: [seasonId], references: [id])
-  fixtures Fixture[]
+  season             Season               @relation(fields: [seasonId], references: [id])
+  fixtures           Fixture[]
+  playerFixtureStats PlayerFixtureStat[]
+  playerGameweekStats PlayerGameweekStat[]
 
   @@unique([seasonId, number])
   @@map("gameweek")
@@ -473,10 +478,129 @@ model Fixture {
   homeClub ClubSeason @relation("homeFixtures", fields: [homeClubSeasonId], references: [id])
   awayClub ClubSeason @relation("awayFixtures", fields: [awayClubSeasonId], references: [id])
 
+  playerStats PlayerFixtureStat[]
+
   @@unique([seasonId, fplId])
   @@index([gameweekId])
   @@index([kickoffTime])
   @@index([homeClubSeasonId])
   @@index([awayClubSeasonId])
   @@map("fixture")
+}
+
+/// Per-fixture player stats, split out of `event/{gw}/live`'s `explain` block.
+/// This is the grain that makes double gameweeks correct: a player with two
+/// fixtures in one gameweek gets two rows here, each carrying only what FPL
+/// attributes to that specific fixture.
+///
+/// `explain` covers the point-scoring identifiers only. The ~20 model inputs
+/// FPL reports solely as gameweek totals (xG, xA, tackles, bps, influence…)
+/// live on `player_gameweek_stat`, never apportioned across a double — a split
+/// there would push a fabricated number into R3.1's valuation.
+model PlayerFixtureStat {
+  id             Int @id @default(autoincrement())
+  playerSeasonId Int
+  fixtureId      Int
+  /// Denormalised from the fixture, so the per-gameweek reads R2.3/R3.1 make
+  /// don't have to join through `fixture` every time.
+  gameweekId     Int
+
+  minutes               Int
+  goalsScored           Int
+  assists               Int
+  cleanSheets           Int
+  goalsConceded         Int
+  ownGoals              Int
+  penaltiesSaved        Int
+  penaltiesMissed       Int
+  yellowCards           Int
+  redCards              Int
+  saves                 Int
+  bonus                 Int
+  defensiveContribution Int
+  /// Sum of the `explain` points for this fixture: FPL's own per-fixture score.
+  totalPoints           Int
+
+  playerSeason PlayerSeason @relation(fields: [playerSeasonId], references: [id])
+  fixture      Fixture      @relation(fields: [fixtureId], references: [id])
+  gameweek     Gameweek     @relation(fields: [gameweekId], references: [id])
+
+  @@unique([playerSeasonId, fixtureId])
+  @@index([fixtureId])
+  @@index([gameweekId])
+  @@map("player_fixture_stat")
+}
+
+/// Per-gameweek player totals, taken verbatim from `event/{gw}/live`'s `stats`
+/// block. This is the only place the model-input stats exist: FPL reports xG,
+/// xA, xGC, tackles, recoveries, CBI, bps, starts and the ICT components solely
+/// as gameweek totals, with no per-fixture breakdown even on a double gameweek.
+/// For a single-fixture gameweek the total is that fixture; for a double it is
+/// the combined line, and R3.1 decides what to do with it — this table never
+/// guesses a split.
+model PlayerGameweekStat {
+  id             Int @id @default(autoincrement())
+  playerSeasonId Int
+  gameweekId     Int
+
+  minutes                       Int
+  starts                        Int
+  goalsScored                   Int
+  assists                       Int
+  cleanSheets                   Int
+  goalsConceded                 Int
+  ownGoals                      Int
+  penaltiesSaved                Int
+  penaltiesMissed               Int
+  yellowCards                   Int
+  redCards                      Int
+  saves                         Int
+  bonus                         Int
+  bps                           Int
+  tackles                       Int
+  recoveries                    Int
+  clearancesBlocksInterceptions Int
+  defensiveContribution         Int
+
+  influence                Decimal @db.Decimal(10, 2)
+  creativity               Decimal @db.Decimal(10, 2)
+  threat                   Decimal @db.Decimal(10, 2)
+  ictIndex                 Decimal @db.Decimal(10, 2)
+  expectedGoals            Decimal @db.Decimal(8, 2)
+  expectedAssists          Decimal @db.Decimal(8, 2)
+  expectedGoalInvolvements Decimal @db.Decimal(8, 2)
+  expectedGoalsConceded    Decimal @db.Decimal(8, 2)
+
+  totalPoints Int
+
+  playerSeason PlayerSeason @relation(fields: [playerSeasonId], references: [id])
+  gameweek     Gameweek     @relation(fields: [gameweekId], references: [id])
+
+  @@unique([playerSeasonId, gameweekId])
+  @@index([gameweekId])
+  @@map("player_gameweek_stat")
+}
+
+/// Archived FPL responses, so any parse can be replayed without refetching —
+/// the store R1.1's `onRaw` hook was built for. Keyed on (endpoint, scopeKey)
+/// so a re-fetch overwrites rather than accretes; `bodyHash` lets a re-run that
+/// pulled byte-identical data skip the write, which keeps R1.7 honest.
+model RawPayload {
+  id       Int    @id @default(autoincrement())
+  endpoint String
+  /// Disambiguates payloads within one endpoint: the gameweek for event-live,
+  /// the season for bootstrap/fixtures. e.g. "2025:gw33".
+  scopeKey String
+
+  url       String
+  status    Int
+  fetchedAt DateTime
+  bytes     Int
+  attempts  Int
+  /// SHA-256 of the JSON body, as the wire delivered it. The idempotency handle.
+  bodyHash  String
+  body      Json
+
+  @@unique([endpoint, scopeKey])
+  @@map("raw_payload")
 }

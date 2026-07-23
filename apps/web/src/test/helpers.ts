@@ -8,6 +8,9 @@ export const db = new PrismaClient();
 export async function cleanDb() {
   // Delete in dependency order.
   // Schema v2 reference tables (Phase 1) first — nothing joins them to v1.
+  await db.rawPayload.deleteMany();
+  await db.playerFixtureStat.deleteMany();
+  await db.playerGameweekStat.deleteMany();
   await db.fixture.deleteMany();
   await db.playerSeason.deleteMany();
   await db.gameweek.deleteMany();
@@ -96,10 +99,34 @@ export async function createScheduledMatch(homeTeamId: number, awayTeamId: numbe
 export async function createQuests() {
   await db.quest.createMany({
     data: [
-      { code: 'login_today', title: 'Daily Login', body: 'Sign in today.', rewardCoins: 100, repeatKind: 'daily' },
-      { code: 'place_one_trade', title: 'Make a Move', body: 'Place a trade today.', rewardCoins: 200, repeatKind: 'daily' },
-      { code: 'comment_on_player', title: 'Hot Take', body: 'Post a comment.', rewardCoins: 150, repeatKind: 'daily' },
-      { code: 'onboarding_picks', title: 'First Picks', body: 'Pick 3 players.', rewardCoins: 500, repeatKind: 'one_shot' },
+      {
+        code: 'login_today',
+        title: 'Daily Login',
+        body: 'Sign in today.',
+        rewardCoins: 100,
+        repeatKind: 'daily',
+      },
+      {
+        code: 'place_one_trade',
+        title: 'Make a Move',
+        body: 'Place a trade today.',
+        rewardCoins: 200,
+        repeatKind: 'daily',
+      },
+      {
+        code: 'comment_on_player',
+        title: 'Hot Take',
+        body: 'Post a comment.',
+        rewardCoins: 150,
+        repeatKind: 'daily',
+      },
+      {
+        code: 'onboarding_picks',
+        title: 'First Picks',
+        body: 'Pick 3 players.',
+        rewardCoins: 500,
+        repeatKind: 'one_shot',
+      },
     ],
   });
 }
