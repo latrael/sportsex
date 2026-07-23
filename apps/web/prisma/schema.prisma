@@ -1,5 +1,10 @@
-// sportsex v1 schema. See AGENTS.md §5.
-// Dev: SQLite. Prod: switch provider to postgresql.
+// sportsex schema.
+//
+// Two eras live here side by side during the 26/27 rebuild:
+//   * the v1 product tables (User, Team, Player, Match, ...) — see AGENTS.md §5
+//   * the v2 reference tables at the bottom of this file, written by the FPL
+//     ingestion path (TODO_2627.md Phase 1).
+// R2.2 is the cutover that deletes the v1 half. Nothing joins across the two.
 
 generator client {
   provider = "prisma-client-js"
@@ -252,4 +257,173 @@ model Prediction {
 
   @@index([userId, createdAt])
   @@index([matchId, resolved])
+}
+
+// ---------------------------------------------------------------------------
+// Schema v2 — reference tables (TODO_2627.md R1.2)
+//
+// Written only by the FPL ingestion path. Three things drive the shape:
+//
+// 1. **Identity is stable, membership is season-scoped.** FPL's `element.id`
+//    and `team.id` are recycled every season — element 328 is a different
+//    footballer in 25/26 than in 26/27. `element.code` / `team.code` and
+//    `opta_code` are the stable identifiers, so those key the identity tables
+//    (`fpl_player`, `club`) while the season-scoped ids live on the membership
+//    tables (`player_season`, `club_season`). That mapping is what lets the
+//    25/26 backfill be replayed after the August rollover has overwritten
+//    FPL's id space (R1.5, R1.7).
+// 2. **Zero name-based matching.** No lookup in this path goes through a
+//    player or club name; names are payload data, never a key.
+// 3. **Nullability follows the data, not the wish.** `squad_number` is null for
+//    all 841 players in 25/26, `birth_date` for 19, and
+//    `chance_of_playing_next_round` for 211. See R1.2's note in TODO_2627.md.
+
+/// FPL's four element types. Mapped from `element_types[].singular_name_short`
+/// at ingest rather than from the numeric id, which is FPL's to renumber.
+enum Position {
+  GKP
+  DEF
+  MID
+  FWD
+}
+
+model Season {
+  id        Int      @id @default(autoincrement())
+  /// "2025/26"
+  name      String   @unique
+  /// The calendar year the season starts in: 2025 for 2025/26.
+  startYear Int      @unique
+  createdAt DateTime @default(now())
+
+  clubSeasons   ClubSeason[]
+  playerSeasons PlayerSeason[]
+  gameweeks     Gameweek[]
+
+  @@map("season")
+}
+
+/// A club's cross-season identity. One row per club, ever.
+model Club {
+  id        Int    @id @default(autoincrement())
+  /// `team.code` — stable across seasons, unlike `team.id`.
+  fplCode   Int    @unique
+  /// Premier League `pulse_id`, kept as an independent cross-check handle.
+  pulseId   Int?
+  name      String
+  shortName String
+
+  seasons ClubSeason[]
+
+  @@map("club")
+}
+
+/// A club's participation in one season: the season-scoped FPL id and the
+/// strength ratings, which are re-derived each season.
+model ClubSeason {
+  id       Int @id @default(autoincrement())
+  seasonId Int
+  clubId   Int
+  /// `team.id` — 1..20, alphabetical, reassigned every season.
+  fplId    Int
+
+  strength             Int
+  strengthOverallHome  Int
+  strengthOverallAway  Int
+  strengthAttackHome   Int
+  strengthAttackAway   Int
+  strengthDefenceHome  Int
+  strengthDefenceAway  Int
+
+  season        Season         @relation(fields: [seasonId], references: [id])
+  club          Club           @relation(fields: [clubId], references: [id])
+  playerSeasons PlayerSeason[]
+
+  @@unique([seasonId, clubId])
+  @@unique([seasonId, fplId])
+  @@map("club_season")
+}
+
+/// A footballer's cross-season identity. R2.2 renames this model to `Player`,
+/// once the v1 `Player` above is gone and the name is free.
+model FplPlayer {
+  id         Int       @id @default(autoincrement())
+  /// `element.code` — stable across seasons, unlike `element.id`.
+  fplCode    Int       @unique
+  /// `element.opta_code`, e.g. "p118748". Populated for all 841 players in
+  /// 25/26 — but it is exactly "p" + `fplCode` for every one of them, so it
+  /// corroborates nothing about identity that `fplCode` doesn't already say.
+  /// Kept because it is the join key into Opta-derived data from other
+  /// providers, which is what makes R1.6's independent cross-check possible.
+  optaCode   String?   @unique
+  firstName  String
+  secondName String
+  webName    String
+  birthDate  DateTime? @db.Date
+
+  seasons PlayerSeason[]
+
+  @@map("fpl_player")
+}
+
+/// A footballer's registration in one season: which club, which position, and
+/// the availability signals the valuation engine reads (R3.4).
+model PlayerSeason {
+  id           Int @id @default(autoincrement())
+  seasonId     Int
+  playerId     Int
+  clubSeasonId Int
+  /// `element.id` — season-scoped. This is the key `event/{gw}/live` uses, so
+  /// (seasonId, fplId) is how R1.4 resolves a live element to a footballer.
+  fplId        Int
+
+  position Position
+
+  /// FPL availability code: a=available, d=doubtful, i=injured, s=suspended,
+  /// u=unavailable, n=not in squad.
+  status                   String
+  chanceOfPlayingThisRound Int?
+  chanceOfPlayingNextRound Int?
+  news                     String
+  newsAddedAt              DateTime?
+
+  squadNumber  Int?
+  teamJoinDate DateTime? @db.Date
+
+  /// FPL's own price, in tenths of a million. Not our price — an input.
+  nowCost           Int
+  selectedByPercent Decimal @db.Decimal(6, 3)
+
+  season     Season     @relation(fields: [seasonId], references: [id])
+  player     FplPlayer  @relation(fields: [playerId], references: [id])
+  clubSeason ClubSeason @relation(fields: [clubSeasonId], references: [id])
+
+  @@unique([seasonId, playerId])
+  @@unique([seasonId, fplId])
+  @@index([clubSeasonId])
+  @@map("player_season")
+}
+
+model Gameweek {
+  id       Int @id @default(autoincrement())
+  seasonId Int
+  /// `event.id` — 1..38 within the season.
+  number   Int
+
+  name         String
+  /// Null on unscheduled events; FPL leaves it unset before a season is fixed.
+  deadlineTime DateTime?
+  finished     Boolean
+  /// FPL's own signal that bonus points are final. R6.4 settles on this.
+  dataChecked  Boolean
+  isPrevious   Boolean
+  isCurrent    Boolean
+  isNext       Boolean
+
+  averageEntryScore Int?
+  highestScore      Int?
+
+  season Season @relation(fields: [seasonId], references: [id])
+
+  @@unique([seasonId, number])
+  @@map("gameweek")
 }
