@@ -36,3 +36,7 @@ export {
   type EventLiveSyncResult,
   type RawPayloadOutcome,
 } from './live/sync';
+
+export { parseCsv, type CsvRow } from './archive/csv';
+export { buildBootstrapPayload, buildFixturesPayload } from './archive/reference';
+export { buildEventLivePlan } from './archive/live';
