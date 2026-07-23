@@ -32,13 +32,14 @@ export type PlannedClub = {
   };
   season: {
     fplId: number;
-    strength: number;
-    strengthOverallHome: number;
-    strengthOverallAway: number;
-    strengthAttackHome: number;
-    strengthAttackAway: number;
-    strengthDefenceHome: number;
-    strengthDefenceAway: number;
+    // Null through preseason; FPL only sets the ratings near GW1.
+    strength: number | null;
+    strengthOverallHome: number | null;
+    strengthOverallAway: number | null;
+    strengthAttackHome: number | null;
+    strengthAttackAway: number | null;
+    strengthDefenceHome: number | null;
+    strengthDefenceAway: number | null;
   };
 };
 

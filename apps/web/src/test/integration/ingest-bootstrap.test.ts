@@ -234,3 +234,41 @@ describe('syncBootstrap — across the season rollover', () => {
     ).toBeNull();
   });
 });
+
+describe('syncBootstrap — preseason', () => {
+  // FPL serves the strength ratings as null all through preseason and only
+  // sets them near GW1. The rollover cutover (R6.6) lands squarely in that
+  // window, so a current-season bootstrap has to parse and store the nulls
+  // rather than throw. Found when the API rolled 25/26 → 26/27 on 2026-07-23.
+  const preseason = () =>
+    mutated((d) => {
+      for (const team of d.teams) {
+        team.strength = null;
+        team.strength_overall_home = null;
+        team.strength_overall_away = null;
+        team.strength_attack_home = null;
+        team.strength_attack_away = null;
+        team.strength_defence_home = null;
+        team.strength_defence_away = null;
+      }
+    });
+
+  it('parses and stores null strength ratings without failing', async () => {
+    const result = await sync(preseason());
+    expect(result.clubSeasons).toEqual({ created: CLUBS, updated: 0, unchanged: 0 });
+
+    const clubSeasons = await db.clubSeason.findMany();
+    expect(clubSeasons).toHaveLength(CLUBS);
+    expect(clubSeasons.every((cs) => cs.strength === null)).toBe(true);
+    expect(clubSeasons.every((cs) => cs.strengthAttackHome === null)).toBe(true);
+  });
+
+  it('updates the nulls to real ratings once FPL sets them near GW1', async () => {
+    await sync(preseason());
+    const result = await sync(); // the same season, now with ratings filled in
+
+    expect(result.clubSeasons.updated).toBe(CLUBS);
+    const filled = await db.clubSeason.findMany();
+    expect(filled.every((cs) => cs.strength !== null)).toBe(true);
+  });
+});

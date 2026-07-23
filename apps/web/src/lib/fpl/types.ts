@@ -23,13 +23,16 @@ export const fplTeamSchema = z
     code: z.number().int(),
     name: z.string(),
     short_name: z.string(),
-    strength: z.number().int(),
-    strength_overall_home: z.number().int(),
-    strength_overall_away: z.number().int(),
-    strength_attack_home: z.number().int(),
-    strength_attack_away: z.number().int(),
-    strength_defence_home: z.number().int(),
-    strength_defence_away: z.number().int(),
+    // FPL serves the strength ratings as null all through preseason and only
+    // fills them near GW1, so they cannot be required — a current-season
+    // bootstrap would fail to parse the moment the season rolls over.
+    strength: z.number().int().nullable(),
+    strength_overall_home: z.number().int().nullable(),
+    strength_overall_away: z.number().int().nullable(),
+    strength_attack_home: z.number().int().nullable(),
+    strength_attack_away: z.number().int().nullable(),
+    strength_defence_home: z.number().int().nullable(),
+    strength_defence_away: z.number().int().nullable(),
     pulse_id: z.number().int(),
   })
   .passthrough();
