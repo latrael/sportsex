@@ -22,10 +22,20 @@ export default function QuestsPage() {
   async function loadQuests() {
     const res = await fetch('/api/quests');
     if (res.ok) setQuests(await res.json());
-    setLoading(false);
   }
 
-  useEffect(() => { loadQuests(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const res = await fetch('/api/quests');
+      if (cancelled) return;
+      if (res.ok) setQuests(await res.json());
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function claim(code: string) {
     start(async () => {

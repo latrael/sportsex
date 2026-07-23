@@ -29,7 +29,7 @@ pnpm dev               # http://localhost:3000
 - **Quests**: daily login, place a trade, comment on a player — each grants coins.
 - **Predictions**: stake coins on match results; payouts resolve automatically when the match settles.
 - **Friends** and **private leaderboards** with join codes.
-- **CI**: GitHub Actions runs typecheck, ESLint, Prettier, and 81 Vitest tests on every push/PR.
+- **CI**: GitHub Actions runs typecheck, ESLint, and 119 Vitest tests against a Postgres service container on every push/PR.
 
 ## Pricing algorithm
 
@@ -142,13 +142,25 @@ sportsex/
 
 ## Dev DB
 
-Dev uses SQLite at `apps/web/prisma/dev.db`. To wipe and reseed from the 24/25 CSVs:
+Both dev and prod are Postgres (Neon). Set `DATABASE_URL` to your connection string. To wipe and reseed:
 
 ```bash
 pnpm db:reset
 ```
 
-To switch to Postgres for production: change the Prisma provider to `postgresql` and set `DATABASE_URL` to a Neon or Supabase connection string.
+## Running tests
+
+The suite needs a real Postgres, since the Prisma schema targets `postgresql`. A disposable one is defined at the repo root:
+
+```bash
+docker compose up -d          # postgres on localhost:5433, db `sportsex_test`
+pnpm --dir apps/web test      # 119 tests
+docker compose down -v        # throw it away
+```
+
+Override the target with `TEST_DATABASE_URL` if you want a different host. The suite runs `prisma db push --force-reset` on startup, which drops every table, so `src/test/globalSetup.ts` refuses any URL that isn't Postgres on localhost with a database name ending in `_test`. That guard is what stands between `pnpm test` and the production database in `apps/web/.env`.
+
+CI runs the same suite against a `postgres:16` service container.
 
 ## Environment
 
@@ -156,7 +168,8 @@ Copy `.env.example` → `.env`. Defaults work out of the box for local dev.
 
 | Variable | Required for | Notes |
 |---|---|---|
-| `DATABASE_URL` | everything | `file:./dev.db` for SQLite dev |
+| `DATABASE_URL` | everything | Postgres connection string (Neon) |
+| `TEST_DATABASE_URL` | tests | defaults to the `docker compose` database on `localhost:5433` |
 | `AUTH_SECRET` | auth | any 32+ char string |
 | `ADMIN_TOKEN` | simulate-match endpoint | `dev-admin-token` works locally |
 | `FOOTBALL_DATA_API_KEY` | real match sync | free at football-data.org |
