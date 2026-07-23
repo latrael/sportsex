@@ -2,8 +2,10 @@
 //
 // The fixture files are genuine FPL responses from the 25/26 season, trimmed to
 // a referentially closed subset: every `element.team` resolves to a team in the
-// file, and every `explain[].fixture` in the live payloads resolves to a fixture
-// in fixtures.sample.json.
+// file, every `explain[].fixture` in the live payloads resolves to a fixture in
+// fixtures.sample.json, and every `team_h`/`team_a` there resolves back to a
+// team in bootstrap-static.sample.json. Five teams carry no elements — they are
+// present so the fixture list closes, which is what R1.3's ingest needs.
 
 import { describe, it, expect } from 'vitest';
 import {
@@ -22,7 +24,7 @@ describe('parseBootstrapStatic', () => {
   const boot = parseBootstrapStatic(bootstrapSample);
 
   it('parses teams, element types, events and elements', () => {
-    expect(boot.teams.map((t) => t.id)).toEqual([4, 11, 12, 13]);
+    expect(boot.teams.map((t) => t.id)).toEqual([1, 3, 4, 9, 11, 12, 13, 15, 20]);
     expect(boot.element_types.map((t) => t.singular_name_short)).toEqual([
       'GKP',
       'DEF',

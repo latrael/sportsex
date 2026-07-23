@@ -298,6 +298,7 @@ model Season {
   clubSeasons   ClubSeason[]
   playerSeasons PlayerSeason[]
   gameweeks     Gameweek[]
+  fixtures      Fixture[]
 
   @@map("season")
 }
@@ -337,6 +338,8 @@ model ClubSeason {
   season        Season         @relation(fields: [seasonId], references: [id])
   club          Club           @relation(fields: [clubId], references: [id])
   playerSeasons PlayerSeason[]
+  homeFixtures  Fixture[]      @relation("homeFixtures")
+  awayFixtures  Fixture[]      @relation("awayFixtures")
 
   @@unique([seasonId, clubId])
   @@unique([seasonId, fplId])
@@ -422,8 +425,58 @@ model Gameweek {
   averageEntryScore Int?
   highestScore      Int?
 
-  season Season @relation(fields: [seasonId], references: [id])
+  season   Season    @relation(fields: [seasonId], references: [id])
+  fixtures Fixture[]
 
   @@unique([seasonId, number])
   @@map("gameweek")
+}
+
+/// One match. Written by the fixtures ingest (R1.3) and the row that
+/// `player_fixture_stat` hangs off in R1.4.
+model Fixture {
+  id       Int @id @default(autoincrement())
+  seasonId Int
+  /// Null until FPL schedules the match into a gameweek. Postponements land
+  /// here too, and the whole calendar sits null before a season is published.
+  gameweekId Int?
+
+  /// `fixture.id` — season-scoped, 1..380, and the key `explain[].fixture`
+  /// carries in event/{gw}/live. This is how R1.4 attributes a stat line.
+  fplId Int
+  /// `fixture.code` — a Premier League match code, believed globally unique
+  /// rather than season-scoped. The unique constraint is the assertion: if a
+  /// later season ever reuses one, the ingest fails loudly instead of merging
+  /// two different matches. R6.6's staging dry run is where that would surface.
+  code  Int @unique
+
+  homeClubSeasonId Int
+  awayClubSeasonId Int
+
+  kickoffTime DateTime?
+  /// FPL leaves this null before it has decided a match has begun.
+  started     Boolean?
+  finished    Boolean
+  /// Set when the match ends but bonus points are not yet final.
+  finishedProvisional  Boolean
+  provisionalStartTime Boolean
+  minutes              Int
+
+  homeScore Int?
+  awayScore Int?
+  /// FPL's own 1–5 difficulty ratings. An input to R7.1's odds, not a judgement.
+  homeDifficulty Int
+  awayDifficulty Int
+
+  season   Season     @relation(fields: [seasonId], references: [id])
+  gameweek Gameweek?  @relation(fields: [gameweekId], references: [id])
+  homeClub ClubSeason @relation("homeFixtures", fields: [homeClubSeasonId], references: [id])
+  awayClub ClubSeason @relation("awayFixtures", fields: [awayClubSeasonId], references: [id])
+
+  @@unique([seasonId, fplId])
+  @@index([gameweekId])
+  @@index([kickoffTime])
+  @@index([homeClubSeasonId])
+  @@index([awayClubSeasonId])
+  @@map("fixture")
 }

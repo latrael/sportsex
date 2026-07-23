@@ -12,3 +12,12 @@ export {
 } from './bootstrap/plan';
 
 export { syncBootstrap, type BootstrapSyncResult } from './bootstrap/sync';
+
+export {
+  FixturesPlanError,
+  planFixtures,
+  type FixturesPlan,
+  type PlannedFixture,
+} from './fixtures/plan';
+
+export { FixturesSyncError, syncFixtures, type FixturesSyncResult } from './fixtures/sync';
