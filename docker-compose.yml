@@ -1,0 +1,26 @@
+# Disposable Postgres for the test suite.
+#
+#   docker compose up -d      start it
+#   pnpm --dir apps/web test  run the suite against it
+#   docker compose down -v    throw it away
+#
+# Port 5433 so it never collides with a Postgres you already run on 5432.
+# The database name must end in `_test`: src/test/globalSetup.ts refuses to
+# reset anything else, because the suite drops every table on startup.
+services:
+  postgres:
+    image: postgres:16
+    container_name: sportsex-test-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sportsex_test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    tmpfs:
+      - /var/lib/postgresql/data

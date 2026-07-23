@@ -39,17 +39,17 @@ export default async function Portfolio() {
   const playerById = new Map(players.map((p) => [p.id, p]));
   const teamById = new Map(teams.map((t) => [t.id, t]));
 
-  let totalValue = me?.coinBalance ?? 0;
-  let totalCost = 0;
   const rows = holdings.map((h) => {
     const price = (h.assetKind === 'player' ? playerPriceMap : teamPriceMap).get(h.assetId) ?? 0;
     const value = price * h.shares;
     const cost = h.avgCost * h.shares;
-    totalValue += value;
-    totalCost += cost;
     const name = h.assetKind === 'player' ? playerById.get(h.assetId)?.fullName : teamById.get(h.assetId)?.name;
     return { ...h, price, value, cost, name: name ?? '—' };
   });
+
+  const holdingsValue = rows.reduce((s, r) => s + r.value, 0);
+  const totalCost = rows.reduce((s, r) => s + r.cost, 0);
+  const totalValue = (me?.coinBalance ?? 0) + holdingsValue;
 
   const pnl = rows.reduce((s, r) => s + (r.value - r.cost), 0);
   const pnlPct = totalCost > 0 ? (pnl / totalCost) * 100 : 0;
@@ -58,7 +58,7 @@ export default async function Portfolio() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
         <div className="card"><div className="text-mute text-xs uppercase">Balance</div><div className="font-mono text-2xl">{me?.coinBalance.toLocaleString()}</div></div>
-        <div className="card"><div className="text-mute text-xs uppercase">Holdings value</div><div className="font-mono text-2xl">{(totalValue - (me?.coinBalance ?? 0)).toFixed(2)}</div></div>
+        <div className="card"><div className="text-mute text-xs uppercase">Holdings value</div><div className="font-mono text-2xl">{holdingsValue.toFixed(2)}</div></div>
         <div className="card"><div className="text-mute text-xs uppercase">Net worth</div><div className="font-mono text-2xl">{totalValue.toFixed(2)}</div></div>
         <div className="card"><div className="text-mute text-xs uppercase">PnL</div><div className={`font-mono text-2xl ${pnl >= 0 ? 'up' : 'down'}`}>{pnl >= 0 ? '+' : ''}{pnl.toFixed(2)} ({pnlPct.toFixed(1)}%)</div></div>
       </div>
