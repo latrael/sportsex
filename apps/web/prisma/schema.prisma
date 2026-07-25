@@ -6,7 +6,11 @@
 //     by the FPL ingestion path (TODO_2627.md Phase 1), plus the derived and
 //     market tables added in R2.1 (player_season_stat, fair_value, asset,
 //     price_tick, trade, position, ledger_entry).
-// R2.2 is the cutover that deletes the v1 half. Nothing joins across the two.
+// Nothing joins across the two halves. R2.2 lands the v2 migration so a fresh
+// database is v2-complete; the v1 engine-room tables (Team, Player, Match,
+// Valuation, Holding, Transaction, Order, PlayerMatchStat) can only be dropped
+// once the product UI stops reading them (Phase 5), at which point FplPlayer →
+// Player and fpl_player → player. Until then both eras coexist.
 
 generator client {
   provider = "prisma-client-js"
@@ -633,8 +637,9 @@ model RawPayload {
 //   market:   asset · price_tick · trade · position · ledger_entry
 //
 // Product tables (User, Comment, Friendship, leaderboards, Quest, Prediction)
-// are the v1 models above, carried largely unchanged; R2.2 is the cutover that
-// deletes the v1 engine-room tables and renames FplPlayer → Player.
+// are the v1 models above, carried largely unchanged. R2.2 lands the migration
+// for this half; dropping the v1 engine-room tables and renaming FplPlayer →
+// Player waits until the UI no longer reads v1 (Phase 5).
 //
 // Three principles the v1 schema violated and this half enforces:
 //   1. Events immutable, aggregates derived — player_season_stat is a recompute
