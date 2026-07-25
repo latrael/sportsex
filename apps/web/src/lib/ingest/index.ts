@@ -21,3 +21,18 @@ export {
 } from './fixtures/plan';
 
 export { FixturesSyncError, syncFixtures, type FixturesSyncResult } from './fixtures/sync';
+
+export {
+  EventLivePlanError,
+  planEventLive,
+  type EventLivePlan,
+  type PlannedFixtureStat,
+  type PlannedGameweekStat,
+} from './live/plan';
+
+export {
+  EventLiveSyncError,
+  syncEventLive,
+  type EventLiveSyncResult,
+  type RawPayloadOutcome,
+} from './live/sync';
