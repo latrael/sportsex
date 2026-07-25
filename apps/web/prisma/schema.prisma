@@ -327,13 +327,17 @@ model ClubSeason {
   /// `team.id` — 1..20, alphabetical, reassigned every season.
   fplId    Int
 
-  strength             Int
-  strengthOverallHome  Int
-  strengthOverallAway  Int
-  strengthAttackHome   Int
-  strengthAttackAway   Int
-  strengthDefenceHome  Int
-  strengthDefenceAway  Int
+  /// Nullable because FPL serves these as null all through preseason — the
+  /// strength ratings aren't set until close to GW1. R1.7's rollover cutover
+  /// hits exactly this window (found in R1.4, 2026-07-23). A completed season
+  /// (the 25/26 archive) carries real values; a fresh 26/27 does not yet.
+  strength             Int?
+  strengthOverallHome  Int?
+  strengthOverallAway  Int?
+  strengthAttackHome   Int?
+  strengthAttackAway   Int?
+  strengthDefenceHome  Int?
+  strengthDefenceAway  Int?
 
   season        Season         @relation(fields: [seasonId], references: [id])
   club          Club           @relation(fields: [clubId], references: [id])
