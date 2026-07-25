@@ -650,20 +650,31 @@ model RawPayload {
 //      as Decimal, every movement a ledger_entry row (R2.4, R4.2).
 
 /// Season-to-date aggregates for one player, recomputed from the immutable
-/// per-fixture and per-gameweek rows (R2.3), never incremented. Counting stats
-/// are summed from `player_fixture_stat`; the model inputs FPL only reports at
-/// gameweek grain (xG/xA/xGC/bps/tackles/ICT) are summed from
-/// `player_gameweek_stat`. Invariant 4: a recompute reproduces this row exactly.
+/// per-fixture and per-gameweek rows (R2.3), never incremented. Invariant 4: a
+/// recompute reproduces this row exactly.
+///
+/// **Every summed stat comes from `player_gameweek_stat`**; only `appearances`
+/// is counted from `player_fixture_stat`. R2.1 planned it the other way round,
+/// and measuring the live payloads showed that to be lossy: FPL's `explain`
+/// block is a points ledger, not a stat line, and omits an identifier that
+/// scored nothing. Clean sheets, goals conceded, saves and defensive
+/// contribution are all conditionally scoring, so the per-fixture grain
+/// systematically under-reports them — exactly the defensive stats R3.1 needs.
+/// The gameweek grain is FPL's `stats` block verbatim and is complete; a double
+/// gameweek's row already covers both fixtures, so summing it is exact.
+/// See src/lib/derive/seasonStats/plan.ts for the measurements.
 model PlayerSeasonStat {
   id             Int @id @default(autoincrement())
   playerSeasonId Int @unique
 
-  /// Fixtures with minutes > 0. Not the same as `starts`.
+  /// Fixtures with minutes > 0 — the one field counted from
+  /// `player_fixture_stat`, since only that grain knows a double gameweek was
+  /// two matches. Not the same as `starts`: a substitute has appeared.
   appearances Int
   minutes     Int
   starts      Int
 
-  // Counting stats — Σ over player_fixture_stat.
+  // Counting stats — Σ over player_gameweek_stat (see the note above).
   goalsScored           Int
   assists               Int
   cleanSheets           Int
@@ -678,7 +689,7 @@ model PlayerSeasonStat {
   defensiveContribution Int
   totalPoints           Int
 
-  // Model inputs — Σ over player_gameweek_stat (gameweek grain only).
+  // Model inputs — gameweek grain is the only grain FPL reports these at.
   bps                           Int
   tackles                       Int
   recoveries                    Int

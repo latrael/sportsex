@@ -15,7 +15,7 @@
 import { createHash } from 'crypto';
 import type { Prisma, PrismaClient } from '@prisma/client';
 import type { RawPayload } from '@/lib/fpl';
-import { applyDiff, type SyncCounts } from '../diff';
+import { applyDiff, createInChunks, type SyncCounts } from '../diff';
 import type { EventLivePlan } from './plan';
 
 export type RawPayloadOutcome = 'created' | 'updated' | 'unchanged';
@@ -44,7 +44,6 @@ export class EventLiveSyncError extends Error {
 
 const DEFAULT_TIMEOUT_MS = 120_000;
 const DEFAULT_MAX_WAIT_MS = 10_000;
-const CREATE_CHUNK = 1_000;
 
 export async function syncEventLive(
   prisma: PrismaClient,
@@ -229,15 +228,6 @@ async function runSync(
     raw,
     warnings,
   };
-}
-
-async function createInChunks<T>(
-  create: (chunk: T[]) => Promise<unknown>,
-  rows: T[],
-): Promise<void> {
-  for (let i = 0; i < rows.length; i += CREATE_CHUNK) {
-    await create(rows.slice(i, i + CREATE_CHUNK));
-  }
 }
 
 /**

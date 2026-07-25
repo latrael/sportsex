@@ -184,7 +184,7 @@ Next.js app (unchanged shell)
 
 Three principles that the current codebase violates and the rebuild should enforce:
 
-1. **Events are immutable; aggregates are derived.** `player_fixture_stat` is written once per (player, fixture) and never mutated. Season totals are recomputed from it. No `increment:` anywhere in the stats path. This alone removes the need for `recalc-stats.ts`, `patch-minutes.ts`, and `reset-for-resync.ts`.
+1. **Events are immutable; aggregates are derived.** `player_fixture_stat` is written once per (player, fixture) and never mutated. Season totals are recomputed from the event rows (see invariant 4 for which grain). No `increment:` anywhere in the stats path. This alone removes the need for `recalc-stats.ts`, `patch-minutes.ts`, and `reset-for-resync.ts`.
 2. **One writer per concern.** Prices are written only by the valuation engine and the AMM. Stats are written only by ingestion. Balances are written only by the ledger.
 3. **Money is integers and double-entry.** Coins in minor units as `BigInt`, every movement is a `ledger_entry` row, and a user's balance is provably the sum of their entries. Reconciliation becomes a query instead of an investigation.
 
@@ -281,7 +281,7 @@ Write these as tests before writing the engine:
 1. Buy `n` then immediately sell `n` loses exactly the fee. For all `n`, all `V`, all starting `q`.
 2. Total coins in circulation changes only via explicit mints (grants, quests, prediction payouts) and burns (fees). Assert after every simulated session.
 3. Settling the same fixture twice produces identical state. Idempotent on `(player_id, fixture_id)`.
-4. Recomputing season aggregates from `player_fixture_stat` reproduces the stored aggregates exactly.
+4. Recomputing season aggregates from the immutable event rows reproduces the stored aggregates exactly. *(Amended in R2.3: this said "from `player_fixture_stat`". FPL's `explain` block is a points ledger rather than a stat line, so the per-fixture grain under-reports the conditionally scoring stats — clean sheets, saves, goals conceded, defensive contribution. Summed stats come from `player_gameweek_stat`; only `appearances` is counted from `player_fixture_stat`. Both are immutable event tables and nothing is incremented, so the invariant itself is unchanged.)*
 5. No user balance is ever negative, under concurrent order load. Test with parallel writers, not sequentially.
 6. Fair value is a pure function of stats. Same inputs, same output, no clock, no randomness.
 
