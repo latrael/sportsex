@@ -2,8 +2,10 @@
 //
 // Two eras live here side by side during the 26/27 rebuild:
 //   * the v1 product tables (User, Team, Player, Match, ...) — see AGENTS.md §5
-//   * the v2 reference tables at the bottom of this file, written by the FPL
-//     ingestion path (TODO_2627.md Phase 1).
+//   * the v2 tables in the lower half of this file: reference + events written
+//     by the FPL ingestion path (TODO_2627.md Phase 1), plus the derived and
+//     market tables added in R2.1 (player_season_stat, fair_value, asset,
+//     price_tick, trade, position, ledger_entry).
 // R2.2 is the cutover that deletes the v1 half. Nothing joins across the two.
 
 generator client {
@@ -16,122 +18,127 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  handle        String   @unique
-  passwordHash  String?
-  coinBalance   Int      @default(10000)
-  createdAt     DateTime @default(now())
-  lastLoginAt   DateTime?
+  id           String    @id @default(cuid())
+  email        String    @unique
+  handle       String    @unique
+  passwordHash String?
+  coinBalance  Int       @default(10000)
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
 
-  holdings      Holding[]
-  transactions  Transaction[]
-  orders        Order[]
-  comments      Comment[]
-  predictions   Prediction[]
-  questCompletions UserQuest[]
-  friendshipsOut Friendship[] @relation("friendshipsOut")
-  friendshipsIn  Friendship[] @relation("friendshipsIn")
-  privateLeaderboards PrivateLeaderboard[]
+  holdings             Holding[]
+  transactions         Transaction[]
+  orders               Order[]
+  // Schema v2 market relations (R2.1). Coexist with the v1 holdings/
+  // transactions/orders above until R2.5 deletes the v1 half.
+  positions            Position[]
+  trades               Trade[]
+  ledgerEntries        LedgerEntry[]
+  comments             Comment[]
+  predictions          Prediction[]
+  questCompletions     UserQuest[]
+  friendshipsOut       Friendship[]               @relation("friendshipsOut")
+  friendshipsIn        Friendship[]               @relation("friendshipsIn")
+  privateLeaderboards  PrivateLeaderboard[]
   privateLbMemberships PrivateLeaderboardMember[]
 }
 
 model Team {
-  id         Int      @id @default(autoincrement())
-  name       String   @unique
-  shortName  String?
-  league     String   @default("EPL")
-  crestUrl   String?
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  shortName String?
+  league    String  @default("EPL")
+  crestUrl  String?
 
-  players    Player[]
-  valuations Valuation[]
-  homeMatches Match[] @relation("home")
-  awayMatches Match[] @relation("away")
+  players     Player[]
+  valuations  Valuation[]
+  homeMatches Match[]     @relation("home")
+  awayMatches Match[]     @relation("away")
 }
 
 model Player {
-  id           Int      @id @default(autoincrement())
-  playerKey    String   @unique
-  fullName     String
-  teamId       Int?
-  team         Team?    @relation(fields: [teamId], references: [id])
-  position     String?
-  posBucket    String?
-  nationality  String?
+  id          Int     @id @default(autoincrement())
+  playerKey   String  @unique
+  fullName    String
+  teamId      Int?
+  team        Team?   @relation(fields: [teamId], references: [id])
+  position    String?
+  posBucket   String?
+  nationality String?
   // Season-to-date stats used by pricing.ts
-  appearances  Int      @default(0)
-  minutes      Int      @default(0)
-  goals        Int      @default(0)
-  assists      Int      @default(0)
-  totalShares  Int      @default(10000)
-  sharesHeld   Int      @default(0)
+  appearances Int     @default(0)
+  minutes     Int     @default(0)
+  goals       Int     @default(0)
+  assists     Int     @default(0)
+  totalShares Int     @default(10000)
+  sharesHeld  Int     @default(0)
 
-  valuations   Valuation[]
-  matchStats   PlayerMatchStat[]
-  comments     Comment[]
+  valuations Valuation[]
+  matchStats PlayerMatchStat[]
+  comments   Comment[]
 
   @@index([teamId])
   @@index([fullName])
 }
 
 model Match {
-  id            Int      @id @default(autoincrement())
-  externalId    String?  @unique
-  homeTeamId    Int
-  awayTeamId    Int
-  home          Team     @relation("home", fields: [homeTeamId], references: [id])
-  away          Team     @relation("away", fields: [awayTeamId], references: [id])
-  kickoffAt     DateTime
-  status        String   @default("scheduled") // scheduled|live|finished|settled
-  homeScore     Int?
-  awayScore     Int?
-  settledAt     DateTime?
+  id         Int       @id @default(autoincrement())
+  externalId String?   @unique
+  homeTeamId Int
+  awayTeamId Int
+  home       Team      @relation("home", fields: [homeTeamId], references: [id])
+  away       Team      @relation("away", fields: [awayTeamId], references: [id])
+  kickoffAt  DateTime
+  status     String    @default("scheduled") // scheduled|live|finished|settled
+  homeScore  Int?
+  awayScore  Int?
+  settledAt  DateTime?
 
-  playerStats   PlayerMatchStat[]
-  valuations    Valuation[]
-  predictions   Prediction[]
+  playerStats PlayerMatchStat[]
+  valuations  Valuation[]
+  predictions Prediction[]
 
   @@index([status])
   @@index([kickoffAt])
 }
 
 model PlayerMatchStat {
-  id        Int      @id @default(autoincrement())
-  playerId  Int
-  matchId   Int
-  player    Player   @relation(fields: [playerId], references: [id])
-  match     Match    @relation(fields: [matchId], references: [id])
-  minutes   Int      @default(0)
-  goals     Int      @default(0)
-  assists   Int      @default(0)
+  id       Int     @id @default(autoincrement())
+  playerId Int
+  matchId  Int
+  player   Player  @relation(fields: [playerId], references: [id])
+  match    Match   @relation(fields: [matchId], references: [id])
+  minutes  Int     @default(0)
+  goals    Int     @default(0)
+  assists  Int     @default(0)
   // 'win' | 'draw' | 'loss' for the player's team in this match
-  result    String?
+  result   String?
 
   @@unique([playerId, matchId])
 }
 
 model Valuation {
-  id              Int      @id @default(autoincrement())
-  playerId        Int?
-  teamId          Int?
-  player          Player?  @relation(fields: [playerId], references: [id])
-  team            Team?    @relation(fields: [teamId], references: [id])
-  computedAt      DateTime @default(now())
-  price           Float
-  basePrice       Float?
-  demandMult      Float?
-  matchId         Int?
-  match           Match?   @relation(fields: [matchId], references: [id])
+  id         Int      @id @default(autoincrement())
+  playerId   Int?
+  teamId     Int?
+  player     Player?  @relation(fields: [playerId], references: [id])
+  team       Team?    @relation(fields: [teamId], references: [id])
+  computedAt DateTime @default(now())
+  price      Float
+  basePrice  Float?
+  demandMult Float?
+  matchId    Int?
+  match      Match?   @relation(fields: [matchId], references: [id])
 
   @@index([playerId, computedAt])
   @@index([teamId, computedAt])
 }
 
 model Holding {
-  id        Int      @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  assetKind String   // 'player' | 'team'
+  user      User   @relation(fields: [userId], references: [id])
+  assetKind String // 'player' | 'team'
   assetId   Int
   shares    Int
   avgCost   Float
@@ -141,67 +148,67 @@ model Holding {
 }
 
 model Transaction {
-  id          Int      @id @default(autoincrement())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  assetKind   String   // 'player' | 'team' | 'coin_grant' | 'quest_reward' | 'prediction_payout'
-  assetId     Int?
-  side        String   // 'buy' | 'sell' | 'credit' | 'debit'
-  shares      Int      @default(0)
-  price       Float    @default(0)
-  coinsDelta  Int
-  reason      String?
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  assetKind  String // 'player' | 'team' | 'coin_grant' | 'quest_reward' | 'prediction_payout'
+  assetId    Int?
+  side       String // 'buy' | 'sell' | 'credit' | 'debit'
+  shares     Int      @default(0)
+  price      Float    @default(0)
+  coinsDelta Int
+  reason     String?
+  createdAt  DateTime @default(now())
 
   @@index([userId, createdAt])
   @@index([assetKind, assetId, createdAt])
 }
 
 model Order {
-  id           Int      @id @default(autoincrement())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  assetKind    String
-  assetId      Int
-  side         String   // 'buy' | 'sell'
-  shares       Int
-  status       String   // 'pending' | 'filled' | 'cancelled'
-  filledPrice  Float?
-  createdAt    DateTime @default(now())
-  filledAt     DateTime?
+  id          Int       @id @default(autoincrement())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  assetKind   String
+  assetId     Int
+  side        String // 'buy' | 'sell'
+  shares      Int
+  status      String // 'pending' | 'filled' | 'cancelled'
+  filledPrice Float?
+  createdAt   DateTime  @default(now())
+  filledAt    DateTime?
 
   @@index([userId, createdAt])
 }
 
 model Friendship {
-  id          Int      @id @default(autoincrement())
-  userId      String
-  friendId    String
-  status      String   // 'pending' | 'accepted'
-  createdAt   DateTime @default(now())
-  user        User     @relation("friendshipsOut", fields: [userId], references: [id])
-  friend      User     @relation("friendshipsIn", fields: [friendId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    String
+  friendId  String
+  status    String // 'pending' | 'accepted'
+  createdAt DateTime @default(now())
+  user      User     @relation("friendshipsOut", fields: [userId], references: [id])
+  friend    User     @relation("friendshipsIn", fields: [friendId], references: [id])
 
   @@unique([userId, friendId])
 }
 
 model PrivateLeaderboard {
-  id        Int      @id @default(autoincrement())
+  id        Int                        @id @default(autoincrement())
   name      String
-  joinCode  String   @unique
+  joinCode  String                     @unique
   ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id])
-  createdAt DateTime @default(now())
+  owner     User                       @relation(fields: [ownerId], references: [id])
+  createdAt DateTime                   @default(now())
   members   PrivateLeaderboardMember[]
 }
 
 model PrivateLeaderboardMember {
-  id             Int      @id @default(autoincrement())
-  leaderboardId  Int
-  userId         String
-  joinedAt       DateTime @default(now())
-  leaderboard    PrivateLeaderboard @relation(fields: [leaderboardId], references: [id])
-  user           User     @relation(fields: [userId], references: [id])
+  id            Int                @id @default(autoincrement())
+  leaderboardId Int
+  userId        String
+  joinedAt      DateTime           @default(now())
+  leaderboard   PrivateLeaderboard @relation(fields: [leaderboardId], references: [id])
+  user          User               @relation(fields: [userId], references: [id])
 
   @@unique([leaderboardId, userId])
 }
@@ -222,14 +229,14 @@ model Comment {
 }
 
 model Quest {
-  id           Int      @id @default(autoincrement())
-  code         String   @unique
-  title        String
-  body         String
-  rewardCoins  Int
-  repeatKind   String   // 'daily' | 'weekly' | 'one_shot'
+  id          Int    @id @default(autoincrement())
+  code        String @unique
+  title       String
+  body        String
+  rewardCoins Int
+  repeatKind  String // 'daily' | 'weekly' | 'one_shot'
 
-  completions  UserQuest[]
+  completions UserQuest[]
 }
 
 model UserQuest {
@@ -244,16 +251,16 @@ model UserQuest {
 }
 
 model Prediction {
-  id           Int      @id @default(autoincrement())
-  userId       String
-  matchId      Int
-  user         User     @relation(fields: [userId], references: [id])
-  match        Match    @relation(fields: [matchId], references: [id])
-  pick         String   // 'H' | 'D' | 'A'
-  coinsStaked  Int
-  resolved     Boolean  @default(false)
-  payout       Int      @default(0)
-  createdAt    DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  userId      String
+  matchId     Int
+  user        User     @relation(fields: [userId], references: [id])
+  match       Match    @relation(fields: [matchId], references: [id])
+  pick        String // 'H' | 'D' | 'A'
+  coinsStaked Int
+  resolved    Boolean  @default(false)
+  payout      Int      @default(0)
+  createdAt   DateTime @default(now())
 
   @@index([userId, createdAt])
   @@index([matchId, resolved])
@@ -280,7 +287,9 @@ model Prediction {
 
 /// FPL's four element types. Mapped from `element_types[].singular_name_short`
 /// at ingest rather than from the numeric id, which is FPL's to renumber.
-enum Position {
+/// Renamed from `Position` in R2.1 to free that name for the market `position`
+/// table below; the only type reference was `ingest/bootstrap/plan.ts`.
+enum PlayerPosition {
   GKP
   DEF
   MID
@@ -331,19 +340,20 @@ model ClubSeason {
   /// strength ratings aren't set until close to GW1. R1.7's rollover cutover
   /// hits exactly this window (found in R1.4, 2026-07-23). A completed season
   /// (the 25/26 archive) carries real values; a fresh 26/27 does not yet.
-  strength             Int?
-  strengthOverallHome  Int?
-  strengthOverallAway  Int?
-  strengthAttackHome   Int?
-  strengthAttackAway   Int?
-  strengthDefenceHome  Int?
-  strengthDefenceAway  Int?
+  strength            Int?
+  strengthOverallHome Int?
+  strengthOverallAway Int?
+  strengthAttackHome  Int?
+  strengthAttackAway  Int?
+  strengthDefenceHome Int?
+  strengthDefenceAway Int?
 
   season        Season         @relation(fields: [seasonId], references: [id])
   club          Club           @relation(fields: [clubId], references: [id])
   playerSeasons PlayerSeason[]
   homeFixtures  Fixture[]      @relation("homeFixtures")
   awayFixtures  Fixture[]      @relation("awayFixtures")
+  asset         Asset?
 
   @@unique([seasonId, clubId])
   @@unique([seasonId, fplId])
@@ -383,7 +393,7 @@ model PlayerSeason {
   /// (seasonId, fplId) is how R1.4 resolves a live element to a footballer.
   fplId        Int
 
-  position Position
+  position PlayerPosition
 
   /// FPL availability code: a=available, d=doubtful, i=injured, s=suspended,
   /// u=unavailable, n=not in squad.
@@ -406,6 +416,8 @@ model PlayerSeason {
 
   fixtureStats  PlayerFixtureStat[]
   gameweekStats PlayerGameweekStat[]
+  seasonStat    PlayerSeasonStat?
+  asset         Asset?
 
   @@unique([seasonId, playerId])
   @@unique([seasonId, fplId])
@@ -432,10 +444,11 @@ model Gameweek {
   averageEntryScore Int?
   highestScore      Int?
 
-  season             Season               @relation(fields: [seasonId], references: [id])
-  fixtures           Fixture[]
-  playerFixtureStats PlayerFixtureStat[]
+  season              Season               @relation(fields: [seasonId], references: [id])
+  fixtures            Fixture[]
+  playerFixtureStats  PlayerFixtureStat[]
   playerGameweekStats PlayerGameweekStat[]
+  fairValues          FairValue[]
 
   @@unique([seasonId, number])
   @@map("gameweek")
@@ -444,8 +457,8 @@ model Gameweek {
 /// One match. Written by the fixtures ingest (R1.3) and the row that
 /// `player_fixture_stat` hangs off in R1.4.
 model Fixture {
-  id       Int @id @default(autoincrement())
-  seasonId Int
+  id         Int  @id @default(autoincrement())
+  seasonId   Int
   /// Null until FPL schedules the match into a gameweek. Postponements land
   /// here too, and the whole calendar sits null before a season is published.
   gameweekId Int?
@@ -462,17 +475,17 @@ model Fixture {
   homeClubSeasonId Int
   awayClubSeasonId Int
 
-  kickoffTime DateTime?
+  kickoffTime          DateTime?
   /// FPL leaves this null before it has decided a match has begun.
-  started     Boolean?
-  finished    Boolean
+  started              Boolean?
+  finished             Boolean
   /// Set when the match ends but bonus points are not yet final.
   finishedProvisional  Boolean
   provisionalStartTime Boolean
   minutes              Int
 
-  homeScore Int?
-  awayScore Int?
+  homeScore      Int?
+  awayScore      Int?
   /// FPL's own 1–5 difficulty ratings. An input to R7.1's odds, not a judgement.
   homeDifficulty Int
   awayDifficulty Int
@@ -607,4 +620,325 @@ model RawPayload {
 
   @@unique([endpoint, scopeKey])
   @@map("raw_payload")
+}
+
+// ---------------------------------------------------------------------------
+// Schema v2 — derived + market tables (TODO_2627.md R2.1)
+//
+// The reference and events halves above already existed (R1.2–R1.4). R2.1 adds
+// the two remaining layers of the target architecture (REBUILD_PLAN §"Target
+// architecture"):
+//
+//   derived:  player_season_stat · fair_value   — recomputed, never incremented
+//   market:   asset · price_tick · trade · position · ledger_entry
+//
+// Product tables (User, Comment, Friendship, leaderboards, Quest, Prediction)
+// are the v1 models above, carried largely unchanged; R2.2 is the cutover that
+// deletes the v1 engine-room tables and renames FplPlayer → Player.
+//
+// Three principles the v1 schema violated and this half enforces:
+//   1. Events immutable, aggregates derived — player_season_stat is a recompute
+//      of player_fixture_stat / player_gameweek_stat (R2.3), never an increment.
+//   2. One writer per concern — prices only from the valuation engine + AMM,
+//      balances only from the ledger.
+//   3. Money is integers and double-entry — coins as BigInt minor units, prices
+//      as Decimal, every movement a ledger_entry row (R2.4, R4.2).
+
+/// Season-to-date aggregates for one player, recomputed from the immutable
+/// per-fixture and per-gameweek rows (R2.3), never incremented. Counting stats
+/// are summed from `player_fixture_stat`; the model inputs FPL only reports at
+/// gameweek grain (xG/xA/xGC/bps/tackles/ICT) are summed from
+/// `player_gameweek_stat`. Invariant 4: a recompute reproduces this row exactly.
+model PlayerSeasonStat {
+  id             Int @id @default(autoincrement())
+  playerSeasonId Int @unique
+
+  /// Fixtures with minutes > 0. Not the same as `starts`.
+  appearances Int
+  minutes     Int
+  starts      Int
+
+  // Counting stats — Σ over player_fixture_stat.
+  goalsScored           Int
+  assists               Int
+  cleanSheets           Int
+  goalsConceded         Int
+  ownGoals              Int
+  penaltiesSaved        Int
+  penaltiesMissed       Int
+  yellowCards           Int
+  redCards              Int
+  saves                 Int
+  bonus                 Int
+  defensiveContribution Int
+  totalPoints           Int
+
+  // Model inputs — Σ over player_gameweek_stat (gameweek grain only).
+  bps                           Int
+  tackles                       Int
+  recoveries                    Int
+  clearancesBlocksInterceptions Int
+
+  influence                Decimal @db.Decimal(10, 2)
+  creativity               Decimal @db.Decimal(10, 2)
+  threat                   Decimal @db.Decimal(10, 2)
+  ictIndex                 Decimal @db.Decimal(10, 2)
+  expectedGoals            Decimal @db.Decimal(10, 2)
+  expectedAssists          Decimal @db.Decimal(10, 2)
+  expectedGoalInvolvements Decimal @db.Decimal(10, 2)
+  expectedGoalsConceded    Decimal @db.Decimal(10, 2)
+
+  computedAt DateTime @default(now())
+
+  playerSeason PlayerSeason @relation(fields: [playerSeasonId], references: [id])
+
+  @@map("player_season_stat")
+}
+
+/// What kind of instrument an `asset` row represents. Redundant with which
+/// exclusive-arc foreign key is set, but kept as an indexable discriminator so
+/// position-group and market-wide queries don't have to test for nulls.
+enum AssetKind {
+  PLAYER
+  CLUB
+}
+
+/// One tradeable instrument — a player or a club, in a given season. This is the
+/// join target that gives positions, trades and price ticks real referential
+/// integrity, replacing v1's polymorphic `assetKind`/`assetId` string pair
+/// (Holding/Transaction) that had no foreign keys at all. R2.1's accept.
+///
+/// The player/club split is an **exclusive arc**: exactly one of
+/// `playerSeasonId` / `clubSeasonId` is set, both are real foreign keys, and the
+/// R2.2 migration adds a CHECK asserting exactly-one. Season-scoped on purpose —
+/// fair value is computed per season, so an asset is too; the season-rollover
+/// policy for open positions is an open decision (R7.6), not a schema one.
+model Asset {
+  id   Int       @id @default(autoincrement())
+  kind AssetKind
+
+  playerSeasonId Int? @unique
+  clubSeasonId   Int? @unique
+
+  /// AMM state (R4.6), written only inside a trade transaction. `inventory` is
+  /// outstanding shares q; `seedInventory` is q₀; `liquidity` is per-asset depth
+  /// L. Price is a pure read of these plus the latest fair value:
+  /// P(q) = V·exp((q − q₀)/L). Seeded by R4.6; 0 / 0 / 1 until then.
+  inventory     Int     @default(0)
+  seedInventory Int     @default(0)
+  liquidity     Decimal @default(1) @db.Decimal(18, 6)
+
+  playerSeason PlayerSeason? @relation(fields: [playerSeasonId], references: [id])
+  clubSeason   ClubSeason?   @relation(fields: [clubSeasonId], references: [id])
+
+  fairValues FairValue[]
+  priceTicks PriceTick[]
+  positions  Position[]
+  trades     Trade[]
+
+  @@index([kind])
+  @@map("asset")
+}
+
+/// The source of a fair-value observation.
+enum FairValueSource {
+  /// A gameweek was finalised and the football stats repriced the asset.
+  GAMEWEEK
+  /// A nightly recompute for availability/status changes between gameweeks.
+  AVAILABILITY
+  /// The seed value at market open, before any gameweek is played.
+  SEED
+}
+
+/// A fair-value observation for an asset: what the football says it's worth,
+/// independent of market demand. Written only by the valuation engine (R3.5) —
+/// recomputed, never incremented. The AMM reads the latest row as V in
+/// P(q) = V·exp((q − q₀)/L), so V and demand stay cleanly separated and a V
+/// update moves everyone's price by the same ratio (fixes the v1 ratchet).
+model FairValue {
+  id      Int @id @default(autoincrement())
+  assetId Int
+
+  /// The gameweek whose finalised stats produced this value; null for a nightly
+  /// availability-only recompute or the seed.
+  gameweekId Int?
+  source     FairValueSource
+
+  /// V, in coins. Clamped to [10, 1500] by R3.5's `fairValue()`.
+  value Decimal @db.Decimal(12, 4)
+
+  /// Audit trail of the R3.5 composition so a price move is explainable.
+  /// Player assets fill these; club assets use a different formula (minutes-
+  /// weighted squad value + form + strength) and leave them null.
+  baseline         Decimal? @db.Decimal(12, 6) // B_p
+  form             Decimal? @db.Decimal(12, 6) // F_p
+  availabilityMult Decimal? @db.Decimal(6, 4) // M_p
+  positionBase     Decimal? @db.Decimal(12, 4) // P_pos_base
+
+  computedAt DateTime @default(now())
+
+  asset    Asset     @relation(fields: [assetId], references: [id])
+  gameweek Gameweek? @relation(fields: [gameweekId], references: [id])
+
+  @@index([assetId, computedAt])
+  @@index([gameweekId])
+  @@map("fair_value")
+}
+
+enum TradeSide {
+  BUY
+  SELL
+}
+
+/// A filled trade against the AMM. Execution and price formation are one
+/// computation in one transaction (R4.3), which is what makes the v1 §2
+/// preTradeDemand round-trip exploit impossible to express here. Real foreign
+/// keys to `user` and `asset` — R2.1's accept — so a trade always points at a
+/// user and an instrument that exist.
+model Trade {
+  id      Int       @id @default(autoincrement())
+  userId  String
+  assetId Int
+  side    TradeSide
+
+  /// Shares filled (always > 0).
+  shares         Int
+  /// Volume-weighted average fill price, in coins (the AMM integral / shares).
+  avgPrice       Decimal @db.Decimal(12, 4)
+  /// Coins moved for the shares, minor units, always ≥ 0. Buy debits the user
+  /// this + fee; sell credits this − fee.
+  grossCost      BigInt
+  /// Fee charged this side (~0.5%), minor units. The primary coin sink (R7.3).
+  fee            BigInt
+  /// Outstanding inventory q after the fill — denormalised for audit.
+  inventoryAfter Int
+
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  priceTick     PriceTick?
+  ledgerEntries LedgerEntry[]
+
+  @@index([userId, createdAt])
+  @@index([assetId, createdAt])
+  @@map("trade")
+}
+
+/// What moved an asset's market price.
+enum PriceTickSource {
+  /// A trade fill moved q along the bonding curve.
+  TRADE
+  /// A fair-value recompute moved V, repricing at the current q.
+  VALUATION
+}
+
+/// Market price history. One row per price-moving event. Replaces v1
+/// `Valuation` and its id-DESC-vs-computedAt-DESC ambiguity: R5.1 reads "latest
+/// price" as the newest `(assetId, computedAt)` here, one ordering rule
+/// everywhere. Self-describing — carries the V and q that produced P so a chart
+/// point needs no join.
+model PriceTick {
+  id      Int @id @default(autoincrement())
+  assetId Int
+
+  source  PriceTickSource
+  /// The trade that caused this tick, when source = TRADE. One tick per trade.
+  tradeId Int?            @unique
+
+  /// Market price P after this event, in coins.
+  price     Decimal @db.Decimal(12, 4)
+  /// The fair value V and inventory q that produced P.
+  fairValue Decimal @db.Decimal(12, 4)
+  inventory Int
+
+  computedAt DateTime @default(now())
+
+  asset Asset  @relation(fields: [assetId], references: [id])
+  trade Trade? @relation(fields: [tradeId], references: [id])
+
+  @@index([assetId, computedAt])
+  @@map("price_tick")
+}
+
+/// A user's holding in one asset. Replaces v1 `Holding`; `(userId, assetId)` is
+/// now two real foreign keys rather than a `userId` + `assetKind`/`assetId`
+/// string triple with no integrity. The running share count and cost basis for
+/// PnL; the ledger, not this row, is the source of truth for coins.
+model Position {
+  id      Int    @id @default(autoincrement())
+  userId  String
+  assetId Int
+
+  /// Net shares held (≥ 0; the AMM has no shorting).
+  shares  Int
+  /// Volume-weighted average cost basis, coins, for mark-to-market PnL (R5.5).
+  avgCost Decimal @db.Decimal(12, 4)
+
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id])
+
+  @@unique([userId, assetId])
+  @@index([assetId])
+  @@map("position")
+}
+
+/// A ledger account. User cash is owned by a user; the three house accounts are
+/// not. A movement's legs always sum to zero across these, so total coins in
+/// circulation only changes via explicit MINT credits and FEE_SINK burns
+/// (invariant 2).
+enum LedgerAccount {
+  USER_CASH // a user's spendable balance
+  AMM_LIQUIDITY // the market maker's coin reserve (the trade counterparty)
+  FEE_SINK // fees removed from circulation
+  MINT // grants, quest rewards, prediction payouts enter here
+}
+
+/// Why coins moved.
+enum LedgerReason {
+  TRADE_BUY
+  TRADE_SELL
+  TRADE_FEE
+  COIN_GRANT
+  QUEST_REWARD
+  PREDICTION_STAKE
+  PREDICTION_PAYOUT
+}
+
+/// Double-entry ledger (R4.2). A user's balance is the signed sum of their
+/// USER_CASH entries — never a stored mutable field, which is what makes the v1
+/// read-modify-write balance bug unrepresentable. Every coin movement is a set
+/// of rows sharing a `transferId` that sum to zero; reconciliation is a query,
+/// not an investigation (invariant 2). Coins are BigInt minor units — no floats
+/// anywhere in the money path (R2.4).
+model LedgerEntry {
+  id      Int           @id @default(autoincrement())
+  /// The user whose cash account this leg touches; null for the house accounts
+  /// (AMM_LIQUIDITY, FEE_SINK, MINT), which no user owns.
+  userId  String?
+  account LedgerAccount
+  reason  LedgerReason
+
+  /// Signed minor units: credit > 0, debit < 0. The legs sharing `transferId`
+  /// sum to zero.
+  amount BigInt
+
+  /// Groups the legs of one atomic movement so a reconciliation query can
+  /// assert each transfer balances.
+  transferId String
+  /// The trade this leg settles, when the movement is a trade.
+  tradeId    Int?
+
+  createdAt DateTime @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id])
+  trade Trade? @relation(fields: [tradeId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([transferId])
+  @@index([account, createdAt])
+  @@map("ledger_entry")
 }

@@ -14,7 +14,7 @@
 // and kept unique regardless — it is the join key into other providers' Opta
 // data, which R1.6's independent cross-check needs.
 
-import type { Position } from '@prisma/client';
+import type { PlayerPosition } from '@prisma/client';
 import type { FplBootstrapStatic, FplElement, FplEvent, FplTeam } from '@/lib/fpl';
 
 export type SeasonPlan = {
@@ -56,7 +56,7 @@ export type PlannedPlayer = {
   clubFplCode: number;
   season: {
     fplId: number;
-    position: Position;
+    position: PlayerPosition;
     status: string;
     chanceOfPlayingThisRound: number | null;
     chanceOfPlayingNextRound: number | null;
@@ -118,7 +118,7 @@ export class BootstrapPlanError extends Error {
 }
 
 /** FPL's own short names for the four element types. */
-const POSITION_BY_SHORT_NAME: Record<string, Position> = {
+const POSITION_BY_SHORT_NAME: Record<string, PlayerPosition> = {
   GKP: 'GKP',
   DEF: 'DEF',
   MID: 'MID',
@@ -216,7 +216,7 @@ function planClubs(teams: FplTeam[], issues: string[]): PlannedClub[] {
 function planPlayers(
   elements: FplElement[],
   clubCodeByFplId: Map<number, number>,
-  positionByTypeId: Map<number, Position>,
+  positionByTypeId: Map<number, PlayerPosition>,
   issues: string[],
   warnings: string[],
 ): PlannedPlayer[] {
@@ -322,7 +322,7 @@ export function planBootstrap(
   const issues: string[] = [];
   const warnings: string[] = [];
 
-  const positionByTypeId = new Map<number, Position>();
+  const positionByTypeId = new Map<number, PlayerPosition>();
   for (const type of payload.element_types) {
     const position = POSITION_BY_SHORT_NAME[type.singular_name_short];
     if (!position) {
