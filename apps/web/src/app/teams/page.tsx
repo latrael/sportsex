@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/db';
-import { latestPricesByTeamIds } from '@/lib/queries';
+import { queryMarketClubs } from '@/lib/queries';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,13 +9,7 @@ export default async function TeamsPage({
   searchParams?: { sort?: string };
 }) {
   const sort = searchParams?.sort ?? 'name';
-
-  const teamsRaw = await prisma.team.findMany({ orderBy: { name: 'asc' } });
-  const priceMap = await latestPricesByTeamIds(teamsRaw.map((t) => t.id));
-  const teams =
-    sort === 'price'
-      ? [...teamsRaw].sort((a, b) => (priceMap.get(b.id) ?? 0) - (priceMap.get(a.id) ?? 0))
-      : teamsRaw;
+  const clubs = await queryMarketClubs(sort);
 
   return (
     <div className="space-y-4">
@@ -29,10 +22,13 @@ export default async function TeamsPage({
         <button className="btn" type="submit">Apply</button>
       </form>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {teams.map((t) => (
-          <Link key={t.id} href={`/teams/${t.id}`} className="card hover:border-accent flex justify-between items-center">
-            <div className="font-medium">{t.name}</div>
-            <div className="font-mono">{(priceMap.get(t.id) ?? 0).toFixed(2)}</div>
+        {clubs.map((c) => (
+          <Link key={c.id} href={`/teams/${c.id}`} className="card hover:border-accent flex justify-between items-center">
+            <div>
+              <div className="font-medium">{c.name}</div>
+              <div className="text-xs text-mute">{c.shortName} · {c.playerCount} players</div>
+            </div>
+            <div className="font-mono font-semibold text-accent">{c.price.toFixed(2)}</div>
           </Link>
         ))}
       </div>

@@ -86,7 +86,7 @@ export async function syncSeasonFairValues(
       });
     } else {
       // Scale default liquidity L by FPL nowCost tier (R4.6)
-      const liq = opts.defaultPlayerLiquidity ?? Math.max(200, ps.nowCost * 10);
+      const liq = opts.defaultPlayerLiquidity ?? 2000;
       const created = await db.asset.create({
         data: {
           kind: AssetKind.PLAYER,
@@ -116,7 +116,7 @@ export async function syncSeasonFairValues(
         liquidity: Number(cs.asset.liquidity),
       });
     } else {
-      const liq = opts.defaultClubLiquidity ?? 1000;
+      const liq = opts.defaultClubLiquidity ?? 800;
       const created = await db.asset.create({
         data: {
           kind: AssetKind.CLUB,

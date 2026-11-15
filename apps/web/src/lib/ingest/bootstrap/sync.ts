@@ -94,16 +94,16 @@ async function runSync(
   // ----------------------------------------------------------------- players
   const players = await applyDiff({
     planned: plan.players,
-    existing: await tx.fplPlayer.findMany(),
+    existing: await tx.player.findMany(),
     keyOfPlanned: (player) => String(player.identity.fplCode),
     keyOfExisting: (row) => String(row.fplCode),
-    dataOf: (player) => player.identity satisfies Prisma.FplPlayerCreateManyInput,
-    createMany: (rows) => tx.fplPlayer.createMany({ data: rows }),
-    update: (id, data) => tx.fplPlayer.update({ where: { id }, data }),
+    dataOf: (player) => player.identity satisfies Prisma.PlayerCreateManyInput,
+    createMany: (rows) => tx.player.createMany({ data: rows }),
+    update: (id, data) => tx.player.update({ where: { id }, data }),
   });
 
   const playerIdByCode = new Map(
-    (await tx.fplPlayer.findMany({ select: { id: true, fplCode: true } })).map((p) => [
+    (await tx.player.findMany({ select: { id: true, fplCode: true } })).map((p) => [
       p.fplCode,
       p.id,
     ]),
@@ -161,11 +161,9 @@ async function runSync(
   };
 }
 
-/**
- * A missing id here means a row we just wrote isn't there, which is a bug in
- * this file rather than in the payload. Fail rather than write a null FK.
- */
-function requireId(id: number | undefined, what: string): number {
-  if (id === undefined) throw new Error(`bootstrap sync: no database id for ${what}`);
+function requireId(id: number | undefined, label: string): number {
+  if (id === undefined) {
+    throw new Error(`syncBootstrap: missing foreign key for ${label}`);
+  }
   return id;
 }

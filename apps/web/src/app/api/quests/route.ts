@@ -18,10 +18,10 @@ export async function GET() {
   const [quests, completions, tradesToday, commentsToday] = await Promise.all([
     prisma.quest.findMany({ orderBy: { id: 'asc' } }),
     prisma.userQuest.findMany({ where: { userId } }),
-    prisma.transaction.findFirst({
-      where: { userId, side: { in: ['buy', 'sell'] }, createdAt: { gte: today } },
+    prisma.trade.findFirst({
+      where: { userId, createdAt: { gte: today } },
     }),
-    prisma.comment.findFirst({ where: { userId, createdAt: { gte: today } } }),
+    prisma.comment.findFirst({ where: { userId, status: 'visible', createdAt: { gte: today } } }),
   ]);
 
   const completedTodayIds = new Set(
@@ -39,7 +39,6 @@ export async function GET() {
     } else if (q.repeatKind === 'one_shot') {
       canClaim = !completedEver;
     } else {
-      // daily — eligible if not claimed today
       if (!completedToday) {
         if (q.code === 'login_today') canClaim = true;
         if (q.code === 'place_one_trade') canClaim = !!tradesToday;

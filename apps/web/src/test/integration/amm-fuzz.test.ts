@@ -185,7 +185,7 @@ describe('Phase 4 AMM & Ledger Integration (R4.2–R4.5)', () => {
     }[] = [];
 
     for (let i = 1; i <= NUM_ASSETS; i++) {
-      const fp = await db.fplPlayer.create({
+      const fp = await db.player.create({
         data: {
           fplCode: 1000 + i,
           optaCode: `p${1000 + i}`,

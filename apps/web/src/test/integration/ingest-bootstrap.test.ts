@@ -39,14 +39,14 @@ describe('syncBootstrap — first run', () => {
     expect(result.gameweeks).toEqual({ created: GAMEWEEKS, updated: 0, unchanged: 0 });
 
     expect(await db.club.count()).toBe(CLUBS);
-    expect(await db.fplPlayer.count()).toBe(PLAYERS);
+    expect(await db.player.count()).toBe(PLAYERS);
     expect(await db.gameweek.count()).toBe(GAMEWEEKS);
   });
 
   it('wires every player to the right club through real foreign keys', async () => {
     await sync();
 
-    const salah = await db.fplPlayer.findUnique({
+    const salah = await db.player.findUnique({
       where: { fplCode: 118748 },
       include: { seasons: { include: { clubSeason: { include: { club: true } } } } },
     });
@@ -134,7 +134,7 @@ describe('syncBootstrap — re-running', () => {
 
   it('follows a transfer by repointing the club season, not the identity', async () => {
     await sync();
-    const before = await db.fplPlayer.findUnique({ where: { fplCode: 118748 } });
+    const before = await db.player.findUnique({ where: { fplCode: 118748 } });
 
     const transferred = await sync(
       mutated((d) => {
@@ -148,7 +148,7 @@ describe('syncBootstrap — re-running', () => {
     expect(transferred.players).toEqual({ created: 0, updated: 0, unchanged: PLAYERS });
     expect(transferred.playerSeasons).toEqual({ created: 0, updated: 1, unchanged: PLAYERS - 1 });
 
-    const after = await db.fplPlayer.findUnique({
+    const after = await db.player.findUnique({
       where: { fplCode: 118748 },
       include: { seasons: { include: { clubSeason: { include: { club: true } } } } },
     });
@@ -202,7 +202,7 @@ describe('syncBootstrap — across the season rollover', () => {
     expect(result.clubSeasons).toEqual({ created: CLUBS, updated: 0, unchanged: 0 });
     expect(result.playerSeasons).toEqual({ created: PLAYERS, updated: 0, unchanged: 0 });
 
-    expect(await db.fplPlayer.count()).toBe(PLAYERS);
+    expect(await db.player.count()).toBe(PLAYERS);
     expect(await db.playerSeason.count()).toBe(PLAYERS * 2);
     expect(await db.season.count()).toBe(2);
   });

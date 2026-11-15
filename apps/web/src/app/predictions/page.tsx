@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
+import { getOrInitUserBalanceMinor } from '@/lib/market';
+import { minorUnitsToCoinsDecimal } from '@/lib/money';
 import PredictionsClient from './PredictionsClient';
 
 export const dynamic = 'force-dynamic';
@@ -10,14 +12,15 @@ export default async function PredictionsPage() {
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) redirect('/login');
 
-  const [me, scheduledMatches, myPredictions] = await Promise.all([
+  const [me, openFixtures, myPredictions] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId } }),
-    prisma.match.findMany({
-      where: { status: { in: ['scheduled', 'live'] } },
-      orderBy: { kickoffAt: 'asc' },
+    prisma.fixture.findMany({
+      where: { finished: false },
+      orderBy: { kickoffTime: 'asc' },
+      take: 40,
       include: {
-        home: { select: { id: true, name: true } },
-        away: { select: { id: true, name: true } },
+        homeClub: { include: { club: true } },
+        awayClub: { include: { club: true } },
       },
     }),
     prisma.prediction.findMany({
@@ -25,32 +28,37 @@ export default async function PredictionsPage() {
       orderBy: { createdAt: 'desc' },
       take: 20,
       include: {
-        match: {
+        fixture: {
           include: {
-            home: { select: { name: true } },
-            away: { select: { name: true } },
+            homeClub: { include: { club: true } },
+            awayClub: { include: { club: true } },
           },
         },
       },
     }),
   ]);
 
-  const myPredictionMatchIds = new Set(myPredictions.map((p) => p.matchId));
+  const balanceMinor = me
+    ? await getOrInitUserBalanceMinor(prisma, userId, me.coinBalance)
+    : 0n;
+  const balanceCoins = Math.floor(Number(minorUnitsToCoinsDecimal(balanceMinor)));
 
-  const matches = scheduledMatches.map((m) => ({
-    id: m.id,
-    homeTeam: m.home.name,
-    awayTeam: m.away.name,
-    kickoffAt: m.kickoffAt.toISOString(),
-    status: m.status,
-    alreadyPredicted: myPredictionMatchIds.has(m.id),
+  const myPredictionFixtureIds = new Set(myPredictions.map((p) => p.fixtureId));
+
+  const matches = openFixtures.map((f) => ({
+    id: f.id,
+    homeTeam: f.homeClub.club.name,
+    awayTeam: f.awayClub.club.name,
+    kickoffAt: (f.kickoffTime ?? new Date()).toISOString(),
+    status: f.started ? 'live' : 'scheduled',
+    alreadyPredicted: myPredictionFixtureIds.has(f.id),
   }));
 
   const predictions = myPredictions.map((p) => ({
     id: p.id,
-    matchId: p.matchId,
-    homeTeam: p.match.home.name,
-    awayTeam: p.match.away.name,
+    matchId: p.fixtureId,
+    homeTeam: p.fixture.homeClub.club.name,
+    awayTeam: p.fixture.awayClub.club.name,
     pick: p.pick,
     coinsStaked: p.coinsStaked,
     resolved: p.resolved,
@@ -60,7 +68,7 @@ export default async function PredictionsPage() {
 
   return (
     <PredictionsClient
-      balance={me?.coinBalance ?? 0}
+      balance={balanceCoins}
       matches={matches}
       predictions={predictions}
     />

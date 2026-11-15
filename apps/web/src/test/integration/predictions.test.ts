@@ -31,7 +31,7 @@ describe('POST /api/predictions', () => {
     expect(res.status).toBe(401);
   });
 
-  it('places a prediction, deducts coins, creates record', async () => {
+  it('places a prediction, deducts coins via ledger, creates record', async () => {
     const user = await createUser({ coinBalance: 1000 });
     const home = await createTeam();
     const away = await createTeam();
@@ -51,13 +51,13 @@ describe('POST /api/predictions', () => {
     const updated = await db.user.findUnique({ where: { id: user.id } });
     expect(updated?.coinBalance).toBe(800);
 
-    const pred = await db.prediction.findFirst({ where: { userId: user.id, matchId: match.id } });
+    const pred = await db.prediction.findFirst({ where: { userId: user.id, fixtureId: match.id } });
     expect(pred).not.toBeNull();
     expect(pred?.coinsStaked).toBe(200);
     expect(pred?.resolved).toBe(false);
   });
 
-  it('rejects duplicate prediction for same match', async () => {
+  it('rejects duplicate prediction for same fixture', async () => {
     const user = await createUser({ coinBalance: 2000 });
     const home = await createTeam();
     const away = await createTeam();
@@ -81,13 +81,11 @@ describe('POST /api/predictions', () => {
     expect(res.status).toBe(404);
   });
 
-  it('rejects when match is already settled', async () => {
+  it('rejects when fixture is already finished', async () => {
     const user = await createUser({ coinBalance: 1000 });
     const home = await createTeam();
     const away = await createTeam();
-    const match = await db.match.create({
-      data: { homeTeamId: home.id, awayTeamId: away.id, kickoffAt: new Date(), status: 'settled' },
-    });
+    const match = await createScheduledMatch(home.id, away.id, { finished: true, homeScore: 2, awayScore: 1 });
 
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     const req = makeRequest('/api/predictions', { method: 'POST', body: { matchId: match.id, pick: 'H', coinsStaked: 100 } });
@@ -130,7 +128,7 @@ describe('GET /api/predictions', () => {
     const match = await createScheduledMatch(home.id, away.id);
 
     await db.prediction.create({
-      data: { userId: user.id, matchId: match.id, pick: 'H', coinsStaked: 100 },
+      data: { userId: user.id, fixtureId: match.id, pick: 'H', coinsStaked: 100 },
     });
 
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
