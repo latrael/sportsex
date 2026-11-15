@@ -1,3 +1,20 @@
 {
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/cron/bootstrap",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/fixtures",
+      "schedule": "5 * * * *"
+    },
+    {
+      "path": "/api/cron/live",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/settle",
+      "schedule": "*/15 * * * *"
+    }
+  ]
 }
