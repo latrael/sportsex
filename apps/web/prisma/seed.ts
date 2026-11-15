@@ -2,16 +2,25 @@ import { PrismaClient } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import { readFileSync } from 'fs';
 import { join, resolve } from 'path';
-import { canonName } from '../src/lib/canon';
 import { seedPrice, teamPrice } from '../src/lib/pricing';
 
 const prisma = new PrismaClient();
 const repoRoot = resolve(__dirname, '..', '..', '..');
 
+function canonName(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function readCsv(path: string): Record<string, string>[] {
   const buf = readFileSync(path);
   // Strip BOM if present
-  const text = buf.toString('utf8').replace(/^﻿/, '');
+  const text = buf.toString('utf8').replace(/^\ufeff/, '');
   return parse(text, { columns: true, skip_empty_lines: true, trim: true });
 }
 
@@ -32,7 +41,7 @@ function posBucket(position: string): string {
 
 async function main() {
   console.log('Reading CSVs…');
-  const statsPath = join(repoRoot, 'epl_player_stats_25_26.csv');
+  const statsPath = join(repoRoot, 'archive', 'legacy-root', 'epl_player_stats_25_26.csv');
   const stats = readCsv(statsPath);
 
   console.log(`Seeding ${stats.length} players.`);
@@ -88,6 +97,7 @@ async function main() {
         if (seenKeys.has(key)) continue;
       }
       seenKeys.add(key);
+      
       const teamId = teamIdByName.get(r['Club']) ?? null;
       playersToCreate.push({
         playerKey: key,

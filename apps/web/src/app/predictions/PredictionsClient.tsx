@@ -119,7 +119,7 @@ export default function PredictionsClient({
         {matches.length === 0 ? (
           <div className="card text-mute text-sm">
             <p>No scheduled matches right now.</p>
-            <p className="mt-1">An admin can create matches via the simulate-match endpoint, or real fixtures will appear here once ingestion is live.</p>
+            <p className="mt-1">Upcoming Premier League fixtures will appear here when scheduled.</p>
           </div>
         ) : (
           <div className="space-y-3">
