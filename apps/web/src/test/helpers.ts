@@ -7,7 +7,14 @@ export const db = new PrismaClient();
 
 export async function cleanDb() {
   // Delete in dependency order.
-  // Schema v2 reference tables (Phase 1) first — nothing joins them to v1.
+  // Schema v2 market + derived + reference tables first — nothing joins them to v1.
+  await db.ledgerEntry.deleteMany();
+  await db.priceTick.deleteMany();
+  await db.trade.deleteMany();
+  await db.position.deleteMany();
+  await db.fairValue.deleteMany();
+  await db.asset.deleteMany();
+
   await db.rawPayload.deleteMany();
   await db.playerSeasonStat.deleteMany();
   await db.playerFixtureStat.deleteMany();
