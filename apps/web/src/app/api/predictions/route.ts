@@ -9,6 +9,7 @@ import {
   syncUserCoinBalanceMirror,
 } from '@/lib/market';
 import { coinsToMinorUnits } from '@/lib/money';
+import { computeFixtureOdds } from '@/lib/predictions/odds';
 
 const schema = z
   .object({
@@ -33,7 +34,13 @@ export async function POST(req: Request) {
   const { pick, coinsStaked } = parsed.data;
   const fixtureId = (parsed.data.fixtureId ?? parsed.data.matchId)!;
 
-  const fixture = await prisma.fixture.findUnique({ where: { id: fixtureId } });
+  const fixture = await prisma.fixture.findUnique({
+    where: { id: fixtureId },
+    include: {
+      homeClub: true,
+      awayClub: true,
+    },
+  });
   if (!fixture) return NextResponse.json({ error: 'match_not_found' }, { status: 404 });
   if (fixture.finished || fixture.finishedProvisional) {
     return NextResponse.json({ error: 'match_not_open' }, { status: 400 });
@@ -42,8 +49,16 @@ export async function POST(req: Request) {
   const existing = await prisma.prediction.findFirst({ where: { userId, fixtureId } });
   if (existing) return NextResponse.json({ error: 'already_predicted' }, { status: 409 });
 
+  const computed = computeFixtureOdds({
+    homeStrengthAttack: fixture.homeClub.strengthAttackHome,
+    homeStrengthDefence: fixture.homeClub.strengthDefenceHome,
+    awayStrengthAttack: fixture.awayClub.strengthAttackAway,
+    awayStrengthDefence: fixture.awayClub.strengthDefenceAway,
+  });
+  const chosenOdds = parsed.data.odds ?? computed.odds[pick];
+
   const stakeMinor = coinsToMinorUnits(coinsStaked);
-  const oddsDec = new Prisma.Decimal((parsed.data.odds ?? 2.0).toFixed(4));
+  const oddsDec = new Prisma.Decimal(chosenOdds.toFixed(4));
 
   try {
     await prisma.$transaction(async (tx) => {
@@ -94,7 +109,15 @@ export async function POST(req: Request) {
     throw err;
   }
 
-  return NextResponse.json({ ok: true, pick, coinsStaked, fixtureId, matchId: fixtureId });
+  return NextResponse.json({
+    ok: true,
+    pick,
+    coinsStaked,
+    odds: chosenOdds,
+    expectedPayout: Math.round(coinsStaked * chosenOdds),
+    fixtureId,
+    matchId: fixtureId,
+  });
 }
 
 export async function GET(req: Request) {

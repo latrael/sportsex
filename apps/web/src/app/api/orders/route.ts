@@ -1,3 +1,4 @@
+import { captureException } from "@/lib/observability";
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/db';
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
   } catch (e) {
     const msg = (e as Error).message;
     const status = msg === 'unauthorized' ? 401 : msg === 'no_price' ? 500 : 400;
+    if (status >= 500) await captureException(e, { source: 'api:orders', details: { userId, assetKind, assetId, side, shares } });
     return NextResponse.json({ error: msg }, { status });
   }
 }

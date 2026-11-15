@@ -1,3 +1,4 @@
+import { captureException } from "@/lib/observability";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyCronRequest } from '@/lib/cronAuth';
@@ -37,6 +38,7 @@ export async function GET(req: Request): Promise<NextResponse> {
       })),
     });
   } catch (error) {
+    await captureException(error, { source: "cron:settle" });
     return NextResponse.json(
       {
         ok: false,
