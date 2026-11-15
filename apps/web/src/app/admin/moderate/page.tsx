@@ -13,14 +13,20 @@ export default async function ModeratePage() {
   const flagged = await prisma.comment.findMany({
     where: { status: 'flagged' },
     orderBy: { createdAt: 'desc' },
-    include: { user: true, player: { select: { id: true, fullName: true } } },
+    include: {
+      user: true,
+      player: { select: { id: true, firstName: true, secondName: true, webName: true } },
+    },
     take: 100,
   });
 
   const hidden = await prisma.comment.findMany({
     where: { status: 'hidden' },
     orderBy: { createdAt: 'desc' },
-    include: { user: true, player: { select: { id: true, fullName: true } } },
+    include: {
+      user: true,
+      player: { select: { id: true, firstName: true, secondName: true, webName: true } },
+    },
     take: 50,
   });
 
@@ -49,6 +55,7 @@ export default async function ModeratePage() {
   }
 
   function CommentRow({ c }: { c: typeof flagged[number] }) {
+    const playerName = c.player ? `${c.player.firstName} ${c.player.secondName}`.trim() : null;
     return (
       <div className="card space-y-2">
         <div className="flex items-start gap-3 justify-between flex-wrap">
@@ -56,7 +63,7 @@ export default async function ModeratePage() {
             <div className="text-xs text-mute">
               @{c.user.handle} · {new Date(c.createdAt).toLocaleString()}
               {c.player && (
-                <> · on <a className="text-accent" href={`/players/${c.player.id}`}>{c.player.fullName}</a></>
+                <> · on <a className="text-accent" href={`/players/${c.player.id}`}>{playerName}</a></>
               )}
             </div>
             <p className="mt-1 text-sm">{c.body}</p>
@@ -72,7 +79,7 @@ export default async function ModeratePage() {
             </form>
             <form action={remove}>
               <input type="hidden" name="id" value={c.id} />
-              <button className="btn btn-danger" type="submit" onClick={(e) => { if (!confirm('Delete permanently?')) e.preventDefault(); }}>Delete</button>
+              <button className="btn btn-danger" type="submit">Delete</button>
             </form>
           </div>
         </div>

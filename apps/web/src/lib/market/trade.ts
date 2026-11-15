@@ -1,5 +1,5 @@
 /**
- * R4.3 — Single-transaction AMM trade execution engine.
+ * R4.3 — Single-transaction AMM trade execution engine (pure schema v2).
  *
  * Executes a BUY or SELL order against the bonding curve `P(q) = V·exp((q−q₀)/L)`
  * inside one Postgres transaction with row-level `FOR UPDATE` locking on the user
@@ -11,16 +11,12 @@
  *   - Writes `trade`
  *   - Writes `price_tick` (`source = TRADE`, `tradeId = trade.id`)
  *   - Writes balanced `ledger_entry` rows (`USER_CASH`, `AMM_LIQUIDITY`, `FEE_SINK`)
- *   - Mirrors legacy v1 tables (`user.coinBalance`, `holding`, `transaction`, `valuation`)
- *     when a matching v1 asset exists so existing v1 tests & pages remain green until R5.7.
  */
 
 import {
   AssetKind,
-  FairValueSource,
   LedgerAccount,
   LedgerReason,
-  PlayerPosition,
   PriceTickSource,
   Prisma,
   TradeSide,
@@ -36,7 +32,6 @@ import {
   DEFAULT_FEE_BPS,
   DEFAULT_FLOAT_SHARES,
   quoteTrade,
-  seedLiquidityForFloat,
   type TradeQuote,
 } from './curve';
 import {
@@ -50,7 +45,7 @@ export const MAX_POSITION_SHARES = 2000;
 
 export interface ExecuteAmmOrderInput {
   userId: string;
-  /** Either pass `v2AssetId` directly or `(assetKind, assetId)` which resolves or bridges to `Asset`. */
+  /** Either pass `v2AssetId` directly or `(assetKind, assetId)`. */
   v2AssetId?: number;
   assetKind?: 'player' | 'team';
   assetId?: number;
@@ -71,7 +66,7 @@ export interface ExecuteAmmOrderResult {
   spotPriceAfter: number;
   /** Signed cash delta in minor units (`bigint`). */
   coinsDeltaMinor: MinorUnits;
-  /** Signed cash delta in whole coins (rounded for v1 API compatibility). */
+  /** Signed cash delta in whole coins. */
   coinsDelta: number;
   /** User's updated balance in minor units (`bigint`). */
   balanceAfterMinor: MinorUnits;
@@ -80,12 +75,11 @@ export interface ExecuteAmmOrderResult {
 }
 
 /**
- * Resolve or lazily provision a v2 `Asset` + initial `FairValue` for a request that
- * specifies `(assetKind, assetId)` (where `assetId` may be a v2 `Asset.id`,
- * `player_season.id`, `club_season.id`, or a legacy v1 `Player.id` / `Team.id` from
- * test helpers).
+ * Resolve a v2 `Asset` and its latest `FairValue` for a request specifying
+ * `v2AssetId` or `(assetKind, assetId)` (where `assetId` can be `Asset.id`,
+ * `PlayerSeason.id`, `Player.id`, `ClubSeason.id`, or `Club.id`).
  */
-async function resolveOrBridgeAsset(
+async function resolveAsset(
   tx: Prisma.TransactionClient,
   input: ExecuteAmmOrderInput,
 ): Promise<{
@@ -100,8 +94,6 @@ async function resolveOrBridgeAsset(
   };
   fairValue: Prisma.Decimal;
   floatShares: number;
-  v1PlayerId: number | null;
-  v1TeamId: number | null;
 }> {
   if (input.v2AssetId !== undefined) {
     const asset = await tx.asset.findUnique({ where: { id: input.v2AssetId } });
@@ -114,216 +106,53 @@ async function resolveOrBridgeAsset(
     return {
       asset,
       fairValue: latestFv.value,
-      floatShares: DEFAULT_FLOAT_SHARES,
-      v1PlayerId: null,
-      v1TeamId: null,
+      floatShares: asset.kind === AssetKind.CLUB ? 4000 : DEFAULT_FLOAT_SHARES,
     };
   }
 
   const kind = input.assetKind ?? 'player';
   const targetId = input.assetId!;
 
-  // 1. Check if a v2 Asset with this id or playerSeasonId/clubSeasonId already exists
-  const directAsset = await tx.asset.findFirst({
+  const asset = await tx.asset.findFirst({
     where:
       kind === 'player'
-        ? { OR: [{ id: targetId, kind: AssetKind.PLAYER }, { playerSeasonId: targetId }] }
-        : { OR: [{ id: targetId, kind: AssetKind.CLUB }, { clubSeasonId: targetId }] },
+        ? {
+            kind: AssetKind.PLAYER,
+            OR: [
+              { id: targetId },
+              { playerSeasonId: targetId },
+              { playerSeason: { playerId: targetId } },
+            ],
+          }
+        : {
+            kind: AssetKind.CLUB,
+            OR: [
+              { id: targetId },
+              { clubSeasonId: targetId },
+              { clubSeason: { clubId: targetId } },
+            ],
+          },
+    orderBy: { id: 'desc' },
   });
 
-  if (directAsset) {
-    const latestFv = await tx.fairValue.findFirst({
-      where: { assetId: directAsset.id },
-      orderBy: [{ computedAt: 'desc' }, { id: 'desc' }],
-    });
-    if (latestFv) {
-      // Check if there is also a v1 player/team with targetId for mirror updates
-      const v1Player =
-        kind === 'player' ? await tx.player.findUnique({ where: { id: targetId } }) : null;
-      const v1Team =
-        kind === 'team' ? await tx.team.findUnique({ where: { id: targetId } }) : null;
-      return {
-        asset: directAsset,
-        fairValue: latestFv.value,
-        floatShares: v1Player?.totalShares ?? (kind === 'team' ? 4000 : DEFAULT_FLOAT_SHARES),
-        v1PlayerId: v1Player?.id ?? null,
-        v1TeamId: v1Team?.id ?? null,
-      };
-    }
+  if (!asset) {
+    throw new Error('no_asset');
   }
 
-  // 2. Bridge from v1 Player / Team (used by existing v1 integration tests & seed data)
-  if (kind === 'player') {
-    const v1Player = await tx.player.findUnique({ where: { id: targetId } });
-    if (!v1Player) throw new Error('no_asset');
-    const v1Val = await tx.valuation.findFirst({
-      where: { playerId: v1Player.id },
-      orderBy: [{ computedAt: 'desc' }, { id: 'desc' }],
-    });
-    if (!v1Val || !Number.isFinite(v1Val.price) || v1Val.price <= 0) {
-      throw new Error('no_price');
-    }
+  const latestFv = await tx.fairValue.findFirst({
+    where: { assetId: asset.id },
+    orderBy: [{ computedAt: 'desc' }, { id: 'desc' }],
+  });
 
-    // Ensure a bridge Season + Club + ClubSeason + FplPlayer + PlayerSeason + Asset exist
-    const season = await tx.season.upsert({
-      where: { startYear: 2025 },
-      update: {},
-      create: { name: '2025/26', startYear: 2025 },
-    });
-    const clubCode = 900_000 + (v1Player.teamId ?? 0);
-    const club = await tx.club.upsert({
-      where: { fplCode: clubCode },
-      update: {},
-      create: {
-        fplCode: clubCode,
-        name: `Club-${clubCode}`,
-        shortName: 'CLB',
-      },
-    });
-    const clubSeason = await tx.clubSeason.upsert({
-      where: { seasonId_clubId: { seasonId: season.id, clubId: club.id } },
-      update: {},
-      create: {
-        seasonId: season.id,
-        clubId: club.id,
-        fplId: clubCode,
-      },
-    });
-    const playerCode = 800_000 + v1Player.id;
-    const fplPlayer = await tx.fplPlayer.upsert({
-      where: { fplCode: playerCode },
-      update: {},
-      create: {
-        fplCode: playerCode,
-        optaCode: `p${playerCode}`,
-        firstName: v1Player.fullName.split(' ')[0] || v1Player.fullName,
-        secondName: v1Player.fullName.split(' ').slice(1).join(' ') || v1Player.fullName,
-        webName: v1Player.fullName,
-      },
-    });
-    const ps = await tx.playerSeason.upsert({
-      where: { seasonId_playerId: { seasonId: season.id, playerId: fplPlayer.id } },
-      update: {},
-      create: {
-        seasonId: season.id,
-        playerId: fplPlayer.id,
-        clubSeasonId: clubSeason.id,
-        fplId: playerCode,
-        position: PlayerPosition.FWD,
-        status: 'a',
-        news: '',
-        nowCost: 50,
-        selectedByPercent: new Prisma.Decimal('0.000'),
-      },
-    });
-
-    const { seedInventory, liquidityDecimal } = seedLiquidityForFloat(v1Player.totalShares);
-    const asset = await tx.asset.upsert({
-      where: { playerSeasonId: ps.id },
-      update: {},
-      create: {
-        kind: AssetKind.PLAYER,
-        playerSeasonId: ps.id,
-        inventory: v1Player.sharesHeld,
-        seedInventory,
-        liquidity: liquidityDecimal,
-      },
-    });
-
-    const fvDecimal = toPriceDecimal(v1Val.basePrice ?? v1Val.price);
-    const existingFv = await tx.fairValue.findFirst({
-      where: { assetId: asset.id },
-      orderBy: [{ computedAt: 'desc' }, { id: 'desc' }],
-    });
-    if (!existingFv) {
-      await tx.fairValue.create({
-        data: {
-          assetId: asset.id,
-          source: FairValueSource.SEED,
-          value: fvDecimal,
-        },
-      });
-    }
-
-    return {
-      asset,
-      fairValue: existingFv?.value ?? fvDecimal,
-      floatShares: v1Player.totalShares,
-      v1PlayerId: v1Player.id,
-      v1TeamId: null,
-    };
-  } else {
-    const v1Team = await tx.team.findUnique({ where: { id: targetId } });
-    if (!v1Team) throw new Error('no_asset');
-    const v1Val = await tx.valuation.findFirst({
-      where: { teamId: v1Team.id },
-      orderBy: [{ computedAt: 'desc' }, { id: 'desc' }],
-    });
-    if (!v1Val || !Number.isFinite(v1Val.price) || v1Val.price <= 0) {
-      throw new Error('no_price');
-    }
-
-    const season = await tx.season.upsert({
-      where: { startYear: 2025 },
-      update: {},
-      create: { name: '2025/26', startYear: 2025 },
-    });
-    const clubCode = 700_000 + v1Team.id;
-    const club = await tx.club.upsert({
-      where: { fplCode: clubCode },
-      update: {},
-      create: {
-        fplCode: clubCode,
-        name: v1Team.name,
-        shortName: v1Team.shortName ?? v1Team.name.slice(0, 3).toUpperCase(),
-      },
-    });
-    const cs = await tx.clubSeason.upsert({
-      where: { seasonId_clubId: { seasonId: season.id, clubId: club.id } },
-      update: {},
-      create: {
-        seasonId: season.id,
-        clubId: club.id,
-        fplId: clubCode,
-      },
-    });
-
-    const { seedInventory, liquidityDecimal } = seedLiquidityForFloat(4000);
-    const asset = await tx.asset.upsert({
-      where: { clubSeasonId: cs.id },
-      update: {},
-      create: {
-        kind: AssetKind.CLUB,
-        clubSeasonId: cs.id,
-        inventory: 0,
-        seedInventory,
-        liquidity: liquidityDecimal,
-      },
-    });
-
-    const fvDecimal = toPriceDecimal(v1Val.basePrice ?? v1Val.price);
-    const existingFv = await tx.fairValue.findFirst({
-      where: { assetId: asset.id },
-      orderBy: [{ computedAt: 'desc' }, { id: 'desc' }],
-    });
-    if (!existingFv) {
-      await tx.fairValue.create({
-        data: {
-          assetId: asset.id,
-          source: FairValueSource.SEED,
-          value: fvDecimal,
-        },
-      });
-    }
-
-    return {
-      asset,
-      fairValue: existingFv?.value ?? fvDecimal,
-      floatShares: 4000, // 5% of 4000 = 200 shares max per order for teams
-      v1PlayerId: null,
-      v1TeamId: v1Team.id,
-    };
+  if (!latestFv || Number(latestFv.value) <= 0) {
+    throw new Error('no_price');
   }
+
+  return {
+    asset,
+    fairValue: latestFv.value,
+    floatShares: kind === 'team' ? 4000 : DEFAULT_FLOAT_SHARES,
+  };
 }
 
 /**
@@ -349,8 +178,8 @@ export async function executeAmmOrder(
       throw new Error('no_user');
     }
 
-    // 2. Resolve or bridge the target Asset and lock it FOR UPDATE
-    const resolved = await resolveOrBridgeAsset(tx, input);
+    // 2. Resolve the target Asset and lock it FOR UPDATE
+    const resolved = await resolveAsset(tx, input);
     const lockedAssets = await tx.$queryRaw<
       { id: number; inventory: number; seedInventory: number; liquidity: Prisma.Decimal }[]
     >`
@@ -400,31 +229,10 @@ export async function executeAmmOrder(
       throw new Error('insufficient_funds');
     }
 
-    // 6. Check and update user Position (v2) + Holding (v1 mirror if applicable)
-    let existingPos = await tx.position.findUnique({
+    // 6. Check and update user Position
+    const existingPos = await tx.position.findUnique({
       where: { userId_assetId: { userId: input.userId, assetId: lockedAsset.id } },
     });
-
-    // Bridge v1 holding if a test seeded `db.holding.create` directly before calling sell
-    const legacyKind = input.assetKind ?? (resolved.asset.kind === AssetKind.PLAYER ? 'player' : 'team');
-    const legacyAssetId = resolved.v1PlayerId ?? resolved.v1TeamId;
-    const existingV1Holding =
-      legacyAssetId != null
-        ? await tx.holding.findFirst({
-            where: { userId: input.userId, assetKind: legacyKind, assetId: legacyAssetId },
-          })
-        : null;
-
-    if (!existingPos && existingV1Holding) {
-      existingPos = await tx.position.create({
-        data: {
-          userId: input.userId,
-          assetId: lockedAsset.id,
-          shares: existingV1Holding.shares,
-          avgCost: toPriceDecimal(existingV1Holding.avgCost),
-        },
-      });
-    }
 
     if (normSide === 'SELL') {
       if (!existingPos || existingPos.shares < shares) {
@@ -461,43 +269,15 @@ export async function executeAmmOrder(
           },
         });
       }
-
-      if (legacyAssetId != null) {
-        if (existingV1Holding) {
-          await tx.holding.update({
-            where: { id: existingV1Holding.id },
-            data: { shares: newShares, avgCost: newAvgCost.toNumber() },
-          });
-        } else {
-          await tx.holding.create({
-            data: {
-              userId: input.userId,
-              assetKind: legacyKind,
-              assetId: legacyAssetId,
-              shares: newShares,
-              avgCost: newAvgCost.toNumber(),
-            },
-          });
-        }
-      }
     } else {
       const newShares = existingPos!.shares - shares;
       if (newShares === 0) {
         await tx.position.delete({ where: { id: existingPos!.id } });
-        if (existingV1Holding) {
-          await tx.holding.delete({ where: { id: existingV1Holding.id } });
-        }
       } else {
         await tx.position.update({
           where: { id: existingPos!.id },
           data: { shares: newShares },
         });
-        if (existingV1Holding) {
-          await tx.holding.update({
-            where: { id: existingV1Holding.id },
-            data: { shares: newShares },
-          });
-        }
       }
     }
 
@@ -506,13 +286,6 @@ export async function executeAmmOrder(
       where: { id: lockedAsset.id },
       data: { inventory: quote.inventoryAfter },
     });
-
-    if (resolved.v1PlayerId != null) {
-      await tx.player.update({
-        where: { id: resolved.v1PlayerId },
-        data: { sharesHeld: Math.max(0, quote.inventoryAfter) },
-      });
-    }
 
     // 8. Record Trade row
     const trade = await tx.trade.create({
@@ -540,35 +313,7 @@ export async function executeAmmOrder(
       },
     });
 
-    if (resolved.v1PlayerId != null) {
-      await tx.valuation.create({
-        data: {
-          playerId: resolved.v1PlayerId,
-          price: quote.spotPriceAfter,
-          basePrice: Number(resolved.fairValue),
-          demandMult: quote.spotPriceAfter / Number(resolved.fairValue),
-        },
-      });
-    } else if (resolved.v1TeamId != null) {
-      await tx.valuation.create({
-        data: {
-          teamId: resolved.v1TeamId,
-          price: quote.spotPriceAfter,
-          basePrice: Number(resolved.fairValue),
-          demandMult: quote.spotPriceAfter / Number(resolved.fairValue),
-        },
-      });
-    }
-
     // 10. Record balanced double-entry LedgerEntry legs (Invariant 2)
-    //   BUY:
-    //     USER_CASH     -(gross + fee)
-    //     AMM_LIQUIDITY +gross
-    //     FEE_SINK      +fee
-    //   SELL:
-    //     AMM_LIQUIDITY -gross
-    //     USER_CASH     +(gross - fee)
-    //     FEE_SINK      +fee
     if (normSide === 'BUY') {
       await recordBalancedTransfer(tx, [
         {
@@ -639,21 +384,6 @@ export async function executeAmmOrder(
       balanceAfterMinor,
     );
     const coinsDelta = balanceAfterCoins - balanceBeforeCoins;
-
-    if (legacyAssetId != null) {
-      await tx.transaction.create({
-        data: {
-          userId: input.userId,
-          assetKind: legacyKind,
-          assetId: legacyAssetId,
-          side: normSide.toLowerCase(),
-          shares,
-          price: quote.avgExecutionPrice,
-          coinsDelta,
-          reason: 'market_order',
-        },
-      });
-    }
 
     return {
       tradeId: trade.id,

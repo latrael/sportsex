@@ -12,6 +12,12 @@ export {
 } from './curve';
 
 export {
+  quoteTradePure,
+  type PureCurveState,
+  type PureTradeQuote,
+} from './quote';
+
+export {
   recordBalancedTransfer,
   getOrInitUserBalanceMinor,
   getUserBalanceMinor,
@@ -29,3 +35,11 @@ export {
   type ExecuteAmmOrderInput,
   type ExecuteAmmOrderResult,
 } from './trade';
+
+export {
+  getUserPortfolioSummary,
+  getLeaderboardRankings,
+  type PortfolioPositionRow,
+  type PortfolioSummary,
+  type LeaderboardEntry,
+} from './portfolio';

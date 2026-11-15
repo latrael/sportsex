@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { LedgerReason } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { auth } from '@/lib/auth';
+import { mintToUser } from '@/lib/market';
+import { coinsToMinorUnits } from '@/lib/money';
 
 const schema = z.object({ code: z.string() });
 
@@ -34,41 +37,37 @@ export async function POST(req: Request) {
     const done = await prisma.userQuest.findFirst({ where: { userId, questId: quest.id } });
     if (done) return NextResponse.json({ error: 'already_completed' }, { status: 409 });
   } else {
-    // daily / weekly — check if completed since start of today
     const recent = await prisma.userQuest.findFirst({
       where: { userId, questId: quest.id, completedAt: { gte: today } },
     });
     if (recent) return NextResponse.json({ error: 'already_claimed_today' }, { status: 409 });
   }
 
-  // Verify eligibility for tracked quests
   if (code === 'place_one_trade') {
-    const trade = await prisma.transaction.findFirst({
-      where: { userId, side: { in: ['buy', 'sell'] }, createdAt: { gte: today } },
+    const trade = await prisma.trade.findFirst({
+      where: { userId, createdAt: { gte: today } },
     });
     if (!trade) return NextResponse.json({ error: 'no_trade_today' }, { status: 400 });
   }
 
   if (code === 'comment_on_player') {
     const comment = await prisma.comment.findFirst({
-      where: { userId, createdAt: { gte: today } },
+      where: { userId, status: 'visible', createdAt: { gte: today } },
     });
     if (!comment) return NextResponse.json({ error: 'no_comment_today' }, { status: 400 });
   }
 
-  await prisma.$transaction([
-    prisma.userQuest.create({ data: { userId, questId: quest.id } }),
-    prisma.user.update({ where: { id: userId }, data: { coinBalance: { increment: quest.rewardCoins } } }),
-    prisma.transaction.create({
-      data: {
-        userId,
-        assetKind: 'quest_reward',
-        side: 'credit',
-        coinsDelta: quest.rewardCoins,
-        reason: `quest_${code}`,
-      },
-    }),
-  ]);
+  await prisma.$transaction(async (tx) => {
+    await tx.userQuest.create({ data: { userId, questId: quest.id } });
+    if (code === 'login_today') {
+      await tx.user.update({ where: { id: userId }, data: { lastLoginAt: new Date() } });
+    }
+    await mintToUser(tx, {
+      userId,
+      amountMinor: coinsToMinorUnits(quest.rewardCoins),
+      reason: LedgerReason.QUEST_REWARD,
+    });
+  });
 
   return NextResponse.json({ ok: true, coinsGranted: quest.rewardCoins });
 }

@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { LedgerAccount, LedgerReason } from '@prisma/client';
 import {
   db,
   cleanDb,
@@ -49,7 +50,7 @@ describe('POST /api/onboarding/complete', () => {
     expect(completion).not.toBeNull();
   });
 
-  it('creates a credit transaction', async () => {
+  it('records a balanced QUEST_REWARD ledger credit', async () => {
     const user = await createUser();
     const [p1, p2, p3] = await Promise.all([createPlayer(), createPlayer(), createPlayer()]);
 
@@ -59,9 +60,15 @@ describe('POST /api/onboarding/complete', () => {
       body: { playerIds: [p1.id, p2.id, p3.id] },
     }));
 
-    const tx = await db.transaction.findFirst({ where: { userId: user.id, reason: 'onboarding_picks' } });
-    expect(tx).not.toBeNull();
-    expect(tx?.coinsDelta).toBe(500);
+    const entry = await db.ledgerEntry.findFirst({
+      where: {
+        userId: user.id,
+        account: LedgerAccount.USER_CASH,
+        reason: LedgerReason.QUEST_REWARD,
+      },
+    });
+    expect(entry).not.toBeNull();
+    expect(entry?.amount).toBe(50_000n);
   });
 
   it('rejects if fewer than 3 players', async () => {

@@ -1,16 +1,11 @@
-// sportsex schema.
+// sportsex schema v2 (26/27 rebuild — R1.2, R1.3, R1.4, R2.1, R5.7).
 //
-// Two eras live here side by side during the 26/27 rebuild:
-//   * the v1 product tables (User, Team, Player, Match, ...) — see AGENTS.md §5
-//   * the v2 tables in the lower half of this file: reference + events written
-//     by the FPL ingestion path (TODO_2627.md Phase 1), plus the derived and
-//     market tables added in R2.1 (player_season_stat, fair_value, asset,
-//     price_tick, trade, position, ledger_entry).
-// Nothing joins across the two halves. R2.2 lands the v2 migration so a fresh
-// database is v2-complete; the v1 engine-room tables (Team, Player, Match,
-// Valuation, Holding, Transaction, Order, PlayerMatchStat) can only be dropped
-// once the product UI stops reading them (Phase 5), at which point FplPlayer →
-// Player and fpl_player → player. Until then both eras coexist.
+// Organised into four layers (REBUILD_PLAN_2627.md §"Target architecture"):
+//   reference: season · club · club_season · player · player_season · gameweek · fixture
+//   events:    player_fixture_stat · player_gameweek_stat · raw_payload  (immutable)
+//   derived:   player_season_stat · fair_value                           (recomputed, never incremented)
+//   market:    asset · price_tick · trade · position · ledger_entry
+//   product:   User · Comment · Friendship · PrivateLeaderboard · Quest · Prediction
 
 generator client {
   provider = "prisma-client-js"
@@ -30,11 +25,6 @@ model User {
   createdAt    DateTime  @default(now())
   lastLoginAt  DateTime?
 
-  holdings             Holding[]
-  transactions         Transaction[]
-  orders               Order[]
-  // Schema v2 market relations (R2.1). Coexist with the v1 holdings/
-  // transactions/orders above until R2.5 deletes the v1 half.
   positions            Position[]
   trades               Trade[]
   ledgerEntries        LedgerEntry[]
@@ -45,143 +35,6 @@ model User {
   friendshipsIn        Friendship[]               @relation("friendshipsIn")
   privateLeaderboards  PrivateLeaderboard[]
   privateLbMemberships PrivateLeaderboardMember[]
-}
-
-model Team {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
-  shortName String?
-  league    String  @default("EPL")
-  crestUrl  String?
-
-  players     Player[]
-  valuations  Valuation[]
-  homeMatches Match[]     @relation("home")
-  awayMatches Match[]     @relation("away")
-}
-
-model Player {
-  id          Int     @id @default(autoincrement())
-  playerKey   String  @unique
-  fullName    String
-  teamId      Int?
-  team        Team?   @relation(fields: [teamId], references: [id])
-  position    String?
-  posBucket   String?
-  nationality String?
-  // Season-to-date stats used by pricing.ts
-  appearances Int     @default(0)
-  minutes     Int     @default(0)
-  goals       Int     @default(0)
-  assists     Int     @default(0)
-  totalShares Int     @default(10000)
-  sharesHeld  Int     @default(0)
-
-  valuations Valuation[]
-  matchStats PlayerMatchStat[]
-  comments   Comment[]
-
-  @@index([teamId])
-  @@index([fullName])
-}
-
-model Match {
-  id         Int       @id @default(autoincrement())
-  externalId String?   @unique
-  homeTeamId Int
-  awayTeamId Int
-  home       Team      @relation("home", fields: [homeTeamId], references: [id])
-  away       Team      @relation("away", fields: [awayTeamId], references: [id])
-  kickoffAt  DateTime
-  status     String    @default("scheduled") // scheduled|live|finished|settled
-  homeScore  Int?
-  awayScore  Int?
-  settledAt  DateTime?
-
-  playerStats PlayerMatchStat[]
-  valuations  Valuation[]
-  predictions Prediction[]
-
-  @@index([status])
-  @@index([kickoffAt])
-}
-
-model PlayerMatchStat {
-  id       Int     @id @default(autoincrement())
-  playerId Int
-  matchId  Int
-  player   Player  @relation(fields: [playerId], references: [id])
-  match    Match   @relation(fields: [matchId], references: [id])
-  minutes  Int     @default(0)
-  goals    Int     @default(0)
-  assists  Int     @default(0)
-  // 'win' | 'draw' | 'loss' for the player's team in this match
-  result   String?
-
-  @@unique([playerId, matchId])
-}
-
-model Valuation {
-  id         Int      @id @default(autoincrement())
-  playerId   Int?
-  teamId     Int?
-  player     Player?  @relation(fields: [playerId], references: [id])
-  team       Team?    @relation(fields: [teamId], references: [id])
-  computedAt DateTime @default(now())
-  price      Float
-  basePrice  Float?
-  demandMult Float?
-  matchId    Int?
-  match      Match?   @relation(fields: [matchId], references: [id])
-
-  @@index([playerId, computedAt])
-  @@index([teamId, computedAt])
-}
-
-model Holding {
-  id        Int    @id @default(autoincrement())
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
-  assetKind String // 'player' | 'team'
-  assetId   Int
-  shares    Int
-  avgCost   Float
-
-  @@unique([userId, assetKind, assetId])
-  @@index([assetKind, assetId])
-}
-
-model Transaction {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  assetKind  String // 'player' | 'team' | 'coin_grant' | 'quest_reward' | 'prediction_payout'
-  assetId    Int?
-  side       String // 'buy' | 'sell' | 'credit' | 'debit'
-  shares     Int      @default(0)
-  price      Float    @default(0)
-  coinsDelta Int
-  reason     String?
-  createdAt  DateTime @default(now())
-
-  @@index([userId, createdAt])
-  @@index([assetKind, assetId, createdAt])
-}
-
-model Order {
-  id          Int       @id @default(autoincrement())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  assetKind   String
-  assetId     Int
-  side        String // 'buy' | 'sell'
-  shares      Int
-  status      String // 'pending' | 'filled' | 'cancelled'
-  filledPrice Float?
-  createdAt   DateTime  @default(now())
-  filledAt    DateTime?
-
-  @@index([userId, createdAt])
 }
 
 model Friendship {
@@ -222,14 +75,15 @@ model Comment {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   playerId  Int?
-  teamId    Int?
+  clubId    Int?
   player    Player?  @relation(fields: [playerId], references: [id])
+  club      Club?    @relation(fields: [clubId], references: [id])
   body      String
   status    String   @default("visible") // visible|hidden|flagged
   createdAt DateTime @default(now())
 
   @@index([playerId, createdAt])
-  @@index([teamId, createdAt])
+  @@index([clubId, createdAt])
 }
 
 model Quest {
@@ -257,21 +111,22 @@ model UserQuest {
 model Prediction {
   id          Int      @id @default(autoincrement())
   userId      String
-  matchId     Int
+  fixtureId   Int
   user        User     @relation(fields: [userId], references: [id])
-  match       Match    @relation(fields: [matchId], references: [id])
+  fixture     Fixture  @relation(fields: [fixtureId], references: [id])
   pick        String // 'H' | 'D' | 'A'
   coinsStaked Int
+  odds        Decimal  @default(2) @db.Decimal(8, 4)
   resolved    Boolean  @default(false)
   payout      Int      @default(0)
   createdAt   DateTime @default(now())
 
   @@index([userId, createdAt])
-  @@index([matchId, resolved])
+  @@index([fixtureId, resolved])
 }
 
 // ---------------------------------------------------------------------------
-// Schema v2 — reference tables (TODO_2627.md R1.2)
+// Schema v2 — reference tables (TODO_2627.md R1.2, R5.7)
 //
 // Written only by the FPL ingestion path. Three things drive the shape:
 //
@@ -279,7 +134,7 @@ model Prediction {
 //    and `team.id` are recycled every season — element 328 is a different
 //    footballer in 25/26 than in 26/27. `element.code` / `team.code` and
 //    `opta_code` are the stable identifiers, so those key the identity tables
-//    (`fpl_player`, `club`) while the season-scoped ids live on the membership
+//    (`player`, `club`) while the season-scoped ids live on the membership
 //    tables (`player_season`, `club_season`). That mapping is what lets the
 //    25/26 backfill be replayed after the August rollover has overwritten
 //    FPL's id space (R1.5, R1.7).
@@ -291,8 +146,6 @@ model Prediction {
 
 /// FPL's four element types. Mapped from `element_types[].singular_name_short`
 /// at ingest rather than from the numeric id, which is FPL's to renumber.
-/// Renamed from `Position` in R2.1 to free that name for the market `position`
-/// table below; the only type reference was `ingest/bootstrap/plan.ts`.
 enum PlayerPosition {
   GKP
   DEF
@@ -326,7 +179,8 @@ model Club {
   name      String
   shortName String
 
-  seasons ClubSeason[]
+  seasons  ClubSeason[]
+  comments Comment[]
 
   @@map("club")
 }
@@ -364,26 +218,22 @@ model ClubSeason {
   @@map("club_season")
 }
 
-/// A footballer's cross-season identity. R2.2 renames this model to `Player`,
-/// once the v1 `Player` above is gone and the name is free.
-model FplPlayer {
+/// A footballer's cross-season identity (renamed from `FplPlayer` in R5.7).
+model Player {
   id         Int       @id @default(autoincrement())
   /// `element.code` — stable across seasons, unlike `element.id`.
   fplCode    Int       @unique
-  /// `element.opta_code`, e.g. "p118748". Populated for all 841 players in
-  /// 25/26 — but it is exactly "p" + `fplCode` for every one of them, so it
-  /// corroborates nothing about identity that `fplCode` doesn't already say.
-  /// Kept because it is the join key into Opta-derived data from other
-  /// providers, which is what makes R1.6's independent cross-check possible.
+  /// `element.opta_code`, e.g. "p118748".
   optaCode   String?   @unique
   firstName  String
   secondName String
   webName    String
   birthDate  DateTime? @db.Date
 
-  seasons PlayerSeason[]
+  seasons  PlayerSeason[]
+  comments Comment[]
 
-  @@map("fpl_player")
+  @@map("player")
 }
 
 /// A footballer's registration in one season: which club, which position, and
@@ -415,7 +265,7 @@ model PlayerSeason {
   selectedByPercent Decimal @db.Decimal(6, 3)
 
   season     Season     @relation(fields: [seasonId], references: [id])
-  player     FplPlayer  @relation(fields: [playerId], references: [id])
+  player     Player     @relation(fields: [playerId], references: [id])
   clubSeason ClubSeason @relation(fields: [clubSeasonId], references: [id])
 
   fixtureStats  PlayerFixtureStat[]
@@ -447,6 +297,8 @@ model Gameweek {
 
   averageEntryScore Int?
   highestScore      Int?
+  /// Timestamp when R6.4 settled this gameweek.
+  settledAt         DateTime?
 
   season              Season               @relation(fields: [seasonId], references: [id])
   fixtures            Fixture[]
@@ -471,9 +323,7 @@ model Fixture {
   /// carries in event/{gw}/live. This is how R1.4 attributes a stat line.
   fplId Int
   /// `fixture.code` — a Premier League match code, believed globally unique
-  /// rather than season-scoped. The unique constraint is the assertion: if a
-  /// later season ever reuses one, the ingest fails loudly instead of merging
-  /// two different matches. R6.6's staging dry run is where that would surface.
+  /// rather than season-scoped.
   code  Int @unique
 
   homeClubSeasonId Int
@@ -500,6 +350,7 @@ model Fixture {
   awayClub ClubSeason @relation("awayFixtures", fields: [awayClubSeasonId], references: [id])
 
   playerStats PlayerFixtureStat[]
+  predictions Prediction[]
 
   @@unique([seasonId, fplId])
   @@index([gameweekId])
@@ -510,20 +361,10 @@ model Fixture {
 }
 
 /// Per-fixture player stats, split out of `event/{gw}/live`'s `explain` block.
-/// This is the grain that makes double gameweeks correct: a player with two
-/// fixtures in one gameweek gets two rows here, each carrying only what FPL
-/// attributes to that specific fixture.
-///
-/// `explain` covers the point-scoring identifiers only. The ~20 model inputs
-/// FPL reports solely as gameweek totals (xG, xA, tackles, bps, influence…)
-/// live on `player_gameweek_stat`, never apportioned across a double — a split
-/// there would push a fabricated number into R3.1's valuation.
 model PlayerFixtureStat {
   id             Int @id @default(autoincrement())
   playerSeasonId Int
   fixtureId      Int
-  /// Denormalised from the fixture, so the per-gameweek reads R2.3/R3.1 make
-  /// don't have to join through `fixture` every time.
   gameweekId     Int
 
   minutes               Int
@@ -539,7 +380,6 @@ model PlayerFixtureStat {
   saves                 Int
   bonus                 Int
   defensiveContribution Int
-  /// Sum of the `explain` points for this fixture: FPL's own per-fixture score.
   totalPoints           Int
 
   playerSeason PlayerSeason @relation(fields: [playerSeasonId], references: [id])
@@ -553,12 +393,7 @@ model PlayerFixtureStat {
 }
 
 /// Per-gameweek player totals, taken verbatim from `event/{gw}/live`'s `stats`
-/// block. This is the only place the model-input stats exist: FPL reports xG,
-/// xA, xGC, tackles, recoveries, CBI, bps, starts and the ICT components solely
-/// as gameweek totals, with no per-fixture breakdown even on a double gameweek.
-/// For a single-fixture gameweek the total is that fixture; for a double it is
-/// the combined line, and R3.1 decides what to do with it — this table never
-/// guesses a split.
+/// block.
 model PlayerGameweekStat {
   id             Int @id @default(autoincrement())
   playerSeasonId Int
@@ -596,21 +431,15 @@ model PlayerGameweekStat {
 
   playerSeason PlayerSeason @relation(fields: [playerSeasonId], references: [id])
   gameweek     Gameweek     @relation(fields: [gameweekId], references: [id])
-
   @@unique([playerSeasonId, gameweekId])
   @@index([gameweekId])
   @@map("player_gameweek_stat")
 }
 
-/// Archived FPL responses, so any parse can be replayed without refetching —
-/// the store R1.1's `onRaw` hook was built for. Keyed on (endpoint, scopeKey)
-/// so a re-fetch overwrites rather than accretes; `bodyHash` lets a re-run that
-/// pulled byte-identical data skip the write, which keeps R1.7 honest.
+/// Archived FPL responses, so any parse can be replayed without refetching.
 model RawPayload {
   id       Int    @id @default(autoincrement())
   endpoint String
-  /// Disambiguates payloads within one endpoint: the gameweek for event-live,
-  /// the season for bootstrap/fixtures. e.g. "2025:gw33".
   scopeKey String
 
   url       String
@@ -618,7 +447,6 @@ model RawPayload {
   fetchedAt DateTime
   bytes     Int
   attempts  Int
-  /// SHA-256 of the JSON body, as the wire delivered it. The idempotency handle.
   bodyHash  String
   body      Json
 
@@ -626,55 +454,17 @@ model RawPayload {
   @@map("raw_payload")
 }
 
-// ---------------------------------------------------------------------------
-// Schema v2 — derived + market tables (TODO_2627.md R2.1)
-//
-// The reference and events halves above already existed (R1.2–R1.4). R2.1 adds
-// the two remaining layers of the target architecture (REBUILD_PLAN §"Target
-// architecture"):
-//
-//   derived:  player_season_stat · fair_value   — recomputed, never incremented
-//   market:   asset · price_tick · trade · position · ledger_entry
-//
-// Product tables (User, Comment, Friendship, leaderboards, Quest, Prediction)
-// are the v1 models above, carried largely unchanged. R2.2 lands the migration
-// for this half; dropping the v1 engine-room tables and renaming FplPlayer →
-// Player waits until the UI no longer reads v1 (Phase 5).
-//
-// Three principles the v1 schema violated and this half enforces:
-//   1. Events immutable, aggregates derived — player_season_stat is a recompute
-//      of player_fixture_stat / player_gameweek_stat (R2.3), never an increment.
-//   2. One writer per concern — prices only from the valuation engine + AMM,
-//      balances only from the ledger.
-//   3. Money is integers and double-entry — coins as BigInt minor units, prices
-//      as Decimal, every movement a ledger_entry row (R2.4, R4.2).
-
 /// Season-to-date aggregates for one player, recomputed from the immutable
 /// per-fixture and per-gameweek rows (R2.3), never incremented. Invariant 4: a
 /// recompute reproduces this row exactly.
-///
-/// **Every summed stat comes from `player_gameweek_stat`**; only `appearances`
-/// is counted from `player_fixture_stat`. R2.1 planned it the other way round,
-/// and measuring the live payloads showed that to be lossy: FPL's `explain`
-/// block is a points ledger, not a stat line, and omits an identifier that
-/// scored nothing. Clean sheets, goals conceded, saves and defensive
-/// contribution are all conditionally scoring, so the per-fixture grain
-/// systematically under-reports them — exactly the defensive stats R3.1 needs.
-/// The gameweek grain is FPL's `stats` block verbatim and is complete; a double
-/// gameweek's row already covers both fixtures, so summing it is exact.
-/// See src/lib/derive/seasonStats/plan.ts for the measurements.
 model PlayerSeasonStat {
   id             Int @id @default(autoincrement())
   playerSeasonId Int @unique
 
-  /// Fixtures with minutes > 0 — the one field counted from
-  /// `player_fixture_stat`, since only that grain knows a double gameweek was
-  /// two matches. Not the same as `starts`: a substitute has appeared.
   appearances Int
   minutes     Int
   starts      Int
 
-  // Counting stats — Σ over player_gameweek_stat (see the note above).
   goalsScored           Int
   assists               Int
   cleanSheets           Int
@@ -689,7 +479,6 @@ model PlayerSeasonStat {
   defensiveContribution Int
   totalPoints           Int
 
-  // Model inputs — gameweek grain is the only grain FPL reports these at.
   bps                           Int
   tackles                       Int
   recoveries                    Int
@@ -711,24 +500,12 @@ model PlayerSeasonStat {
   @@map("player_season_stat")
 }
 
-/// What kind of instrument an `asset` row represents. Redundant with which
-/// exclusive-arc foreign key is set, but kept as an indexable discriminator so
-/// position-group and market-wide queries don't have to test for nulls.
 enum AssetKind {
   PLAYER
   CLUB
 }
 
-/// One tradeable instrument — a player or a club, in a given season. This is the
-/// join target that gives positions, trades and price ticks real referential
-/// integrity, replacing v1's polymorphic `assetKind`/`assetId` string pair
-/// (Holding/Transaction) that had no foreign keys at all. R2.1's accept.
-///
-/// The player/club split is an **exclusive arc**: exactly one of
-/// `playerSeasonId` / `clubSeasonId` is set, both are real foreign keys, and the
-/// R2.2 migration adds a CHECK asserting exactly-one. Season-scoped on purpose —
-/// fair value is computed per season, so an asset is too; the season-rollover
-/// policy for open positions is an open decision (R7.6), not a schema one.
+/// One tradeable instrument — a player or a club, in a given season.
 model Asset {
   id   Int       @id @default(autoincrement())
   kind AssetKind
@@ -736,10 +513,6 @@ model Asset {
   playerSeasonId Int? @unique
   clubSeasonId   Int? @unique
 
-  /// AMM state (R4.6), written only inside a trade transaction. `inventory` is
-  /// outstanding shares q; `seedInventory` is q₀; `liquidity` is per-asset depth
-  /// L. Price is a pure read of these plus the latest fair value:
-  /// P(q) = V·exp((q − q₀)/L). Seeded by R4.6; 0 / 0 / 1 until then.
   inventory     Int     @default(0)
   seedInventory Int     @default(0)
   liquidity     Decimal @default(1) @db.Decimal(18, 6)
@@ -756,40 +529,27 @@ model Asset {
   @@map("asset")
 }
 
-/// The source of a fair-value observation.
 enum FairValueSource {
-  /// A gameweek was finalised and the football stats repriced the asset.
   GAMEWEEK
-  /// A nightly recompute for availability/status changes between gameweeks.
   AVAILABILITY
-  /// The seed value at market open, before any gameweek is played.
   SEED
 }
 
 /// A fair-value observation for an asset: what the football says it's worth,
-/// independent of market demand. Written only by the valuation engine (R3.5) —
-/// recomputed, never incremented. The AMM reads the latest row as V in
-/// P(q) = V·exp((q − q₀)/L), so V and demand stay cleanly separated and a V
-/// update moves everyone's price by the same ratio (fixes the v1 ratchet).
+/// independent of market demand.
 model FairValue {
   id      Int @id @default(autoincrement())
   assetId Int
 
-  /// The gameweek whose finalised stats produced this value; null for a nightly
-  /// availability-only recompute or the seed.
   gameweekId Int?
   source     FairValueSource
 
-  /// V, in coins. Clamped to [10, 1500] by R3.5's `fairValue()`.
   value Decimal @db.Decimal(12, 4)
 
-  /// Audit trail of the R3.5 composition so a price move is explainable.
-  /// Player assets fill these; club assets use a different formula (minutes-
-  /// weighted squad value + form + strength) and leave them null.
-  baseline         Decimal? @db.Decimal(12, 6) // B_p
-  form             Decimal? @db.Decimal(12, 6) // F_p
-  availabilityMult Decimal? @db.Decimal(6, 4) // M_p
-  positionBase     Decimal? @db.Decimal(12, 4) // P_pos_base
+  baseline         Decimal? @db.Decimal(12, 6)
+  form             Decimal? @db.Decimal(12, 6)
+  availabilityMult Decimal? @db.Decimal(6, 4)
+  positionBase     Decimal? @db.Decimal(12, 4)
 
   computedAt DateTime @default(now())
 
@@ -806,27 +566,17 @@ enum TradeSide {
   SELL
 }
 
-/// A filled trade against the AMM. Execution and price formation are one
-/// computation in one transaction (R4.3), which is what makes the v1 §2
-/// preTradeDemand round-trip exploit impossible to express here. Real foreign
-/// keys to `user` and `asset` — R2.1's accept — so a trade always points at a
-/// user and an instrument that exist.
+/// A filled trade against the AMM.
 model Trade {
   id      Int       @id @default(autoincrement())
   userId  String
   assetId Int
   side    TradeSide
 
-  /// Shares filled (always > 0).
   shares         Int
-  /// Volume-weighted average fill price, in coins (the AMM integral / shares).
   avgPrice       Decimal @db.Decimal(12, 4)
-  /// Coins moved for the shares, minor units, always ≥ 0. Buy debits the user
-  /// this + fee; sell credits this − fee.
   grossCost      BigInt
-  /// Fee charged this side (~0.5%), minor units. The primary coin sink (R7.3).
   fee            BigInt
-  /// Outstanding inventory q after the fill — denormalised for audit.
   inventoryAfter Int
 
   createdAt DateTime @default(now())
@@ -842,30 +592,20 @@ model Trade {
   @@map("trade")
 }
 
-/// What moved an asset's market price.
 enum PriceTickSource {
-  /// A trade fill moved q along the bonding curve.
   TRADE
-  /// A fair-value recompute moved V, repricing at the current q.
   VALUATION
 }
 
-/// Market price history. One row per price-moving event. Replaces v1
-/// `Valuation` and its id-DESC-vs-computedAt-DESC ambiguity: R5.1 reads "latest
-/// price" as the newest `(assetId, computedAt)` here, one ordering rule
-/// everywhere. Self-describing — carries the V and q that produced P so a chart
-/// point needs no join.
+/// Market price history. One row per price-moving event.
 model PriceTick {
   id      Int @id @default(autoincrement())
   assetId Int
 
   source  PriceTickSource
-  /// The trade that caused this tick, when source = TRADE. One tick per trade.
   tradeId Int?            @unique
 
-  /// Market price P after this event, in coins.
   price     Decimal @db.Decimal(12, 4)
-  /// The fair value V and inventory q that produced P.
   fairValue Decimal @db.Decimal(12, 4)
   inventory Int
 
@@ -878,18 +618,13 @@ model PriceTick {
   @@map("price_tick")
 }
 
-/// A user's holding in one asset. Replaces v1 `Holding`; `(userId, assetId)` is
-/// now two real foreign keys rather than a `userId` + `assetKind`/`assetId`
-/// string triple with no integrity. The running share count and cost basis for
-/// PnL; the ledger, not this row, is the source of truth for coins.
+/// A user's holding in one asset.
 model Position {
   id      Int    @id @default(autoincrement())
   userId  String
   assetId Int
 
-  /// Net shares held (≥ 0; the AMM has no shorting).
   shares  Int
-  /// Volume-weighted average cost basis, coins, for mark-to-market PnL (R5.5).
   avgCost Decimal @db.Decimal(12, 4)
 
   updatedAt DateTime @updatedAt
@@ -902,18 +637,13 @@ model Position {
   @@map("position")
 }
 
-/// A ledger account. User cash is owned by a user; the three house accounts are
-/// not. A movement's legs always sum to zero across these, so total coins in
-/// circulation only changes via explicit MINT credits and FEE_SINK burns
-/// (invariant 2).
 enum LedgerAccount {
-  USER_CASH // a user's spendable balance
-  AMM_LIQUIDITY // the market maker's coin reserve (the trade counterparty)
-  FEE_SINK // fees removed from circulation
-  MINT // grants, quest rewards, prediction payouts enter here
+  USER_CASH
+  AMM_LIQUIDITY
+  FEE_SINK
+  MINT
 }
 
-/// Why coins moved.
 enum LedgerReason {
   TRADE_BUY
   TRADE_SELL
@@ -924,28 +654,16 @@ enum LedgerReason {
   PREDICTION_PAYOUT
 }
 
-/// Double-entry ledger (R4.2). A user's balance is the signed sum of their
-/// USER_CASH entries — never a stored mutable field, which is what makes the v1
-/// read-modify-write balance bug unrepresentable. Every coin movement is a set
-/// of rows sharing a `transferId` that sum to zero; reconciliation is a query,
-/// not an investigation (invariant 2). Coins are BigInt minor units — no floats
-/// anywhere in the money path (R2.4).
+/// Double-entry ledger (R4.2).
 model LedgerEntry {
   id      Int           @id @default(autoincrement())
-  /// The user whose cash account this leg touches; null for the house accounts
-  /// (AMM_LIQUIDITY, FEE_SINK, MINT), which no user owns.
   userId  String?
   account LedgerAccount
   reason  LedgerReason
 
-  /// Signed minor units: credit > 0, debit < 0. The legs sharing `transferId`
-  /// sum to zero.
   amount BigInt
 
-  /// Groups the legs of one atomic movement so a reconciliation query can
-  /// assert each transfer balances.
   transferId String
-  /// The trade this leg settles, when the movement is a trade.
   tradeId    Int?
 
   createdAt DateTime @default(now())

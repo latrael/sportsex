@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
-import { latestPricesByPlayerIds } from '@/lib/queries';
+import { queryMarketPlayers } from '@/lib/queries';
 import OnboardingPicker from './OnboardingPicker';
 
 export const dynamic = 'force-dynamic';
@@ -17,22 +17,16 @@ export default async function OnboardingPage() {
     if (done) redirect('/');
   }
 
-  const players = await prisma.player.findMany({
-    take: 24,
-    orderBy: [{ goals: 'desc' }, { assists: 'desc' }],
-    include: { team: true },
-  });
+  const market = await queryMarketPlayers({ sort: 'price', pageSize: 24 });
 
-  const priceMap = await latestPricesByPlayerIds(players.map((p) => p.id));
-
-  const playerData = players.map((p) => ({
+  const playerData = market.items.map((p) => ({
     id: p.id,
     fullName: p.fullName,
     posBucket: p.posBucket,
-    teamName: p.team?.name ?? '—',
+    teamName: p.clubName,
     goals: p.goals,
     assists: p.assists,
-    price: priceMap.get(p.id) ?? 50,
+    price: p.price,
   }));
 
   return (

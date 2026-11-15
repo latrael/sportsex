@@ -16,6 +16,7 @@ import { auth } from '@/lib/auth';
 import { lastOrderAt } from '@/lib/cooldown';
 import { POST } from '@/app/api/orders/route';
 import { reconcileLedger } from '@/lib/market';
+import { toPriceDecimal } from '@/lib/money';
 
 const mockAuth = vi.mocked(auth);
 
@@ -62,28 +63,24 @@ describe('POST /api/orders — buy player (AMM + ledger)', () => {
     const updated = await db.user.findUnique({ where: { id: user.id } });
     expect(updated?.coinBalance).toBe(10000 + body.coinsDelta);
 
-    const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: player.id } });
-    expect(holding?.shares).toBe(5);
-    expect(holding?.avgCost).toBeGreaterThan(100);
-
     const position = await db.position.findFirst({ where: { userId: user.id } });
     expect(position?.shares).toBe(5);
+    expect(Number(position?.avgCost)).toBeGreaterThan(100);
 
     const recon = await reconcileLedger(db);
     expect(recon.ok).toBe(true);
   });
 
-  it('creates a price_tick and valuation tick after the fill', async () => {
+  it('creates a price_tick and trade after the fill', async () => {
     const user = await createUser();
     const player = await createPlayer();
     await createValuation(player.id, 100);
 
-    const before = await db.valuation.count({ where: { playerId: player.id } });
+    const before = await db.priceTick.count();
     await buy(user.id, player.id, 1);
-    const after = await db.valuation.count({ where: { playerId: player.id } });
+    const after = await db.priceTick.count();
 
     expect(after).toBe(before + 1);
-    expect(await db.priceTick.count()).toBe(1);
     expect(await db.trade.count()).toBe(1);
   });
 
@@ -131,10 +128,11 @@ describe('POST /api/orders — sell player', () => {
   it('sells shares and credits ledger balance', async () => {
     const user = await createUser({ coinBalance: 5000 });
     const player = await createPlayer();
-    await createValuation(player.id, 100);
+    const tick = await createValuation(player.id, 100);
 
-    // Seed a holding directly
-    await db.holding.create({ data: { userId: user.id, assetKind: 'player', assetId: player.id, shares: 10, avgCost: 80 } });
+    await db.position.create({
+      data: { userId: user.id, assetId: tick.assetId, shares: 10, avgCost: toPriceDecimal(80) },
+    });
 
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     const req = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'player', assetId: player.id, side: 'sell', shares: 5 } });
@@ -148,26 +146,26 @@ describe('POST /api/orders — sell player', () => {
     const updated = await db.user.findUnique({ where: { id: user.id } });
     expect(updated?.coinBalance).toBe(5000 + body.coinsDelta);
 
-    const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: player.id } });
-    expect(holding?.shares).toBe(5);
+    const pos = await db.position.findFirst({ where: { userId: user.id, assetId: tick.assetId } });
+    expect(pos?.shares).toBe(5);
   });
 
-  it('removes holding when all shares sold', async () => {
+  it('removes position when all shares sold', async () => {
     const user = await createUser();
     const player = await createPlayer();
-    await createValuation(player.id, 50);
-    await db.holding.create({ data: { userId: user.id, assetKind: 'player', assetId: player.id, shares: 3, avgCost: 50 } });
+    const tick = await createValuation(player.id, 50);
+    await db.position.create({
+      data: { userId: user.id, assetId: tick.assetId, shares: 3, avgCost: toPriceDecimal(50) },
+    });
 
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     const req = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'player', assetId: player.id, side: 'sell', shares: 3 } });
     await POST(req);
 
-    const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: player.id } });
-    expect(holding).toBeNull();
     expect(await db.position.findFirst({ where: { userId: user.id } })).toBeNull();
   });
 
-  it('rejects sell when no holding', async () => {
+  it('rejects sell when no position', async () => {
     const user = await createUser();
     const player = await createPlayer();
     await createValuation(player.id, 50);
@@ -201,7 +199,6 @@ describe('POST /api/orders — Invariant 1 & §2 exploit prevention', () => {
     const sellRes = await POST(sellReq);
     const sellBody = await sellRes.json();
 
-    // Gross curve integral on buy and sell are identical; net loss in minor units is exactly buyFee + sellFee
     expect(buyBody.grossCostMinor).toBe(sellBody.grossCostMinor);
     const netMinorDelta = BigInt(buyBody.coinsDeltaMinor) + BigInt(sellBody.coinsDeltaMinor);
     const totalFeesMinor = BigInt(buyBody.feeMinor) + BigInt(sellBody.feeMinor);
@@ -214,7 +211,7 @@ describe('POST /api/orders — buy team', () => {
   it('buys team shares', async () => {
     const user = await createUser({ coinBalance: 10000 });
     const team = await createTeam();
-    await createTeamValuation(team.id, 200);
+    const tick = await createTeamValuation(team.id, 200);
 
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     const req = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'team', assetId: team.id, side: 'buy', shares: 2 } });
@@ -223,7 +220,7 @@ describe('POST /api/orders — buy team', () => {
     expect(res.status).toBe(200);
     expect((await res.json()).ok).toBe(true);
 
-    const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: team.id, assetKind: 'team' } });
-    expect(holding?.shares).toBe(2);
+    const pos = await db.position.findFirst({ where: { userId: user.id, assetId: tick.assetId } });
+    expect(pos?.shares).toBe(2);
   });
 });

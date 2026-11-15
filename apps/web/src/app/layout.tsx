@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { auth, signOut } from '@/lib/auth';
 import { prisma } from '@/lib/db';
+import { getOrInitUserBalanceMinor } from '@/lib/market';
+import { minorUnitsToCoinsDecimal } from '@/lib/money';
 
 export const metadata: Metadata = {
   title: 'sportsex',
@@ -13,6 +15,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await auth();
   const userId = (session?.user as { id?: string } | undefined)?.id;
   const me = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
+  const balanceCoins =
+    me && userId
+      ? Number(
+          minorUnitsToCoinsDecimal(
+            await getOrInitUserBalanceMinor(prisma, userId, me.coinBalance),
+          ),
+        )
+      : 0;
 
   return (
     <html lang="en">
@@ -61,7 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   >
                     <span className="text-mute font-medium">@{me.handle}</span>
                     <span className="font-mono font-semibold text-accent text-xs px-2 py-0.5 bg-blue-50 border border-blue-100 rounded-md">
-                      {me.coinBalance.toLocaleString()} <span className="text-blue-400">coins</span>
+                      {balanceCoins.toLocaleString(undefined, { maximumFractionDigits: 2 })} <span className="text-blue-400">coins</span>
                     </span>
                   </Link>
                   <form action={async () => { 'use server'; await signOut({ redirectTo: '/' }); }}>
@@ -83,7 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer className="border-t border-edge mt-16">
           <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between text-xs text-mute">
             <span className="font-semibold text-ink/40">sportsex</span>
-            <span>Virtual currency only · not real money · EPL · v1</span>
+            <span>Virtual currency only · not real money · EPL · v2</span>
           </div>
         </footer>
       </body>

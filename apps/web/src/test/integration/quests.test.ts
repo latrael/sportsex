@@ -1,12 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { LedgerAccount, LedgerReason, TradeSide } from '@prisma/client';
 import {
   db,
   cleanDb,
   createUser,
   createPlayer,
+  createValuation,
   createQuests,
   makeRequest,
 } from '../helpers';
+import { toPriceDecimal } from '@/lib/money';
 
 vi.mock('@/lib/auth', () => ({ auth: vi.fn() }));
 
@@ -36,14 +39,20 @@ describe('POST /api/quests/claim — login_today', () => {
     expect(updated?.coinBalance).toBe(100);
   });
 
-  it('creates a transaction record', async () => {
+  it('creates a balanced QUEST_REWARD ledger entry', async () => {
     const user = await createUser();
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     await claim(makeRequest('/api/quests/claim', { method: 'POST', body: { code: 'login_today' } }));
 
-    const tx = await db.transaction.findFirst({ where: { userId: user.id, reason: 'quest_login_today' } });
-    expect(tx).not.toBeNull();
-    expect(tx?.coinsDelta).toBe(100);
+    const entry = await db.ledgerEntry.findFirst({
+      where: {
+        userId: user.id,
+        account: LedgerAccount.USER_CASH,
+        reason: LedgerReason.QUEST_REWARD,
+      },
+    });
+    expect(entry).not.toBeNull();
+    expect(entry?.amount).toBe(10_000n);
   });
 
   it('rejects double-claim on same day', async () => {
@@ -60,8 +69,20 @@ describe('POST /api/quests/claim — login_today', () => {
 describe('POST /api/quests/claim — place_one_trade', () => {
   it('grants reward when user has a trade today', async () => {
     const user = await createUser({ coinBalance: 0 });
-    await db.transaction.create({
-      data: { userId: user.id, assetKind: 'player', assetId: 1, side: 'buy', shares: 1, price: 10, coinsDelta: -10, reason: 'market_order' },
+    const player = await createPlayer();
+    const tick = await createValuation(player.id, 100);
+
+    await db.trade.create({
+      data: {
+        userId: user.id,
+        assetId: tick.assetId,
+        side: TradeSide.BUY,
+        shares: 1,
+        avgPrice: toPriceDecimal(100),
+        grossCost: 10_000n,
+        fee: 50n,
+        inventoryAfter: 1,
+      },
     });
 
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
@@ -81,7 +102,7 @@ describe('POST /api/quests/claim — place_one_trade', () => {
 });
 
 describe('POST /api/quests/claim — comment_on_player', () => {
-  it('grants reward when user has a comment today', async () => {
+  it('grants reward when user has a visible comment today', async () => {
     const user = await createUser({ coinBalance: 0 });
     const player = await createPlayer();
     await db.comment.create({ data: { userId: user.id, playerId: player.id, body: 'great player', status: 'visible' } });

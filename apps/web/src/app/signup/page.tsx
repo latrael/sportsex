@@ -3,6 +3,9 @@ import { signIn } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { LedgerReason } from '@prisma/client';
+import { mintToUser } from '@/lib/market';
+import { coinsToMinorUnits } from '@/lib/money';
 
 export default function SignupPage({ searchParams }: { searchParams?: { error?: string } }) {
   async function signup(formData: FormData) {
@@ -19,16 +22,12 @@ export default function SignupPage({ searchParams }: { searchParams?: { error?: 
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { email, handle, passwordHash, coinBalance: 10000 },
+      data: { email, handle, passwordHash, coinBalance: 0 },
     });
-    await prisma.transaction.create({
-      data: {
-        userId: user.id,
-        assetKind: 'coin_grant',
-        side: 'credit',
-        coinsDelta: 10000,
-        reason: 'starting_balance',
-      },
+    await mintToUser(prisma, {
+      userId: user.id,
+      amountMinor: coinsToMinorUnits(10000),
+      reason: LedgerReason.COIN_GRANT,
     });
     await signIn('credentials', { email, password, redirectTo: '/onboarding' });
   }
