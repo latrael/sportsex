@@ -43,13 +43,26 @@ export function sameFieldValue(planned: unknown, stored: unknown): boolean {
   return planned === stored;
 }
 
-function rowMatches(data: Record<string, unknown>, row: Record<string, unknown>): boolean {
-  return Object.keys(data).every((field) => sameFieldValue(data[field], row[field]));
+function rowMatches(
+  data: Record<string, unknown>,
+  row: Record<string, unknown>,
+  omit: readonly string[],
+): boolean {
+  return Object.keys(data).every(
+    (field) => omit.includes(field) || sameFieldValue(data[field], row[field]),
+  );
 }
 
 /**
  * Create the rows that are missing, update only the rows whose content moved,
  * and count the rest as untouched.
+ *
+ * `omitFromCompare` names fields that are written but never compared — a
+ * `computedAt` stamp being the case it exists for (R2.3). Comparing one would
+ * make every row differ on every run and turn a no-op recompute into a full
+ * table rewrite, which is precisely what this function exists to prevent. The
+ * effect is that such a column records when the row's *content* last moved,
+ * not when a job last ran.
  */
 export async function applyDiff<P, R extends { id: number }, D extends Record<string, unknown>>(opts: {
   planned: readonly P[];
@@ -59,8 +72,10 @@ export async function applyDiff<P, R extends { id: number }, D extends Record<st
   dataOf: (planned: P) => D;
   createMany: (rows: D[]) => Promise<unknown>;
   update: (id: number, data: D) => Promise<unknown>;
+  omitFromCompare?: readonly string[];
 }): Promise<SyncCounts> {
   const byKey = new Map(opts.existing.map((row) => [opts.keyOfExisting(row), row]));
+  const omit = opts.omitFromCompare ?? [];
 
   const toCreate: D[] = [];
   const toUpdate: Array<{ id: number; data: D }> = [];
@@ -72,7 +87,7 @@ export async function applyDiff<P, R extends { id: number }, D extends Record<st
 
     if (!row) {
       toCreate.push(data);
-    } else if (rowMatches(data, row as unknown as Record<string, unknown>)) {
+    } else if (rowMatches(data, row as unknown as Record<string, unknown>, omit)) {
       unchanged += 1;
     } else {
       toUpdate.push({ id: row.id, data });
@@ -83,4 +98,22 @@ export async function applyDiff<P, R extends { id: number }, D extends Record<st
   for (const { id, data } of toUpdate) await opts.update(id, data);
 
   return { created: toCreate.length, updated: toUpdate.length, unchanged };
+}
+
+/** Rows per `createMany`. The backfill writes ~30k at a time (R1.4). */
+export const CREATE_CHUNK = 1_000;
+
+/**
+ * Issue a `createMany` in bounded batches. One statement for a whole season's
+ * stats would be a 30k-row insert; the chunking is what keeps the backfill and
+ * the recompute inside a transaction without a single enormous query.
+ */
+export async function createInChunks<T>(
+  create: (chunk: T[]) => Promise<unknown>,
+  rows: readonly T[],
+  chunkSize: number = CREATE_CHUNK,
+): Promise<void> {
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    await create(rows.slice(i, i + chunkSize));
+  }
 }

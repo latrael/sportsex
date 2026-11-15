@@ -1,4 +1,10 @@
-export { applyDiff, sameFieldValue, type SyncCounts } from './diff';
+export {
+  CREATE_CHUNK,
+  applyDiff,
+  createInChunks,
+  sameFieldValue,
+  type SyncCounts,
+} from './diff';
 
 export {
   BootstrapPlanError,
