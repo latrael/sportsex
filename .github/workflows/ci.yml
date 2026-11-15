@@ -8,7 +8,7 @@ on:
 
 jobs:
   check:
-    name: Typecheck, lint, test
+    name: Typecheck, lint, test, build
     runs-on: ubuntu-latest
 
     # The Prisma schema targets postgresql, so tests need a real Postgres.
@@ -62,3 +62,10 @@ jobs:
           TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sportsex_test
           NEXTAUTH_SECRET: ci-test-secret
           ADMIN_TOKEN: ci-test-admin-token
+
+      - name: Build
+        run: pnpm build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sportsex_test
+          NEXTAUTH_SECRET: ci-test-secret
+          CRON_SECRET: ci-build-placeholder-cron-secret

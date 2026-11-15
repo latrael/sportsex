@@ -9,7 +9,7 @@ import { coinsToMinorUnits } from '@/lib/money';
 const schema = z.object({ code: z.string() });
 
 /** Daily cap on coins earnable from daily quests per user per UTC day (R7.2). */
-export const MAX_DAILY_QUEST_COINS = 450;
+const MAX_DAILY_QUEST_COINS = 450;
 
 function startOfToday() {
   const d = new Date();

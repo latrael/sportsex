@@ -1,0 +1,40 @@
+name: High-Frequency Crons
+
+# Runs fixtures/live/settle crons outside Vercel Hobby's daily-only cron limit.
+# Configure repository secrets VERCEL_APP_URL (e.g. https://sportsex.vercel.app)
+# and CRON_SECRET to enable automatic triggering.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+    - cron: '*/15 * * * *'
+    - cron: '5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger cron endpoint
+        env:
+          APP_URL: ${{ secrets.VERCEL_APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "Skipping cron trigger: VERCEL_APP_URL or CRON_SECRET secret is not set."
+            exit 0
+          fi
+
+          case "$EVENT_SCHEDULE" in
+            "*/5 * * * *")
+              ENDPOINT="/api/cron/live"
+              ;;
+            "*/15 * * * *")
+              ENDPOINT="/api/cron/settle"
+              ;;
+            *)
+              ENDPOINT="/api/cron/fixtures"
+              ;;
+          esac
+
+          curl --fail-with-body -sS -H "Authorization: Bearer $CRON_SECRET" "${APP_URL%/}${ENDPOINT}"
