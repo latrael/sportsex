@@ -15,6 +15,7 @@ vi.mock('@/lib/auth', () => ({ auth: vi.fn() }));
 import { auth } from '@/lib/auth';
 import { lastOrderAt } from '@/lib/cooldown';
 import { POST } from '@/app/api/orders/route';
+import { reconcileLedger } from '@/lib/market';
 
 const mockAuth = vi.mocked(auth);
 
@@ -33,7 +34,7 @@ async function buy(userId: string, playerId: number, shares = 1) {
   return POST(req);
 }
 
-describe('POST /api/orders — buy player', () => {
+describe('POST /api/orders — buy player (AMM + ledger)', () => {
   it('returns 401 when not signed in', async () => {
     mockAuth.mockResolvedValue(null as never);
     const req = makeRequest('/api/orders', {
@@ -44,7 +45,7 @@ describe('POST /api/orders — buy player', () => {
     expect(res.status).toBe(401);
   });
 
-  it('buys shares, decrements balance, upserts holding', async () => {
+  it('buys shares on the bonding curve, records double-entry ledger, and upserts position', async () => {
     const user = await createUser({ coinBalance: 10000 });
     const player = await createPlayer();
     await createValuation(player.id, 100);
@@ -54,17 +55,25 @@ describe('POST /api/orders — buy player', () => {
 
     expect(res.status).toBe(200);
     expect(body.ok).toBe(true);
-    expect(body.coinsDelta).toBe(-500);
+    // 5 shares at V=100, L=2000: integral ≈ 500.63 coins + 0.5% fee (~2.50 coins) -> -503 whole coins
+    expect(body.coinsDelta).toBeLessThan(-500);
+    expect(body.coinsDelta).toBeGreaterThan(-510);
 
     const updated = await db.user.findUnique({ where: { id: user.id } });
-    expect(updated?.coinBalance).toBe(9500);
+    expect(updated?.coinBalance).toBe(10000 + body.coinsDelta);
 
     const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: player.id } });
     expect(holding?.shares).toBe(5);
-    expect(holding?.avgCost).toBeCloseTo(100);
+    expect(holding?.avgCost).toBeGreaterThan(100);
+
+    const position = await db.position.findFirst({ where: { userId: user.id } });
+    expect(position?.shares).toBe(5);
+
+    const recon = await reconcileLedger(db);
+    expect(recon.ok).toBe(true);
   });
 
-  it('creates a valuation tick after the fill', async () => {
+  it('creates a price_tick and valuation tick after the fill', async () => {
     const user = await createUser();
     const player = await createPlayer();
     await createValuation(player.id, 100);
@@ -74,6 +83,8 @@ describe('POST /api/orders — buy player', () => {
     const after = await db.valuation.count({ where: { playerId: player.id } });
 
     expect(after).toBe(before + 1);
+    expect(await db.priceTick.count()).toBe(1);
+    expect(await db.trade.count()).toBe(1);
   });
 
   it('rejects buy when insufficient funds', async () => {
@@ -81,7 +92,7 @@ describe('POST /api/orders — buy player', () => {
     const player = await createPlayer();
     await createValuation(player.id, 100);
 
-    const res = await buy(user.id, player.id, 5); // costs 500
+    const res = await buy(user.id, player.id, 5); // costs >500
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe('insufficient_funds');
@@ -117,7 +128,7 @@ describe('POST /api/orders — buy player', () => {
 });
 
 describe('POST /api/orders — sell player', () => {
-  it('sells shares, increments balance', async () => {
+  it('sells shares and credits ledger balance', async () => {
     const user = await createUser({ coinBalance: 5000 });
     const player = await createPlayer();
     await createValuation(player.id, 100);
@@ -131,10 +142,11 @@ describe('POST /api/orders — sell player', () => {
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(body.coinsDelta).toBe(500);
+    expect(body.coinsDelta).toBeGreaterThan(490);
+    expect(body.coinsDelta).toBeLessThanOrEqual(500);
 
     const updated = await db.user.findUnique({ where: { id: user.id } });
-    expect(updated?.coinBalance).toBe(5500);
+    expect(updated?.coinBalance).toBe(5000 + body.coinsDelta);
 
     const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: player.id } });
     expect(holding?.shares).toBe(5);
@@ -152,6 +164,7 @@ describe('POST /api/orders — sell player', () => {
 
     const holding = await db.holding.findFirst({ where: { userId: user.id, assetId: player.id } });
     expect(holding).toBeNull();
+    expect(await db.position.findFirst({ where: { userId: user.id } })).toBeNull();
   });
 
   it('rejects sell when no holding', async () => {
@@ -167,33 +180,33 @@ describe('POST /api/orders — sell player', () => {
   });
 });
 
-describe('POST /api/orders — demand pricing glitch', () => {
-  it('buy then immediate sell yields no profit from own demand', async () => {
+describe('POST /api/orders — Invariant 1 & §2 exploit prevention', () => {
+  it('buy then immediate sell loses exactly the two fees (zero round-trip profit)', async () => {
     const user = await createUser({ coinBalance: 10000 });
     const player = await createPlayer();
     await createValuation(player.id, 100);
 
-    // Buy
+    // Buy 10 shares
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     const buyReq = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'player', assetId: player.id, side: 'buy', shares: 10 } });
-    await POST(buyReq);
-
-    const afterBuy = await db.user.findUnique({ where: { id: user.id } });
+    const buyRes = await POST(buyReq);
+    const buyBody = await buyRes.json();
 
     // Bypass cooldown
     lastOrderAt.delete(user.id);
 
-    // Sell the same shares immediately
+    // Sell the same 10 shares immediately
     mockAuth.mockResolvedValue({ user: { id: user.id } } as never);
     const sellReq = makeRequest('/api/orders', { method: 'POST', body: { assetKind: 'player', assetId: player.id, side: 'sell', shares: 10 } });
-    await POST(sellReq);
+    const sellRes = await POST(sellReq);
+    const sellBody = await sellRes.json();
 
-    const afterSell = await db.user.findUnique({ where: { id: user.id } });
-
-    // Must not end up with more coins than started
-    expect(afterSell!.coinBalance).toBeLessThanOrEqual(10000);
-    // And should have roughly the same as they started (within 1 coin rounding tolerance)
-    expect(afterSell!.coinBalance).toBe(afterBuy!.coinBalance + 10 * 100);
+    // Gross curve integral on buy and sell are identical; net loss in minor units is exactly buyFee + sellFee
+    expect(buyBody.grossCostMinor).toBe(sellBody.grossCostMinor);
+    const netMinorDelta = BigInt(buyBody.coinsDeltaMinor) + BigInt(sellBody.coinsDeltaMinor);
+    const totalFeesMinor = BigInt(buyBody.feeMinor) + BigInt(sellBody.feeMinor);
+    expect(netMinorDelta).toBe(-totalFeesMinor);
+    expect(BigInt(sellBody.balanceMinor)).toBe(1_000_000n - totalFeesMinor);
   });
 });
 
