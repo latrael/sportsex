@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { getOrInitUserBalanceMinor } from '@/lib/market';
 import { minorUnitsToCoinsDecimal } from '@/lib/money';
+import { computeFixtureOdds } from '@/lib/predictions/odds';
 import PredictionsClient from './PredictionsClient';
 
 export const dynamic = 'force-dynamic';
@@ -45,14 +46,23 @@ export default async function PredictionsPage() {
 
   const myPredictionFixtureIds = new Set(myPredictions.map((p) => p.fixtureId));
 
-  const matches = openFixtures.map((f) => ({
-    id: f.id,
-    homeTeam: f.homeClub.club.name,
-    awayTeam: f.awayClub.club.name,
-    kickoffAt: (f.kickoffTime ?? new Date()).toISOString(),
-    status: f.started ? 'live' : 'scheduled',
-    alreadyPredicted: myPredictionFixtureIds.has(f.id),
-  }));
+  const matches = openFixtures.map((f) => {
+    const quoted = computeFixtureOdds({
+      homeStrengthAttack: f.homeClub.strengthAttackHome,
+      homeStrengthDefence: f.homeClub.strengthDefenceHome,
+      awayStrengthAttack: f.awayClub.strengthAttackAway,
+      awayStrengthDefence: f.awayClub.strengthDefenceAway,
+    });
+    return {
+      id: f.id,
+      homeTeam: f.homeClub.club.name,
+      awayTeam: f.awayClub.club.name,
+      kickoffAt: (f.kickoffTime ?? new Date()).toISOString(),
+      status: f.started ? 'live' : 'scheduled',
+      alreadyPredicted: myPredictionFixtureIds.has(f.id),
+      odds: quoted.odds,
+    };
+  });
 
   const predictions = myPredictions.map((p) => ({
     id: p.id,
@@ -61,6 +71,7 @@ export default async function PredictionsPage() {
     awayTeam: p.fixture.awayClub.club.name,
     pick: p.pick,
     coinsStaked: p.coinsStaked,
+    odds: Number(p.odds),
     resolved: p.resolved,
     payout: p.payout,
     createdAt: p.createdAt.toISOString(),

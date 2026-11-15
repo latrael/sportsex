@@ -36,7 +36,10 @@ export default function OnboardingPicker({ players }: { players: Player[] }) {
       const res = await fetch('/api/onboarding/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ playerIds: Array.from(selected) }),
+        body: JSON.stringify({
+          playerIds: Array.from(selected),
+          buyStarterShares: true,
+        }),
       });
       const j = await res.json();
       if (!res.ok) {
@@ -57,9 +60,9 @@ export default function OnboardingPicker({ players }: { players: Player[] }) {
     <div className="space-y-6">
       <div className="text-sm text-mute">
         {count < 3 ? (
-          <span>Pick {3 - count} more player{3 - count !== 1 ? 's' : ''} to continue</span>
+          <span>Pick {3 - count} more player{3 - count !== 1 ? 's' : ''} to buy 1 starter share in each</span>
         ) : (
-          <span className="up">3 players selected — ready to go!</span>
+          <span className="up">3 starter players selected — ready to buy & claim +500 coins!</span>
         )}
       </div>
 
@@ -98,7 +101,7 @@ export default function OnboardingPicker({ players }: { players: Player[] }) {
         disabled={count < 3 || pending}
         onClick={submit}
       >
-        {pending ? 'Setting up…' : 'Continue (+500 coins)'}
+        {pending ? 'Buying starter shares…' : 'Buy 3 Starter Shares & Claim (+500 coins)'}
       </button>
 
       {msg && <p className="text-sm down">{msg}</p>}

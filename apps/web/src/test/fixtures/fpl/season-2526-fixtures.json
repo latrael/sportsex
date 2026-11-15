@@ -1,0 +1,3422 @@
+[
+  {
+    "fplId": 1,
+    "homeScore": 4,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 2,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 3,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 4,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 5,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 6,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 7,
+    "homeScore": 0,
+    "awayScore": 4,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 8,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 9,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 10,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 11,
+    "homeScore": 5,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 12,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 13,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 14,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 15,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 16,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 17,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 18,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 19,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 20,
+    "homeScore": 1,
+    "awayScore": 5,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 21,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 22,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 23,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 24,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 25,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 26,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 27,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 28,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 29,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 30,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 31,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 32,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 33,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 34,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 35,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 36,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 37,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 38,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 39,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 40,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 41,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 42,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 43,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 44,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 45,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 46,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 47,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 48,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 49,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 50,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 51,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 52,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 53,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 54,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 55,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 56,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 57,
+    "homeScore": 5,
+    "awayScore": 1,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 58,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 59,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 60,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 61,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 62,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 63,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 64,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 65,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 66,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 67,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 68,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 69,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 70,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 71,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 72,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 73,
+    "homeScore": 3,
+    "awayScore": 3,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 74,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 75,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 76,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 77,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 78,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 79,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 80,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 81,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 82,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 83,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 84,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 85,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 86,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 87,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 88,
+    "homeScore": 4,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 89,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 90,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 91,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 92,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 93,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 94,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 95,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 96,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 97,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 98,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 99,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 100,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 101,
+    "homeScore": 4,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 102,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 103,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 104,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 105,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 106,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 107,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 108,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 109,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 110,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 111,
+    "homeScore": 4,
+    "awayScore": 1,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 112,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 113,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 114,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 115,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 116,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 117,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 118,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 119,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 120,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 121,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 122,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 123,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 124,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 125,
+    "homeScore": 1,
+    "awayScore": 4,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 126,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 127,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 128,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 129,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 130,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 131,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 132,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 133,
+    "homeScore": 3,
+    "awayScore": 4,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 134,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 135,
+    "homeScore": 4,
+    "awayScore": 5,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 136,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 137,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 138,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 139,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 140,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 141,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 142,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 143,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 144,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 145,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 146,
+    "homeScore": 3,
+    "awayScore": 3,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 147,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 148,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 149,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 150,
+    "homeScore": 1,
+    "awayScore": 4,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 151,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 152,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 153,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 154,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 155,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 156,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 157,
+    "homeScore": 4,
+    "awayScore": 4,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 158,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 159,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 160,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 161,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 162,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 163,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 164,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 165,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 166,
+    "homeScore": 4,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 167,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 168,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 169,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 170,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 171,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 172,
+    "homeScore": 4,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 173,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 174,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 175,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 176,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 177,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 178,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 179,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 180,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 181,
+    "homeScore": 4,
+    "awayScore": 1,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 182,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 183,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 184,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 185,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 186,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 187,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 188,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 189,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 190,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 191,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 192,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 193,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 194,
+    "homeScore": 2,
+    "awayScore": 4,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 195,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 196,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 197,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 198,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 199,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 200,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 201,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 202,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 203,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 204,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 205,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 206,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 207,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 208,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 209,
+    "homeScore": 4,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 210,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 211,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 212,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 213,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 214,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 215,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 216,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 217,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 218,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 219,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 220,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 221,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 222,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 223,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 224,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 225,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 226,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 227,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 228,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 229,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 230,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 231,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 232,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 233,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 234,
+    "homeScore": 0,
+    "awayScore": 4,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 235,
+    "homeScore": 4,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 236,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 237,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 238,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 239,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 240,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 241,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 242,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 243,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 244,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 245,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 246,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 247,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 248,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 249,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 250,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 251,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 252,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 253,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 254,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 255,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 256,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 257,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 258,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 259,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 260,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 261,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 262,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 263,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 264,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 265,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 266,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 267,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 268,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 269,
+    "homeScore": 1,
+    "awayScore": 4,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 270,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 271,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 272,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 273,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 274,
+    "homeScore": 3,
+    "awayScore": 4,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 275,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 276,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 277,
+    "homeScore": 5,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 278,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 279,
+    "homeScore": 2,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 280,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 281,
+    "homeScore": 1,
+    "awayScore": 4,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 282,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 283,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 284,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 285,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 286,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 287,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 288,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 289,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 290,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 291,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 292,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 293,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 294,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 295,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 296,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 297,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 298,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 299,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 300,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 301,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 302,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 303,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 304,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 305,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 306,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 307,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 308,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 309,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 310,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 311,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 312,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 313,
+    "homeScore": 0,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 314,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 315,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 316,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 317,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 318,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 319,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 320,
+    "homeScore": 4,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 321,
+    "homeScore": 4,
+    "awayScore": 3,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 322,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 323,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 324,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 325,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 326,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 327,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 328,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 329,
+    "homeScore": 4,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 330,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 331,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 332,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 333,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 334,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 335,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 336,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 337,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 338,
+    "homeScore": 0,
+    "awayScore": 5,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 339,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 340,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 341,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 342,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 343,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 344,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 345,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 346,
+    "homeScore": 3,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 347,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 348,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 349,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 350,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 351,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 352,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 353,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 354,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 355,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 356,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 357,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 358,
+    "homeScore": 0,
+    "awayScore": 0,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 359,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 360,
+    "homeScore": 0,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 361,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1340,
+    "homeStrengthDefence": 1270,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1040
+  },
+  {
+    "fplId": 362,
+    "homeScore": 4,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1300
+  },
+  {
+    "fplId": 363,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1310,
+    "awayStrengthDefence": 1400
+  },
+  {
+    "fplId": 364,
+    "homeScore": 2,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1200,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 365,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1250,
+    "awayStrengthAttack": 1090,
+    "awayStrengthDefence": 1150
+  },
+  {
+    "fplId": 366,
+    "homeScore": 1,
+    "awayScore": 3,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1140,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1130
+  },
+  {
+    "fplId": 367,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1050,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1220,
+    "awayStrengthDefence": 1280
+  },
+  {
+    "fplId": 368,
+    "homeScore": 3,
+    "awayScore": 2,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 369,
+    "homeScore": 3,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1110,
+    "awayStrengthAttack": 1080,
+    "awayStrengthDefence": 1180
+  },
+  {
+    "fplId": 370,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 950,
+    "homeStrengthDefence": 1000,
+    "awayStrengthAttack": 1170,
+    "awayStrengthDefence": 1230
+  },
+  {
+    "fplId": 371,
+    "homeScore": 0,
+    "awayScore": 3,
+    "homeStrengthAttack": 1140,
+    "homeStrengthDefence": 1200,
+    "awayStrengthAttack": 1190,
+    "awayStrengthDefence": 1310
+  },
+  {
+    "fplId": 372,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 910,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1050,
+    "awayStrengthDefence": 1070
+  },
+  {
+    "fplId": 373,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1150,
+    "homeStrengthDefence": 1170,
+    "awayStrengthAttack": 1390,
+    "awayStrengthDefence": 1320
+  },
+  {
+    "fplId": 374,
+    "homeScore": 2,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1120,
+    "awayStrengthDefence": 1290
+  },
+  {
+    "fplId": 375,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1120,
+    "homeStrengthDefence": 1240,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1270
+  },
+  {
+    "fplId": 376,
+    "homeScore": 1,
+    "awayScore": 2,
+    "homeStrengthAttack": 1220,
+    "homeStrengthDefence": 1310,
+    "awayStrengthAttack": 1210,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 377,
+    "homeScore": 1,
+    "awayScore": 1,
+    "homeStrengthAttack": 1130,
+    "homeStrengthDefence": 1120,
+    "awayStrengthAttack": 1230,
+    "awayStrengthDefence": 1240
+  },
+  {
+    "fplId": 378,
+    "homeScore": 2,
+    "awayScore": 1,
+    "homeStrengthAttack": 1070,
+    "homeStrengthDefence": 1040,
+    "awayStrengthAttack": 1140,
+    "awayStrengthDefence": 1250
+  },
+  {
+    "fplId": 379,
+    "homeScore": 1,
+    "awayScore": 0,
+    "homeStrengthAttack": 1090,
+    "homeStrengthDefence": 1150,
+    "awayStrengthAttack": 1150,
+    "awayStrengthDefence": 1170
+  },
+  {
+    "fplId": 380,
+    "homeScore": 3,
+    "awayScore": 0,
+    "homeStrengthAttack": 1060,
+    "homeStrengthDefence": 1130,
+    "awayStrengthAttack": 1160,
+    "awayStrengthDefence": 1250
+  }
+]

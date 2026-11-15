@@ -8,6 +8,9 @@ import { coinsToMinorUnits } from '@/lib/money';
 
 const schema = z.object({ code: z.string() });
 
+/** Daily cap on coins earnable from daily quests per user per UTC day (R7.2). */
+export const MAX_DAILY_QUEST_COINS = 450;
+
 function startOfToday() {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
@@ -37,10 +40,34 @@ export async function POST(req: Request) {
     const done = await prisma.userQuest.findFirst({ where: { userId, questId: quest.id } });
     if (done) return NextResponse.json({ error: 'already_completed' }, { status: 409 });
   } else {
-    const recent = await prisma.userQuest.findFirst({
-      where: { userId, questId: quest.id, completedAt: { gte: today } },
+    const todayCompletions = await prisma.userQuest.findMany({
+      where: { userId, completedAt: { gte: today } },
+      include: { quest: { select: { rewardCoins: true, repeatKind: true } } },
     });
-    if (recent) return NextResponse.json({ error: 'already_claimed_today' }, { status: 409 });
+    if (todayCompletions.some((c) => c.questId === quest.id)) {
+      return NextResponse.json({ error: 'already_claimed_today' }, { status: 409 });
+    }
+    const dailyCoinsToday = todayCompletions
+      .filter((c) => c.quest.repeatKind !== 'one_shot')
+      .reduce((sum, c) => sum + c.quest.rewardCoins, 0);
+    if (dailyCoinsToday + quest.rewardCoins > MAX_DAILY_QUEST_COINS) {
+      return NextResponse.json({ error: 'daily_cap_exceeded' }, { status: 429 });
+    }
+  }
+
+  // R7.2 — Verify the action every quest claims to reward
+  if (code === 'login_today') {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, lastLoginAt: true, createdAt: true },
+    });
+    if (!user) {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+    }
+    const latestSessionActivity = user.lastLoginAt ?? user.createdAt;
+    if (latestSessionActivity < today) {
+      return NextResponse.json({ error: 'no_login_today' }, { status: 400 });
+    }
   }
 
   if (code === 'place_one_trade') {

@@ -9,6 +9,11 @@ type Match = {
   kickoffAt: string;
   status: string;
   alreadyPredicted: boolean;
+  odds: {
+    H: number;
+    D: number;
+    A: number;
+  };
 };
 
 type Prediction = {
@@ -18,6 +23,7 @@ type Prediction = {
   awayTeam: string;
   pick: string;
   coinsStaked: number;
+  odds?: number;
   resolved: boolean;
   payout: number;
   createdAt: string;
@@ -28,6 +34,9 @@ function PredictForm({ match, balance, onDone }: { match: Match; balance: number
   const [stake, setStake] = useState(100);
   const [msg, setMsg] = useState<string | null>(null);
   const [pending, start] = useTransition();
+
+  const currentOdds = match.odds?.[pick] ?? 2.0;
+  const estPayout = Math.round(stake * currentOdds);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,12 +57,16 @@ function PredictForm({ match, balance, onDone }: { match: Match; balance: number
         setMsg(errMap[j.error] ?? j.error);
         return;
       }
-      setMsg(`Prediction placed: ${pick} · ${stake} coins staked`);
+      setMsg(`Prediction placed: ${pick} @ ${currentOdds.toFixed(2)}× · ${stake} coins staked`);
       onDone();
     });
   }
 
-  const pickLabels = { H: `${match.homeTeam} win`, D: 'Draw', A: `${match.awayTeam} win` };
+  const pickLabels = {
+    H: `${match.homeTeam} (${match.odds.H.toFixed(2)}×)`,
+    D: `Draw (${match.odds.D.toFixed(2)}×)`,
+    A: `${match.awayTeam} (${match.odds.A.toFixed(2)}×)`,
+  };
 
   return (
     <form onSubmit={submit} className="space-y-3 mt-3 pt-3 border-t border-edge">
@@ -81,9 +94,11 @@ function PredictForm({ match, balance, onDone }: { match: Match; balance: number
         />
         <span className="text-xs text-mute shrink-0">coins (balance: {balance.toLocaleString()})</span>
       </div>
-      <div className="text-xs text-mute">Correct prediction pays <span className="up">2×</span> your stake.</div>
+      <div className="text-xs text-mute">
+        Correct prediction pays <span className="up">{currentOdds.toFixed(2)}×</span> ({estPayout.toLocaleString()} coins).
+      </div>
       <button className="btn btn-primary" type="submit" disabled={pending}>
-        {pending ? '…' : `Predict: ${pick} · ${stake} coins`}
+        {pending ? '…' : `Predict: ${pick} @ ${currentOdds.toFixed(2)}× · ${stake} coins`}
       </button>
       {msg && <p className={`text-xs ${msg.startsWith('Prediction placed') ? 'up' : 'down'}`}>{msg}</p>}
     </form>
@@ -111,7 +126,9 @@ export default function PredictionsClient({
     <div className="space-y-8">
       <section>
         <h1 className="text-2xl font-semibold mb-1">Predictions</h1>
-        <p className="text-mute text-sm">Stake coins on match results. Correct picks pay 2×.</p>
+        <p className="text-mute text-sm">
+          Stake coins on match results with live Poisson odds derived from club attack and defence strength.
+        </p>
       </section>
 
       <section>
@@ -130,6 +147,10 @@ export default function PredictionsClient({
                     <div className="font-medium">{m.homeTeam} <span className="text-mute">vs</span> {m.awayTeam}</div>
                     <div className="text-xs text-mute">
                       {new Date(m.kickoffAt).toLocaleString()} · <span className="chip">{m.status}</span>
+                      {' · '}
+                      <span className="font-mono">
+                        H {m.odds.H.toFixed(2)}× / D {m.odds.D.toFixed(2)}× / A {m.odds.A.toFixed(2)}×
+                      </span>
                     </div>
                   </div>
                   {m.alreadyPredicted ? (
@@ -163,6 +184,7 @@ export default function PredictionsClient({
                 <tr>
                   <th>Match</th>
                   <th>Pick</th>
+                  <th className="text-right">Odds</th>
                   <th className="text-right">Staked</th>
                   <th>Status</th>
                   <th className="text-right">Payout</th>
@@ -177,6 +199,7 @@ export default function PredictionsClient({
                         {p.pick === 'H' ? `${p.homeTeam} win` : p.pick === 'A' ? `${p.awayTeam} win` : 'Draw'}
                       </span>
                     </td>
+                    <td className="text-right font-mono">{(p.odds ?? 2.0).toFixed(2)}×</td>
                     <td className="text-right font-mono">{p.coinsStaked}</td>
                     <td>
                       {p.resolved ? (
