@@ -9,3 +9,10 @@ apps/web/.env
 __pycache__/
 .DS_Store
 apps/web/tsconfig.tsbuildinfo
+
+# Internal planning, ops runbooks, backtest reports, and agent notes
+AGENTS.md
+BACKTEST_2526.md
+REBUILD_PLAN_2627.md
+ROLLOVER_RUNBOOK.md
+TODO_2627.md
