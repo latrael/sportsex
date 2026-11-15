@@ -26,6 +26,8 @@ export interface SyncFairValuesOptions {
   /** Gameweek number (1..38) to compute and persist; if omitted, syncs all finished gameweeks 1..maxGw. */
   gameweekNumber?: number;
   source?: FairValueSource;
+  /** Optional explicit timestamp for valuation ticks (defaults to deterministic GW deadline/offset). */
+  computedAt?: Date;
   /** Default liquidity depth `L` for newly created assets (R4.6 refines this by float). */
   defaultPlayerLiquidity?: number;
   defaultClubLiquidity?: number;
@@ -75,7 +77,10 @@ export async function syncSeasonFairValues(
 
   // Ensure every playerSeason and clubSeason has an Asset row
   let assetsCreated = 0;
-  const playerAssetByPsId = new Map<number, { id: number; inventory: number; seedInventory: number; liquidity: number }>();
+  const playerAssetByPsId = new Map<
+    number,
+    { id: number; inventory: number; seedInventory: number; liquidity: number }
+  >();
   for (const ps of playerSeasons) {
     if (ps.asset) {
       playerAssetByPsId.set(ps.id, {
@@ -85,7 +90,6 @@ export async function syncSeasonFairValues(
         liquidity: Number(ps.asset.liquidity),
       });
     } else {
-      // Scale default liquidity L by FPL nowCost tier (R4.6)
       const liq = opts.defaultPlayerLiquidity ?? 2000;
       const created = await db.asset.create({
         data: {
@@ -106,7 +110,10 @@ export async function syncSeasonFairValues(
     }
   }
 
-  const clubAssetByCsId = new Map<number, { id: number; inventory: number; seedInventory: number; liquidity: number }>();
+  const clubAssetByCsId = new Map<
+    number,
+    { id: number; inventory: number; seedInventory: number; liquidity: number }
+  >();
   for (const cs of clubSeasons) {
     if (cs.asset) {
       clubAssetByCsId.set(cs.id, {
@@ -217,13 +224,11 @@ export async function syncSeasonFairValues(
     });
     lastEvaluations = evaluations;
 
-    const computedAt = gwRecord.deadlineTime ?? new Date(Date.UTC(opts.startYear, 7, 15 + gwNum * 7));
+    const computedAt =
+      opts.computedAt ??
+      gwRecord.deadlineTime ??
+      new Date(Date.UTC(opts.startYear, 7, 15 + gwNum * 7));
     const source = opts.source ?? FairValueSource.GAMEWEEK;
-
-    // Delete any existing GAMEWEEK FairValue and VALUATION PriceTick at this exact computedAt/gameweekId for idempotency
-    await db.fairValue.deleteMany({
-      where: { gameweekId: gwRecord.id, source },
-    });
 
     const fvData = evaluations.map((ev) => {
       const asset = playerAssetByPsId.get(ev.playerSeasonId)!;
@@ -286,24 +291,34 @@ export async function syncSeasonFairValues(
         gameweekId: gwRecord.id,
         source,
         value: cfv.decimalValue,
-        baseline: null as unknown as typeof fvData[0]['baseline'],
-        form: null as unknown as typeof fvData[0]['form'],
-        availabilityMult: null as unknown as typeof fvData[0]['availabilityMult'],
-        positionBase: null as unknown as typeof fvData[0]['positionBase'],
+        baseline: null as unknown as (typeof fvData)[0]['baseline'],
+        form: null as unknown as (typeof fvData)[0]['form'],
+        availabilityMult: null as unknown as (typeof fvData)[0]['availabilityMult'],
+        positionBase: null as unknown as (typeof fvData)[0]['positionBase'],
         computedAt,
       });
     }
 
-    await db.fairValue.createMany({ data: fvData });
-    fairValuesWritten += fvData.length;
-
-    // Also write corresponding VALUATION PriceTick rows (P = V * exp((q - q0)/L))
-    await db.priceTick.deleteMany({
-      where: { source: PriceTickSource.VALUATION, computedAt },
+    // Check if existing FairValue rows for (gameweekId, source) already match identically
+    const existingFvs = await db.fairValue.findMany({
+      where: { gameweekId: gwRecord.id, source },
+      select: { assetId: true, value: true },
     });
+    const existingFvByAsset = new Map(existingFvs.map((r) => [r.assetId, r.value.toString()]));
+    const fvsUnchanged =
+      existingFvs.length === fvData.length &&
+      fvData.every((fv) => existingFvByAsset.get(fv.assetId) === fv.value.toString());
 
+    if (!fvsUnchanged) {
+      await db.fairValue.deleteMany({
+        where: { gameweekId: gwRecord.id, source },
+      });
+      await db.fairValue.createMany({ data: fvData });
+      fairValuesWritten += fvData.length;
+    }
+
+    // Build corresponding VALUATION PriceTick rows (P = V * exp((q - q0)/L))
     const tickData = fvData.map((fv) => {
-      // Find asset inventory
       let inv = 0;
       let seedInv = 0;
       let liq = 500;
@@ -335,8 +350,31 @@ export async function syncSeasonFairValues(
       };
     });
 
-    await db.priceTick.createMany({ data: tickData });
-    priceTicksWritten += tickData.length;
+    const existingTicks = await db.priceTick.findMany({
+      where: { source: PriceTickSource.VALUATION, computedAt },
+      select: { assetId: true, price: true, fairValue: true, inventory: true },
+    });
+    const existingTickByAsset = new Map(
+      existingTicks.map((t) => [
+        t.assetId,
+        `${t.price.toString()}:${t.fairValue.toString()}:${t.inventory}`,
+      ]),
+    );
+    const ticksUnchanged =
+      existingTicks.length === tickData.length &&
+      tickData.every(
+        (t) =>
+          existingTickByAsset.get(t.assetId) ===
+          `${t.price.toString()}:${t.fairValue.toString()}:${t.inventory}`,
+      );
+
+    if (!ticksUnchanged) {
+      await db.priceTick.deleteMany({
+        where: { source: PriceTickSource.VALUATION, computedAt },
+      });
+      await db.priceTick.createMany({ data: tickData });
+      priceTicksWritten += tickData.length;
+    }
   }
 
   return {

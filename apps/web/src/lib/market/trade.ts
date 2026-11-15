@@ -113,27 +113,20 @@ async function resolveAsset(
   const kind = input.assetKind ?? 'player';
   const targetId = input.assetId!;
 
-  const asset = await tx.asset.findFirst({
-    where:
-      kind === 'player'
-        ? {
-            kind: AssetKind.PLAYER,
-            OR: [
-              { id: targetId },
-              { playerSeasonId: targetId },
-              { playerSeason: { playerId: targetId } },
-            ],
-          }
-        : {
-            kind: AssetKind.CLUB,
-            OR: [
-              { id: targetId },
-              { clubSeasonId: targetId },
-              { clubSeason: { clubId: targetId } },
-            ],
-          },
-    orderBy: { id: 'desc' },
-  });
+  const asset =
+    kind === 'player'
+      ? (await tx.asset.findFirst({
+          where: { kind: AssetKind.PLAYER, playerSeason: { playerId: targetId } },
+          orderBy: { id: 'desc' },
+        })) ??
+        (await tx.asset.findUnique({ where: { id: targetId } })) ??
+        (await tx.asset.findUnique({ where: { playerSeasonId: targetId } }))
+      : (await tx.asset.findFirst({
+          where: { kind: AssetKind.CLUB, clubSeason: { clubId: targetId } },
+          orderBy: { id: 'desc' },
+        })) ??
+        (await tx.asset.findUnique({ where: { id: targetId } })) ??
+        (await tx.asset.findUnique({ where: { clubSeasonId: targetId } }));
 
   if (!asset) {
     throw new Error('no_asset');

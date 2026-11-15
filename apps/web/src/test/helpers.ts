@@ -128,7 +128,7 @@ export async function createPlayer(
 ) {
   const season = await ensureTestSeason();
   let clubSeason = clubId
-    ? await db.clubSeason.findFirst({ where: { OR: [{ clubId }, { id: clubId }] } })
+    ? (await db.clubSeason.findFirst({ where: { clubId } })) ?? (await db.clubSeason.findUnique({ where: { id: clubId } }))
     : null;
   if (!clubSeason) {
     const team = await createTeam();
@@ -208,9 +208,7 @@ export async function createPlayer(
 }
 
 export async function createValuation(playerId: number, price = 100) {
-  const ps = await db.playerSeason.findFirst({
-    where: { OR: [{ playerId }, { id: playerId }] },
-  });
+  const ps = (await db.playerSeason.findFirst({ where: { playerId } })) ?? (await db.playerSeason.findUnique({ where: { id: playerId } }));
   if (!ps) throw new Error(`PlayerSeason not found for playerId=${playerId}`);
 
   const asset = await db.asset.upsert({
@@ -246,9 +244,7 @@ export async function createValuation(playerId: number, price = 100) {
 }
 
 export async function createTeamValuation(teamId: number, price = 200) {
-  const cs = await db.clubSeason.findFirst({
-    where: { OR: [{ clubId: teamId }, { id: teamId }] },
-  });
+  const cs = (await db.clubSeason.findFirst({ where: { clubId: teamId } })) ?? (await db.clubSeason.findUnique({ where: { id: teamId } }));
   if (!cs) throw new Error(`ClubSeason not found for teamId=${teamId}`);
 
   const asset = await db.asset.upsert({
