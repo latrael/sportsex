@@ -1,186 +1,219 @@
-# sportsex
+# SportsEx
 
-A virtual stock market for EPL players and teams. Buy and sell shares in players and teams with in-app coins — values move with on-pitch performance and real trading pressure.
+[![CI](https://github.com/latrael/sportsex/actions/workflows/ci.yml/badge.svg)](https://github.com/latrael/sportsex/actions/workflows/ci.yml)
+[![Live App](https://img.shields.io/badge/demo-sportsex.vercel.app-10b981)](https://sportsex.vercel.app)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)](https://www.postgresql.org/)
 
-See [AGENTS.md](AGENTS.md) for the full spec and dev guide. This README covers how to run, how to sync real match data, and what's been built.
+**SportsEx** is a virtual stock market and prediction exchange for the English Premier League. Trade shares of **all Premier League players and clubs** using virtual coins — prices respond in real time to on-pitch performance, injury/availability news, and trading pressure through a mathematically conserved bonding-curve AMM and double-entry ledger.
 
-## Quickstart
+> **Virtual currency only.** No real money, deposits, or cashouts.
 
-Requires Node 20+ and pnpm.
+---
+
+## Why SportsEx?
+
+Fantasy football locks your squad behind static weekly prices, and traditional sportsbooks flatten player performance into binary props. SportsEx bridges fantasy analytics and market mechanics:
+
+- **Full-League Universe:** Every registered Premier League goalkeeper, defender, midfielder, forward, and club is a continuously priced, tradeable asset — not just top goalscorers.
+- **Position-Fair Valuation:** Keepers and defenders compete directly with attackers via position-cohort z-scoring across saves, clean sheets, tackles, recoveries, defensive contributions, and xGC suppression.
+- **Path-Independent Liquidity:** Trades execute against an exponential automated market maker (AMM) backed by exact integer minor-unit (`BigInt`) accounting, guaranteeing zero round-trip exploits and 100% coin conservation.
+- **Live Match Odds & Quests:** Stake coins on Premier League fixtures priced with a Poisson + Dixon-Coles model (`~5%` house margin) and complete action-verified daily quests and leaderboards.
+
+---
+
+## How It Works
+
+SportsEx separates **football fundamentals** from **market supply and demand** across two pricing layers:
+
+```mermaid
+flowchart LR
+    FPL["FPL Live API<br/>(bootstrap / fixtures / live)"] --> Ingest["Idempotent Ingest &<br/>Immutable Event Rows"]
+    Ingest --> Stats["Derived Season Stats<br/>(player_season_stat)"]
+    Stats --> FV["Layer 1: Fair Value V<br/>(Cohort Z-Score + Shrinkage + Form + Avail)"]
+    FV --> AMM["Layer 2: AMM Curve P(q)<br/>P(q) = V · exp((q - q0) / L)"]
+    Users["Buy / Sell Orders"] -->|"SELECT ... FOR UPDATE"| AMM
+    AMM --> Ledger["Double-Entry Ledger<br/>(USER_CASH / AMM_LIQUIDITY / FEE_SINK / MINT)"]
+```
+
+1. **Layer 1 — Fundamental Fair Value ($V$)** ([`apps/web/src/lib/valuation/`](apps/web/src/lib/valuation/fairValue.ts))
+   - **Performance Score:** Gameweek stats are z-scored within position cohorts (`GKP`, `DEF`, `MID`, `FWD`) over active appearances.
+   - **Empirical Bayes Baseline & EWMA Form:** Career/season per-90 rate is shrunk toward the cohort prior ($k = 6$) and blended (`0.6 × Baseline + 0.4 × Form`, half-life $h = 4$ matches).
+   - **Availability Multiplier ($M$):** Incorporates recent minutes share, starts rate, and official injury/suspension status.
+2. **Layer 2 — Exponential AMM Bonding Curve ($P(q)$)** ([`apps/web/src/lib/market/curve.ts`](apps/web/src/lib/market/curve.ts))
+   - Spot price follows $P(q) = V \cdot \exp((q - q_0)/L)$ with liquidity depth $L = 0.20 \times \text{float}$.
+   - Trade subtotals integrate the exact curve over $[q_{\text{low}}, q_{\text{high}}]$ in integer minor units (`100` minor units = `1` coin) with a `0.5%` trading fee burned to `FEE_SINK`.
+3. **Double-Entry Ledger (`ledger_entry`)** ([`apps/web/src/lib/market/ledger.ts`](apps/web/src/lib/market/ledger.ts))
+   - Balances are derived from `SUM(USER_CASH)` rather than mutable counters; every trade, quest reward, and prediction payout records balanced legs summing to `0n`.
+4. **Match Predictions & Daily Reconciliation**
+   - [`odds.ts`](apps/web/src/lib/predictions/odds.ts): Computes home/draw/away odds from attacking/defensive team strength and historical expected goals conceded.
+   - [`reconcile/index.ts`](apps/web/src/lib/reconcile/index.ts): Verifies global coin conservation and recomputed event-row stats daily, forwarding alerts to Sentry when `SENTRY_DSN` is configured.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Framework & UI** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Recharts |
+| **Auth** | NextAuth v5 (Credentials + optional Google / Apple OAuth) |
+| **Database & ORM** | PostgreSQL 16 + Prisma (`Decimal` prices, `BigInt` minor-unit ledger) |
+| **Data Source** | Official Fantasy Premier League API (`bootstrap-static`, `fixtures`, `event/{gw}/live`) |
+| **Testing & CI** | Vitest (26 suites / 227 unit, fuzz, and Postgres integration tests), ESLint, GitHub Actions |
+| **Hosting & Cron** | Vercel + Scheduled GitHub Actions |
+
+---
+
+## Quickstart (Local Development)
+
+### Prerequisites
+- **Node.js** `20+`
+- **pnpm** `10+` (`corepack enable`)
+- **Docker** (for local PostgreSQL)
+
+### 1. Clone & install dependencies
 
 ```bash
-cd apps/web
+git clone https://github.com/latrael/sportsex.git
+cd sportsex/apps/web
 pnpm install
-pnpm exec prisma db push
-pnpm db:seed           # loads ~560 EPL players + 21 teams from the 24/25 CSVs in repo root
-pnpm dev               # http://localhost:3000
 ```
 
-## What's live in v1
-
-- **Auth**: email + password (NextAuth credentials provider). OAuth env vars stubbed for Google/Apple.
-- **10,000 coin starting balance** on first signup, plus a +500 coin onboarding bonus for picking 3 players to follow.
-- **Pages**: home (hero, top movers, top performers), `/players`, `/players/[id]`, `/teams`, `/teams/[id]`, `/portfolio`, `/leaderboard` (global + private groups), `/friends`, `/quests`, `/predictions`, `/onboarding`, `/admin/moderate`.
-- **Trading**: `POST /api/orders` — buy/sell shares of players or teams. Enforces a 1s cooldown, max 5% of float per order, and a 2,000 share position cap per asset.
-- **Tick pricing**: every trade refreshes the asset's price via a 24h net-buys demand multiplier.
-- **Match settlement**: `POST /api/admin/simulate-match` (header `x-admin-token`) simulates a match between two teams, or settles an existing scheduled match by ID. Distributes goals/assists, applies the pricing algorithm, and resolves any outstanding predictions.
-- **Real match sync**: `sync-matches.ts` hits the football-data.org free API and settles all finished PL matches. Prices move on win/draw/loss result; goals/assists come from `update-player-stats.ts`.
-- **Comments** on player pages, with word-list moderation flagging, a report button, and a `/admin/moderate` queue.
-- **Quests**: daily login, place a trade, comment on a player — each grants coins.
-- **Predictions**: stake coins on match results; payouts resolve automatically when the match settles.
-- **Friends** and **private leaderboards** with join codes.
-- **CI**: GitHub Actions runs typecheck, ESLint, and 119 Vitest tests against a Postgres service container on every push/PR.
-
-## Pricing algorithm
-
-The entire v1 algorithm lives in [`apps/web/src/lib/pricing.ts`](apps/web/src/lib/pricing.ts). Swap that file to change pricing without touching anything else. See AGENTS.md §4 for the formulas.
-
-## Syncing real match data (25/26 season)
-
-These jobs require `FOOTBALL_DATA_API_KEY` in `apps/web/.env` (free at football-data.org).
-
-### 1. Settle finished matches (prices move on result)
+### 2. Start a local PostgreSQL database
 
 ```bash
+docker run -d --name sportsex-dev-db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=sportsex_dev \
+  -p 5432:5432 \
+  postgres:16
+```
+
+### 3. Configure environment variables
+
+Copy [`apps/web/.env.example`](apps/web/.env.example) to `apps/web/.env` and point `DATABASE_URL` at your local Postgres container:
+
+```bash
+cp .env.example .env
+```
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sportsex_dev"
+AUTH_SECRET="replace-with-a-random-32-plus-character-secret"
+AUTH_URL="http://localhost:3000"
+```
+
+### 4. Apply migrations, seed quests, and ingest live EPL data
+
+```bash
+# Apply Prisma schema migrations
+pnpm exec prisma migrate deploy
+
+# Seed quests
+pnpm db:seed
+
+# Pull current season squads, fixtures, and settled gameweeks from the FPL API
+pnpm exec tsx -e "
+import { PrismaClient } from '@prisma/client';
+import { FplClient } from './src/lib/fpl';
+import { runBootstrapCron, runFixturesCron, runSettleCron } from './src/lib/cron';
+
+const db = new PrismaClient();
+const client = new FplClient();
+(async () => {
+  await runBootstrapCron(db, { client });
+  await runFixturesCron(db, { client });
+  await runSettleCron(db, { client, fetchLive: true });
+})().finally(() => db.\$disconnect());
+"
+```
+
+### 5. Run the app
+
+```bash
+pnpm dev
+```
+
+Open **http://localhost:3000**, sign up at `/signup` to receive your starting coins, and explore `/players`, `/teams`, `/predictions`, `/quests`, `/portfolio`, and `/leaderboard`.
+
+---
+
+## Running Tests & Quality Checks
+
+The test suite runs against an isolated tmpfs PostgreSQL container (`sportsex_test` on port `5433`) defined in [`docker-compose.yml`](docker-compose.yml). A built-in guard in [`src/test/globalSetup.ts`](apps/web/src/test/globalSetup.ts) refuses to run against any non-local or non-`_test` database.
+
+```bash
+# From repo root: start disposable test Postgres
+docker compose up -d
+
+# Run typecheck, lint, full test suite (227 tests), and production build
 cd apps/web
-npx tsx --env-file=.env src/jobs/sync-matches.ts
+pnpm exec tsc --noEmit
+pnpm lint
+pnpm test
+pnpm build
+
+# Tear down test Postgres when finished
+docker compose -f ../../docker-compose.yml down -v
 ```
 
-Fetches all finished PL matches, upserts them into `Match`, applies win/draw/loss price deltas to every player on each squad, and recomputes team prices. Idempotent — already-settled matches are skipped.
+---
 
-### 2. Import 25/26 player stats (goals, assists, minutes)
+## Environment Variables & Automation
 
-```bash
-# Step 1: scrape the stats CSV
-python3 apps/jobs/epl_2526_fbref_scrape.py   # writes epl_player_stats_25_26.csv
-
-# Step 2: import into DB (creates missing players automatically)
-cd apps/web
-npx tsx --env-file=.env src/jobs/update-player-stats.ts
-```
-
-Matches players by canonical name. New players not yet in the DB (transfers, call-ups) are created automatically with a seed valuation.
-
-### 3. Add promoted teams
-
-```bash
-cd apps/web
-npx tsx --env-file=.env src/jobs/add-promoted-teams.ts
-```
-
-Fetches the current PL team list from football-data.org, adds any promoted clubs (Leeds, Burnley, Sunderland for 25/26) and their squads, and seeds initial valuations. Run before `sync-matches.ts` when the promoted teams aren't yet in the DB.
-
-### 4. Patch missing minutes
-
-If players have appearances but `minutes = 0`, estimate from appearances × 75:
-
-```bash
-npx tsx --env-file=.env src/jobs/patch-minutes.ts
-```
-
-### 5. Recompute season totals from match stats
-
-After a full sync, recalculate player season aggregates from `PlayerMatchStat` rows (zeroes out players with no appearances):
-
-```bash
-npx tsx --env-file=.env src/jobs/recalc-stats.ts
-```
-
-### 6. Reset and re-sync from scratch
-
-Clears match settlement data (keeps users, holdings, and trades) so `sync-matches.ts` can reprocess everything:
-
-```bash
-npx tsx --env-file=.env src/jobs/reset-for-resync.ts
-```
-
-## Simulating a match manually
-
-```bash
-curl -X POST http://localhost:3000/api/admin/simulate-match \
-  -H "x-admin-token: dev-admin-token" \
-  -H "Content-Type: application/json" \
-  -d '{"homeTeamId":1,"awayTeamId":2,"homeScore":2,"awayScore":1}'
-```
-
-To settle an existing scheduled match (and resolve predictions for it):
-
-```bash
-curl -X POST http://localhost:3000/api/admin/simulate-match \
-  -H "x-admin-token: dev-admin-token" \
-  -H "Content-Type: application/json" \
-  -d '{"matchId":42,"homeScore":1,"awayScore":1}'
-```
-
-## Repo layout
-
-```
-sportsex/
-├─ AGENTS.md                              spec + dev guide (read first)
-├─ README.md                              this file
-├─ apps/
-│  ├─ web/                                Next.js 14 app (TypeScript, Prisma, SQLite for dev)
-│  │  ├─ prisma/schema.prisma             data model
-│  │  ├─ src/lib/pricing.ts              v1 pricing algorithm (swap to change everything)
-│  │  └─ src/jobs/                        one-shot TypeScript data jobs
-│  │     ├─ sync-matches.ts              settle finished PL matches via football-data.org
-│  │     ├─ update-player-stats.ts       import goals/assists/minutes from CSV
-│  │     ├─ add-promoted-teams.ts        add promoted clubs + squads
-│  │     ├─ patch-minutes.ts             backfill estimated minutes
-│  │     ├─ recalc-stats.ts              recompute season totals from match stats
-│  │     └─ reset-for-resync.ts          wipe settlement data for a clean re-run
-│  └─ jobs/                               Python jobs
-│     ├─ legacy/                          original Python pipeline (kept for v2 reference)
-│     ├─ epl_2526_fbref_scrape.py        scrape 25/26 player stats → CSV
-│     └─ patch_minutes_api_football.py   patch minutes via api-football.com free tier
-├─ packages/db/                           (reserved; Prisma currently lives in apps/web)
-├─ epl_player_stats_24_25.csv            24/25 seed data
-├─ epl_player_stats_25_26.csv            25/26 season stats (generated by scrape job)
-├─ investable_players_pred_202426-26.csv predicted GA90 used by seed pricing
-└─ pl_setup.py, predict_investable_players.py, *.py  original pipeline (kept; not used in v1)
-```
-
-## Dev DB
-
-Both dev and prod are Postgres (Neon). Set `DATABASE_URL` to your connection string. To wipe and reseed:
-
-```bash
-pnpm db:reset
-```
-
-## Running tests
-
-The suite needs a real Postgres, since the Prisma schema targets `postgresql`. A disposable one is defined at the repo root:
-
-```bash
-docker compose up -d          # postgres on localhost:5433, db `sportsex_test`
-pnpm --dir apps/web test      # 119 tests
-docker compose down -v        # throw it away
-```
-
-Override the target with `TEST_DATABASE_URL` if you want a different host. The suite runs `prisma db push --force-reset` on startup, which drops every table, so `src/test/globalSetup.ts` refuses any URL that isn't Postgres on localhost with a database name ending in `_test`. That guard is what stands between `pnpm test` and the production database in `apps/web/.env`.
-
-CI runs the same suite against a `postgres:16` service container.
-
-## Environment
-
-Copy `.env.example` → `.env`. Defaults work out of the box for local dev.
-
-| Variable | Required for | Notes |
+| Variable | Required | Purpose |
 |---|---|---|
-| `DATABASE_URL` | everything | Postgres connection string (Neon) |
-| `TEST_DATABASE_URL` | tests | defaults to the `docker compose` database on `localhost:5433` |
-| `AUTH_SECRET` | auth | any 32+ char string |
-| `ADMIN_TOKEN` | simulate-match endpoint | `dev-admin-token` works locally |
-| `FOOTBALL_DATA_API_KEY` | real match sync | free at football-data.org |
-| `API_FOOTBALL_KEY` | minutes patch job | free tier, 100 req/day |
-| `AUTH_GOOGLE_ID/SECRET` | Google OAuth | optional |
-| `AUTH_APPLE_ID/SECRET` | Apple OAuth | optional |
+| `DATABASE_URL` | Yes | PostgreSQL connection string (local Docker or Neon) |
+| `TEST_DATABASE_URL` | Tests only | Defaults to `postgresql://postgres:postgres@localhost:5433/sportsex_test` |
+| `AUTH_SECRET` | Yes | NextAuth v5 session signing secret (32+ chars) |
+| `AUTH_URL` | Yes | Canonical app URL (`http://localhost:3000` locally) |
+| `CRON_SECRET` | Production | Bearer token protecting `/api/cron/*` routes (`>=16` chars, fail-closed `503`/`401`) |
+| `SENTRY_DSN` | Optional | Enables exception and invariant-drift alert forwarding |
+| `AUTH_GOOGLE_ID` / `SECRET` | Optional | Google OAuth provider credentials |
+| `AUTH_APPLE_ID` / `SECRET` | Optional | Apple OAuth provider credentials |
 
-## What's next (post-v1)
+### Cron Endpoints
 
-- **T8.1–T8.2** — flip Prisma provider to `postgresql`, provision Neon, deploy to Vercel.
-- **T5.1–T5.4** — real fixture polling (Football-Data.org, 6h cron), match-status poller, fbref match-detail scraper, automatic settle hook (replacing the manual jobs above).
-- **T8.3** — Modal or Render Cron for the Python jobs once real ingestion is automated.
-- **T8.4** — Sentry error tracking.
-- **v1.1** — top-5 European leagues.
+Protected by constant-time `Authorization: Bearer $CRON_SECRET` verification ([`cronAuth.ts`](apps/web/src/lib/cronAuth.ts)):
+
+| Endpoint | Frequency | Responsibility |
+|---|---|---|
+| `GET /api/cron/bootstrap` | Daily (`vercel.json`) | Sync squads, club rosters, and injury/availability fair values |
+| `GET /api/cron/reconcile` | Daily (`vercel.json`) | Assert ledger conservation and stat recomputation invariants |
+| `GET /api/cron/fixtures` | Hourly ([`.github/workflows/crons.yml`](.github/workflows/crons.yml)) | Sync fixture schedules and final scorelines |
+| `GET /api/cron/live` | Every 5m ([`.github/workflows/crons.yml`](.github/workflows/crons.yml)) | Poll live gameweek stats during active match windows only |
+| `GET /api/cron/settle` | Every 15m ([`.github/workflows/crons.yml`](.github/workflows/crons.yml)) | Idempotently settle `data_checked` gameweeks, fair values, and predictions |
+
+---
+
+## Project Structure
+
+```text
+sportsex/
+├── .github/workflows/
+│   ├── ci.yml                  # Typecheck, ESLint, Vitest (Postgres service), Next.js build
+│   └── crons.yml               # High-frequency fixtures / live / settle cron triggers
+├── docker-compose.yml          # Disposable Postgres 16 test database (port 5433)
+└── apps/web/
+    ├── prisma/
+    │   ├── schema.prisma       # Reference, event, derived, AMM market, ledger & product tables
+    │   ├── migrations/         # Versioned SQL migrations
+    │   └── seed.ts             # Quest definitions + season valuation bootstrap
+    ├── vercel.json             # Daily Vercel cron configuration
+    └── src/
+        ├── app/                # Next.js App Router pages & REST API endpoints
+        ├── components/         # UI components including TradeWidget & price charts
+        ├── lib/
+        │   ├── cron/           # Bootstrap, fixtures, live, and settlement orchestration
+        │   ├── derive/         # Recomputed player_season_stat aggregates
+        │   ├── economy/        # 30-day coin supply & sink simulation
+        │   ├── fpl/            # Typed, retrying FPL API client & parsers
+        │   ├── ingest/         # Diff-based reference, fixture, and live stats ingestion
+        │   ├── market/         # AMM bonding curve, quotes, trade execution & double-entry ledger
+        │   ├── predictions/    # Poisson + Dixon-Coles fixture odds model
+        │   ├── reconcile/      # Daily invariant verification
+        │   ├── rollover/       # Inter-season rollover & rollback helpers
+        │   └── valuation/      # Position-cohort z-score, EWMA form, availability & fair value
+        └── test/               # Unit, 10k-trade AMM fuzz, concurrency, and Postgres integration tests
+```
